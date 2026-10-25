@@ -5,17 +5,20 @@ on:
     - cron: "17 3 * * 1"
   workflow_dispatch:
 
-permissions:
-  contents: write
-  issues: write
+permissions: {}
 
 jobs:
-  sync:
+  build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      changed: ${{ steps.commit.outputs.changed }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          persist-credentials: false
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
       - name: Rebuild from upstream
         run: |
@@ -27,18 +30,55 @@ jobs:
         run: |
           bun tools/generate.mjs --check
           bun test tests/
-      - name: Push
+      - name: Commit
+        id: commit
         run: |
-          if git diff --cached --quiet; then exit 0; fi
+          if git diff --cached --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           git commit -m "Sync to pstack-claude $(cut -c1-7 mstack/UPSTREAM)"
-          git push
-      - name: Open an issue on failure
-        if: failure()
+          git bundle create sync.bundle origin/main..HEAD
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+      - if: steps.commit.outputs.changed == 'true'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: sync
+          path: sync.bundle
+          retention-days: 7
+
+  push:
+    needs: build
+    if: needs.build.outputs.changed == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: sync
+      - name: Fast-forward main
+        run: |
+          git fetch sync.bundle HEAD:refs/heads/sync
+          git push origin sync:main
+
+  report:
+    needs: [build, push]
+    if: failure()
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Open an issue
         env:
           GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           title="mstack sync failed"
           if [ -z "$(gh issue list --state open --search "in:title \"$title\"" --json number --jq '.[].number')" ]; then
-            gh issue create --title "$title" --body "The weekly rebuild from pstack-claude failed: $RUN_URL. Run mstack/sync.sh locally, resolve the patch conflict, update mstack/patches, and push."
+            gh issue create --title "$title" --body "The weekly rebuild from pstack-claude failed: $RUN_URL. Run mstack/sync.sh locally, resolve the patch conflict, run mstack/save-patch.sh, and push."
           fi
