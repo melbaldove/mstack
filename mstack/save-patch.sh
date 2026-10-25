@@ -5,3 +5,4 @@ cd "$(git rev-parse --show-toplevel)"
 renamed=$(cat "$(git rev-parse --git-dir)/mstack-renamed-tree")
 git add -A
 git diff --cached "$renamed" -- . ':(exclude)mstack' ':(exclude).github/workflows' > mstack/patches/mstack.patch
+mstack/sync.sh "$(cat mstack/UPSTREAM)"

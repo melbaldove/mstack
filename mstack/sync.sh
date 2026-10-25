@@ -18,6 +18,7 @@ cp "$keep/mstack-sync.yml" .github/workflows/mstack-sync.yml
 git add mstack .github/workflows/mstack-sync.yml
 
 bun mstack/rename.mjs
+bun mstack/stamp-version.mjs "$sha"
 bun install --frozen-lockfile --ignore-scripts
 bun tools/generate.mjs
 git add -A

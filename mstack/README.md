@@ -8,7 +8,9 @@ mstack is Melbourne Baldove's build of [pstack-claude](https://github.com/michae
    - The `shape`, `breadboard`, and `build` skills add a Shape Up workflow: shape a raw idea into a pitch with a fixed appetite, then build it within that time.
    - Under a pitch's appetite, the Autonomous run playbook stops when time runs out, `figure-it-out` compares its estimate to the appetite, and `principle-foundational-thinking` sets up only what the first working slice needs.
 
-`UPSTREAM` records the pstack-claude commit of the current build.
+`UPSTREAM` records the pstack-claude commit of the current build. `stamp-version.mjs` appends three digits from a hash of the rename script and patches to upstream's patch number, so 0.9.102 becomes a version such as 0.9.102831. Claude Code and Codex install a plugin update only when its version string changes, so every change to the fork reaches installed copies.
+
+`save-patch.sh` reruns the sync at the same upstream commit, which restamps the version and proves the patch rebuilds the tree.
 
 ## Sync
 
