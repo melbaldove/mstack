@@ -1,0 +1,323 @@
+diff --git a/.claude-plugin/marketplace.json b/.claude-plugin/marketplace.json
+index 32914bb..d569f04 100644
+--- a/.claude-plugin/marketplace.json
++++ b/.claude-plugin/marketplace.json
+@@ -4,7 +4,7 @@
+     "name": "Michael Denyer",
+     "url": "https://github.com/michael-denyer"
+   },
+-  "description": "Claude Code port of poteto's pstack. Rigorous agent workflows with Cursor primitives translated to Claude Code equivalents.",
++  "description": "Melbourne Baldove's build of pstack-claude, the Claude Code port of poteto's pstack. Adds the shape, breadboard, and build workflow skills.",
+   "plugins": [
+     {
+       "name": "mstack",
+diff --git a/README.md b/README.md
+index b64f8f6..cdffc7c 100644
+--- a/README.md
++++ b/README.md
+@@ -1,5 +1,7 @@
+ # pstack
+ 
++**This is mstack**, Melbourne Baldove's fork of [pstack-claude](https://github.com/michael-denyer/pstack-claude). It renames the plugin to `mstack` and `poteto-mode` to `melbs-mode`, and has replies follow the user's own Communication rules. See [`mstack/README.md`](mstack/README.md).
++
+ [![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-support-yellow?logo=buy-me-a-coffee&logoColor=white)](https://buymeacoffee.com/codenyer)
+ 
+ Lauren Tan's [pstack](https://github.com/cursor/plugins/tree/main/pstack) is an opinionated Cursor skill stack that improves agent outcomes. This is a port for Claude Code, Codex, Pi, GitHub Copilot, Muse, and other agent harnesses. It tracks upstream and also carries named policy forks, each declared in [`tools/forks.json`](tools/forks.json).
+diff --git a/docs/reference.md b/docs/reference.md
+index 94b6647..8721231 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -4,13 +4,16 @@ Start with the [README](../README.md) for installation and your first task.
+ 
+ ## Slash commands
+ 
+-The package includes 65 skill directories: 41 public skills and 24 `principle-*` references. Claude Code uses `/mstack:<name>`, Pi uses `/skill:<name>`, and Muse lists each user-invocable skill as `/<name>`. In Codex, request a skill by name or install the [optional shortcuts](#codex) for the `/name` form below.
++The package includes 68 skill directories: 44 public skills and 24 `principle-*` references. Claude Code uses `/mstack:<name>`, Pi uses `/skill:<name>`, and Muse lists each user-invocable skill as `/<name>`. In Codex, request a skill by name or install the [optional shortcuts](#codex) for the `/name` form below.
+ 
+ Find each skill's instructions in the [skills tree](../plugins/pstack/skills/).
+ 
+ | command | use it when |
+ | --- | --- |
+ | `/melbs-mode` | default entry point for any non-trivial task |
++| `/shape` | turn a raw idea into a pitch agents can build in a fixed time, or a spike when the core idea is unproven |
++| `/breadboard` | lay out a system's places, affordances, and connections, with or without a UI |
++| `/build` | build a shaped pitch within its appetite, one working piece first, and stop when time runs out |
+ | `/how` | walk through how a subsystem works |
+ | `/why` | investigate why something was built this way (parallel multi-MCP evidence) |
+ | `/architect` | settle types and module shape before writing code that crosses a function boundary |
+diff --git a/plugins/pstack/.codex-plugin/prompts/breadboard.md b/plugins/pstack/.codex-plugin/prompts/breadboard.md
+new file mode 100644
+index 0000000..563ba68
+--- /dev/null
++++ b/plugins/pstack/.codex-plugin/prompts/breadboard.md
+@@ -0,0 +1,7 @@
++---
++name: breadboard
++description: lay out a system's places, affordances, and connections, with or without a UI
++disable-model-invocation: true
++---
++
++Invoke the `breadboard` skill and follow it. Resolve Claude tool names, Claude model names, and Claude built-in skills through `melbs-mode/references/codex-tools.md`, including its Per-skill notes.
+diff --git a/plugins/pstack/.codex-plugin/prompts/build.md b/plugins/pstack/.codex-plugin/prompts/build.md
+new file mode 100644
+index 0000000..afe1aee
+--- /dev/null
++++ b/plugins/pstack/.codex-plugin/prompts/build.md
+@@ -0,0 +1,7 @@
++---
++name: build
++description: build a shaped pitch within its appetite, one working piece first, and stop when time runs out
++disable-model-invocation: true
++---
++
++Invoke the `build` skill and follow it. Resolve Claude tool names, Claude model names, and Claude built-in skills through `melbs-mode/references/codex-tools.md`, including its Per-skill notes.
+diff --git a/plugins/pstack/.codex-plugin/prompts/shape.md b/plugins/pstack/.codex-plugin/prompts/shape.md
+new file mode 100644
+index 0000000..b954636
+--- /dev/null
++++ b/plugins/pstack/.codex-plugin/prompts/shape.md
+@@ -0,0 +1,7 @@
++---
++name: shape
++description: turn a raw idea into a pitch agents can build in a fixed time, or a spike when the core idea is unproven
++disable-model-invocation: true
++---
++
++Invoke the `shape` skill and follow it. Resolve Claude tool names, Claude model names, and Claude built-in skills through `melbs-mode/references/codex-tools.md`, including its Per-skill notes.
+diff --git a/plugins/pstack/.muse-plugin/plugin.json b/plugins/pstack/.muse-plugin/plugin.json
+index 5385146..7510f0e 100644
+--- a/plugins/pstack/.muse-plugin/plugin.json
++++ b/plugins/pstack/.muse-plugin/plugin.json
+@@ -40,11 +40,21 @@
+         "path": "skills/blast-radius/SKILL.md",
+         "enabledDefault": true
+       },
++      {
++        "id": "breadboard",
++        "path": "skills/breadboard/SKILL.md",
++        "enabledDefault": true
++      },
+       {
+         "id": "bro",
+         "path": "skills/bro/SKILL.md",
+         "enabledDefault": true
+       },
++      {
++        "id": "build",
++        "path": "skills/build/SKILL.md",
++        "enabledDefault": true
++      },
+       {
+         "id": "correct",
+         "path": "skills/correct/SKILL.md",
+@@ -270,6 +280,11 @@
+         "path": "skills/setup-mstack/SKILL.md",
+         "enabledDefault": true
+       },
++      {
++        "id": "shape",
++        "path": "skills/shape/SKILL.md",
++        "enabledDefault": true
++      },
+       {
+         "id": "sharpen",
+         "path": "skills/sharpen/SKILL.md",
+diff --git a/plugins/pstack/skills/breadboard/SKILL.md b/plugins/pstack/skills/breadboard/SKILL.md
+new file mode 100644
+index 0000000..7d4cd06
+--- /dev/null
++++ b/plugins/pstack/skills/breadboard/SKILL.md
+@@ -0,0 +1,20 @@
++---
++name: breadboard
++description: Use when the user runs /breadboard, or when shaping or understanding a system needs its parts and wiring laid out as places, affordances, and connections. Works for systems with or without a UI, existing or proposed.
++---
++
++# Breadboard
++
++A breadboard shows what a system lets its driver do and where each action leads. Like an electronics breadboard, it has all the components and wiring but no casing: no visual design and no implementation detail.
++
++- **Driver:** whoever acts on the system: a person in a UI, a person at a command line, an agent, or another program. Name the driver.
++- **Places:** where the driver can be, such as a screen, a command, an endpoint, a running job, or a state.
++- **Affordances:** what the driver can act on or see at a place.
++- **Connections:** where each affordance takes the driver, and what it changes.
++
++There are two uses:
++
++- **Map an existing system.** Read the real system, and back each place and connection with evidence. Report anything the map shows that the user didn't expect.
++- **Design a new one.** Leave out names, schemas, and types, the way an electronics breadboard leaves out the casing.
++
++The breadboard is the source of truth. Prose, plans, and slices that describe the same system follow its structure, and change when it changes.
+diff --git a/plugins/pstack/skills/build/SKILL.md b/plugins/pstack/skills/build/SKILL.md
+new file mode 100644
+index 0000000..457afd5
+--- /dev/null
++++ b/plugins/pstack/skills/build/SKILL.md
+@@ -0,0 +1,22 @@
++---
++name: build
++description: "Use when the user runs /build, or bets on a shaped pitch and wants agents to build it. Builds the pitch within its appetite: one owner, one working piece first, scopes mapped as they emerge, and a hard stop when time runs out."
++---
++
++# Build
++
++Build a shaped pitch within its appetite. Text after `/build` names the pitch file. If there is none, use the pitch in the conversation, or ask for it. The method is the building half of Ryan Singer's Shape Up, run through the playbooks of the **melbs-mode** skill.
++
++The pitch is the contract. Its problem, appetite, solution, rabbit holes, and no-gos bind the build. The appetite is fixed and the scope is not.
++
++## Steps
++
++1. **Own the whole pitch.** One owner builds and integrates it, through melbs-mode's Feature playbook, or its Autonomous run playbook when the user steps away. Subagents can take parts, and the owner merges every part into one working whole. Ask the user only at the review points the appetite budgets.
++2. **Start the clock.** Record the start time in the pitch file. Every decision below compares the time spent with the appetite.
++3. **Kick off before code.** Write the demo first: one thing a user does through the real entry point that shows the pitch's problem story ending better. List the tasks you can see, group them into scopes, which are parts that can be finished on their own, and mark the scopes that hold unknowns. Name a scope after you see what's in it. New tasks appear as you build. Put each one in its scope, or mark it a nice-to-have with `~`.
++4. **Get one piece done first.** Pick a small, central scope with the biggest unknown and make it work end to end through the real entry point. Build only what that piece needs, then grow from it.
++5. **Show progress without being asked.** Keep a short status in the pitch file. Each scope is uphill, still being figured out, or downhill, with only execution left. Work uphill scopes first.
++6. **Decide when to stop.** Compare to the baseline in the pitch, not to an ideal. Cut nice-to-haves to fit the time. A review finding blocks only when it's a correctness problem or a missing requirement. Treat the rest as nice-to-haves. Arena and interrogate rounds and fixes outside the pitch spend the appetite like any other work.
++7. **Stop when the time runs out.** Report what works, what's still uphill, and what was cut. The unfinished part goes back to the **shape** skill. Don't extend by default. Extend only when the user agrees and everything left is downhill and a must-have.
++
++Done means merged, running where its users get it, and the demo passing through the real entry point. A deploy still needs the user's go-ahead. For a spike pitch, done means the open question is answered, and nothing is expected to ship.
+diff --git a/plugins/pstack/skills/figure-it-out/SKILL.md b/plugins/pstack/skills/figure-it-out/SKILL.md
+index f94749c..07c3934 100644
+--- a/plugins/pstack/skills/figure-it-out/SKILL.md
++++ b/plugins/pstack/skills/figure-it-out/SKILL.md
+@@ -16,7 +16,7 @@ Open a todolist whose first item is to read the Principles section of the **melb
+ Ground first, then commit. Don't start the run until you can state:
+ 
+ - The definition of done as a falsifiable predicate (the **prove-it-works** principle skill).
+-- Scope, quantified: rough units and effort, plus the blockers grounding surfaced.
++- Scope, quantified: rough units and effort, plus the blockers grounding surfaced. When a shaped pitch sets an appetite, compare the estimate to it, and cut scope or send the pitch back to shaping before starting if it doesn't fit.
+ - The rigor level, biased high. One-way doors and high blast radius get more. Reversible low-stakes steps get less. Rigor is gates and artifacts, not "try harder".
+ 
+ Present the framing and tradeoffs before committing to a long run. Reversible work proceeds (the **never-block-on-the-human** principle skill), but a multi-hour run earns one checkpoint.
+diff --git a/plugins/pstack/skills/melbs-help/references/prompting.md b/plugins/pstack/skills/melbs-help/references/prompting.md
+index 6b72b2e..2d03a05 100644
+--- a/plugins/pstack/skills/melbs-help/references/prompting.md
++++ b/plugins/pstack/skills/melbs-help/references/prompting.md
+@@ -48,4 +48,4 @@ A prompt states the intent and the check for done. The playbook supplies the ste
+ 
+ - Restate the goal: "i said the goal is to repro. i did not ask for a fix yet."
+ - Name the principle: "apply prove it works. show me the real output, not the build log."
+-- A principle name works because the agent already read the rule. Its reply names the decision the rule changed.
++- A principle name works because the agent already read the rule.
+diff --git a/plugins/pstack/skills/melbs-mode/SKILL.md b/plugins/pstack/skills/melbs-mode/SKILL.md
+index 179fba9..056de60 100644
+--- a/plugins/pstack/skills/melbs-mode/SKILL.md
++++ b/plugins/pstack/skills/melbs-mode/SKILL.md
+@@ -1,6 +1,6 @@
+ ---
+ name: melbs-mode
+-description: poteto's agent style for concise, detailed responses, deliberate subagents, unslopped prose, simple code, and verified work. Use for poteto, /melbs-mode, or requests to work in this style.
++description: Melbourne's agent style for terse, precise replies, deliberate subagents, unslopped prose, simple code, and verified work. Use for melbs, /melbs-mode, or requests to work in this style.
+ ---
+ 
+ # Melbs mode
+@@ -15,7 +15,7 @@ Use the session's task-tracking tools for the todolist. On Claude Code these are
+ 
+ ## Non-negotiables
+ 
+-The Principles section below grounds every trigger. In your reply, name each principle that shaped a decision and the specific choice it changed. Cite only principles whose leaf SKILL.md you read this session.
++The Principles section below grounds every trigger. Cite only principles whose leaf SKILL.md you read this session.
+ 
+ Remaining triggers:
+ 
+@@ -109,21 +109,16 @@ You own every subagent's work. Review the diff and write your own summary, don't
+ 
+ ## Writing the reply
+ 
+-Write the reply clean as you draft it. A cleanup pass after drafting does not remove these patterns.
++Write replies to the user per the **Communication** rules in the user's global agent instructions. They override any reply format a playbook or skill names. A playbook's **Reply** line lists what its reply can cover. Include each item the user needs, in the form the Communication rules choose.
+ 
+-- **Short declarative sentences.** One thought per sentence, ended with a period.
+-- **No long-dash character anywhere.** Write a file-list bullet as a sentence ("`main.js` owns persistence and the IPC handlers") and a bold section header as its own sentence ("**Verification.** End to end via CDP").
+-- **A colon as a mid-sentence connector is also out** (unslop rule 14). A colon before a list is fine.
+-- **Terse is not an excuse to drop content.** Every item the playbook's reply names stays. Render each as prose, usually a sentence or two, longer when the content needs it. No section headers, and no item expanded into its own block.
+-- **Frame impact for the consumer and the maintainer.** Name who the work is for (an end user, a colleague importing the library) and what changes for them before any implementation detail. Then what the next engineer who owns this code inherits. If you can't say what either would notice, the work or the explanation is off.
+ - **Never fabricate a link, citation, or transcript reference.** Link only artifacts you produced or read this session.
+-- **Every claim carries its evidence or its label in the same sentence.** Measured, inferred, or guess. A prediction or an unseen cause is a guess. Never hand the human a check you could run.
++- **Never hand the user a check you could run.**
+ 
+-Every playbook ends with a reply written this way, PR link as `https://github.com/<owner>/<repo>/pull/<number>`. Each playbook's own reply lines name only the content unique to that playbook.
++Give a PR link as `https://github.com/<owner>/<repo>/pull/<number>`.
+ 
+ ## Comments
+ 
+-Comments follow the same rule as the reply. Write them clean as you go. Keep a comment only for a non-obvious *why* the code can't show. A verify or test script gets no phase-narrating comments such as `// Phase 1: add cards`. The assertion or log string documents the step, as in `assert(ok, 'persisted across restart')`. This applies to every file you produce, including the delegate's diff.
++Follow the **Code** rules in the user's global agent instructions. Add no code comments, and make code clear through names, small functions, types, and tests. Tool directives, shebangs, and license identifiers are allowed. Keep existing comments unless the code contradicts them. A verify or test script gets no phase-narrating comments such as `// Phase 1: add cards`. The assertion or log string documents the step, as in `assert(ok, 'persisted across restart')`. This applies to every file you produce, including the delegate's diff.
+ 
+ ## Playbooks
+ 
+diff --git a/plugins/pstack/skills/melbs-mode/playbooks/autonomous-run.md b/plugins/pstack/skills/melbs-mode/playbooks/autonomous-run.md
+index ada1fd7..5cf4043 100644
+--- a/plugins/pstack/skills/melbs-mode/playbooks/autonomous-run.md
++++ b/plugins/pstack/skills/melbs-mode/playbooks/autonomous-run.md
+@@ -2,12 +2,12 @@
+ 
+ **You own the exit condition. Define done, then drive to it without stopping.**
+ 
+-1. State the exit condition as a checkable predicate before the first iteration (tests green, repro fixed, all N PRs merged, pixel-diff zero).
++1. State the exit condition as a checkable predicate before the first iteration (tests green, repro fixed, all N PRs merged, pixel-diff zero). When the run builds a shaped pitch, its appetite is also a time budget. Record the start time and check the time left at each iteration.
+ 2. Pick the wake mechanism using Claude Code's `loop` skill (a built-in, not a pstack skill). An event to watch (CI, a merge, a ref advancing) gets a watcher subagent that wakes you on the event, with a long time-based heartbeat as fallback. No event gets a fixed-interval heartbeat sized to when the result is worth re-checking. Pick each subagent's reasoning level for the job, per the Subagents section.
+ 3. Each iteration makes the smallest change the evidence justifies, verifies it against the predicate, commits if it advanced, discards changes that didn't help. Belt-and-suspenders that "might help" gets reverted, not left to ride.
+    Sequence the work via the **sequence-verifiable-units** principle skill, verifying each unit before the next instead of batching checks at the end.
+ 4. Mid-run discoveries are yours. Address broken skills, related bugs, flaky verifiers, review noise, tooling failures, orphaned follow-ups, and fixable drift yourself via melbs-mode. Put out-of-band fixes in their own PR. Do not park reversible work for the human or use `AskUserQuestion`. Surface only irreversible actions, genuine product or preference calls no experiment can settle, or a real dead end. Keep the predicate as the main drive, and return to it after each side fix.
+ 5. Checkpoint every iteration via the **show-me-your-work** skill, a row for what changed and whether the predicate moved.
+-6. Stop when the predicate is met. A plateau is not a stop, so keep going and pivot your approach to push past it. Surface a genuine dead end rather than spinning, and never relax the predicate to declare victory.
++6. Stop when the predicate is met, or when the time budget runs out. Within the budget a plateau is not a stop, so keep going and pivot your approach to push past it. Surface a genuine dead end rather than spinning, and never relax the predicate to declare victory. Cutting scope is different: drop the pitch's nice-to-haves in the open and report the cut. When the budget runs out, stop and report what passed and what is still unsolved. The unsolved part goes back to shaping.
+ 
+ **Reply:** the exit condition, iterations run, what landed, what was discarded, final predicate state.
+diff --git a/plugins/pstack/skills/principle-foundational-thinking/SKILL.md b/plugins/pstack/skills/principle-foundational-thinking/SKILL.md
+index a6829c7..71961f5 100644
+--- a/plugins/pstack/skills/principle-foundational-thinking/SKILL.md
++++ b/plugins/pstack/skills/principle-foundational-thinking/SKILL.md
+@@ -14,7 +14,7 @@ At code level, DRY the structure, not every line. Types and data models should c
+ 
+ **Concurrency corollary.** Before sharing state between actors, ask "what happens if another actor modifies this concurrently?" If not "nothing", isolate.
+ 
+-**Scaffold first.** If something helps every later phase, do it first. Ask "does every subsequent phase benefit from this existing?" CI, linting, test infrastructure, and shared types are scaffold. Sequence for option value: setup before features, tests before fixes. Keep commits small and single-purpose.
++**Scaffold first.** If something helps every later phase, do it first. Ask "does every subsequent phase benefit from this existing?" CI, linting, test infrastructure, and shared types are scaffold. Sequence for option value: setup before features, tests before fixes. Until a first working slice runs end to end, set up only what that slice needs, and add the rest when a later slice needs it. Keep commits small and single-purpose.
+ 
+ Each increment should land a coherent abstraction or deepen one that exists. Do not spread a new capability across callers as special-case coordination.
+ 
+diff --git a/plugins/pstack/skills/shape/SKILL.md b/plugins/pstack/skills/shape/SKILL.md
+new file mode 100644
+index 0000000..39a74f2
+--- /dev/null
++++ b/plugins/pstack/skills/shape/SKILL.md
+@@ -0,0 +1,24 @@
++---
++name: shape
++description: Use when the user runs /shape, or brings a raw idea, request, or problem that isn't bounded yet and wants it ready for agents to build. Produces a short pitch with the problem, appetite, solution as a breadboard, rabbit holes, and no-gos.
++---
++
++# Shape
++
++Turn a raw idea into work an agent can build in a fixed time. Text after `/shape` is the idea. If there is none, ask for it. After the user bets on the pitch, the **build** skill builds it. The method is Ryan Singer's shaping, from Shape Up, with agents as the builders.
++
++Shaped work is solved, bounded, and rough. Its main parts are worked out and connected. It has a fixed time and says what's out. It leaves the details to the builders.
++
++The bet, the appetite, the choice between solutions, and the no-gos are the user's calls. Put each one to the user with your recommendation instead of deciding it.
++
++## Steps
++
++1. **Question the idea before solving it.** A request is one solution to a problem you haven't seen yet. Find the specific situation where today's system fails, and check the premise against the real system. If the work isn't worth doing now, say so. If nobody knows yet whether the core idea works, shape a spike that answers that, not the finished product: the problem is the open question, the solution is the smallest thing to build that answers it, and nothing is expected to ship.
++2. **Get the appetite before designing.** Ask how much the work is worth: a small batch of a few hours of agent time, or a big batch of a day or two. Also ask how much of the user's own review time it's worth. When even a big batch can't hold it, narrow the problem or split off a meaningful part. The appetite is a budget, not an estimate, so never derive it from a solution you have already sketched. Design to fit it. When a solution doesn't fit, change the solution or cut scope, not the appetite.
++3. **Breadboard the solution** with the **breadboard** skill, for work with or without a UI. The breadboard is the source of truth for the solution, and the pitch's prose follows its structure. When the layout itself is the problem, use a coarse sketch instead.
++4. **Find the rabbit holes:** parts that could make the work take several times the appetite. Check them against the real system. Patch each one with a decision, declare it out of bounds, or cut the part.
++5. **Write the pitch** to a file in the repo the work changes, such as `pitches/<name>.md`, and show it to the user. It has five parts: problem, appetite, solution, rabbit holes, and no-gos.
++
++## When to stop
++
++Stop when a builder could start without asking about the problem, the main parts, or the risky decisions. Leave names, formats, schemas, file layouts, and exact rules to the builders, unless one of them is a rabbit hole. Spend shaping time in proportion to the appetite: a pitch for a few hours of work fits on one page.
+diff --git a/plugins/pstack/skills/unslop/SKILL.md b/plugins/pstack/skills/unslop/SKILL.md
+index be42292..c5a7c71 100644
+--- a/plugins/pstack/skills/unslop/SKILL.md
++++ b/plugins/pstack/skills/unslop/SKILL.md
+@@ -7,6 +7,8 @@ description: Cut AI tells from any writing.
+ 
+ Edit text to remove AI patterns. Scan for the patterns below, then rewrite. Preserve meaning and match the intended tone.
+ 
++In replies to the user, the user's **Communication** rules win where they conflict with a pattern here, such as rules 28 and 33 on dense sentences.
++
+ ## Patterns to detect and fix
+ 
+ Rule numbers are stable ids that other skills cite. A removed rule leaves a gap.

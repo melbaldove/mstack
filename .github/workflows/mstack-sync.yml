@@ -53,6 +53,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pull-requests: write
+      issues: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -60,10 +62,28 @@ jobs:
       - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: sync
-      - name: Fast-forward main
+      - name: Push the sync branch
         run: |
-          git fetch sync.bundle HEAD:refs/heads/sync
-          git push origin sync:main
+          git fetch sync.bundle HEAD:refs/heads/mstack-sync
+          git push --force origin mstack-sync
+      - name: Ask for review
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          SERVER_URL: ${{ github.server_url }}
+        run: |
+          title="$(git log -1 --format=%s mstack-sync)"
+          body="Review the upstream changes before they reach your agents, then merge. The startup hooks run shell commands in every session."
+          if [ -n "$(gh pr list --head mstack-sync --state open --json number --jq '.[].number')" ]; then
+            exit 0
+          fi
+          if gh pr create --base main --head mstack-sync --title "$title" --body "$body"; then
+            exit 0
+          fi
+          compare="$SERVER_URL/$GH_REPO/compare/main...mstack-sync"
+          if [ -z "$(gh issue list --state open --search "in:title \"$title\"" --json number --jq '.[].number')" ]; then
+            gh issue create --title "$title" --body "$body Actions cannot open pull requests in this repository, so open one from $compare."
+          fi
 
   report:
     needs: [build, push]

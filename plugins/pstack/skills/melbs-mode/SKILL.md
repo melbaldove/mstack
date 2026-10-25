@@ -118,7 +118,7 @@ Give a PR link as `https://github.com/<owner>/<repo>/pull/<number>`.
 
 ## Comments
 
-Write comments clean as you go. Keep a comment only for a non-obvious *why* the code can't show. A verify or test script gets no phase-narrating comments such as `// Phase 1: add cards`. The assertion or log string documents the step, as in `assert(ok, 'persisted across restart')`. This applies to every file you produce, including the delegate's diff.
+Follow the **Code** rules in the user's global agent instructions. Add no code comments, and make code clear through names, small functions, types, and tests. Tool directives, shebangs, and license identifiers are allowed. Keep existing comments unless the code contradicts them. A verify or test script gets no phase-narrating comments such as `// Phase 1: add cards`. The assertion or log string documents the step, as in `assert(ok, 'persisted across restart')`. This applies to every file you produce, including the delegate's diff.
 
 ## Playbooks
 

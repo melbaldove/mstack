@@ -41,8 +41,18 @@
         "enabledDefault": true
       },
       {
+        "id": "breadboard",
+        "path": "skills/breadboard/SKILL.md",
+        "enabledDefault": true
+      },
+      {
         "id": "bro",
         "path": "skills/bro/SKILL.md",
+        "enabledDefault": true
+      },
+      {
+        "id": "build",
+        "path": "skills/build/SKILL.md",
         "enabledDefault": true
       },
       {
@@ -268,6 +278,11 @@
       {
         "id": "setup-mstack",
         "path": "skills/setup-mstack/SKILL.md",
+        "enabledDefault": true
+      },
+      {
+        "id": "shape",
+        "path": "skills/shape/SKILL.md",
         "enabledDefault": true
       },
       {

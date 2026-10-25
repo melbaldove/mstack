@@ -1,0 +1,7 @@
+---
+name: breadboard
+description: lay out a system's places, affordances, and connections, with or without a UI
+disable-model-invocation: true
+---
+
+Invoke the `breadboard` skill and follow it. Resolve Claude tool names, Claude model names, and Claude built-in skills through `melbs-mode/references/codex-tools.md`, including its Per-skill notes.

@@ -16,7 +16,7 @@ Open a todolist whose first item is to read the Principles section of the **melb
 Ground first, then commit. Don't start the run until you can state:
 
 - The definition of done as a falsifiable predicate (the **prove-it-works** principle skill).
-- Scope, quantified: rough units and effort, plus the blockers grounding surfaced.
+- Scope, quantified: rough units and effort, plus the blockers grounding surfaced. When a shaped pitch sets an appetite, compare the estimate to it, and cut scope or send the pitch back to shaping before starting if it doesn't fit.
 - The rigor level, biased high. One-way doors and high blast radius get more. Reversible low-stakes steps get less. Rigor is gates and artifacts, not "try harder".
 
 Present the framing and tradeoffs before committing to a long run. Reversible work proceeds (the **never-block-on-the-human** principle skill), but a multi-hour run earns one checkpoint.

@@ -4,7 +4,7 @@
     "name": "Michael Denyer",
     "url": "https://github.com/michael-denyer"
   },
-  "description": "Claude Code port of poteto's pstack. Rigorous agent workflows with Cursor primitives translated to Claude Code equivalents.",
+  "description": "Melbourne Baldove's build of pstack-claude, the Claude Code port of poteto's pstack. Adds the shape, breadboard, and build workflow skills.",
   "plugins": [
     {
       "name": "mstack",
