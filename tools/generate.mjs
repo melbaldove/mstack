@@ -18,21 +18,21 @@
 //   plugins/pstack/models.json (the model policy: role defaults, diverse panel,
 //   available slugs, and one block per RUNTIMES row: Codex equivalents, Pi IDs)
 //     -> each model-consuming skill's "## Models" and "## Reasoning effort" sections
-//     -> setup-pstack's Models section and override-sheet block, and interrogate's reviewer table
+//     -> setup-mstack's Models section and override-sheet block, and interrogate's reviewer table
 //     -> the "## Model names" section of each runtime's mapping file
-//        (poteto-mode/references/codex-tools.md, pi-tools.md, copilot-tools.md)
-//   the Per-skill notes table in poteto-mode/references/codex-tools.md
+//        (melbs-mode/references/codex-tools.md, pi-tools.md, copilot-tools.md)
+//   the Per-skill notes table in melbs-mode/references/codex-tools.md
 //     -> the Codex preamble under the first heading of each listed skill's SKILL.md,
 //        and the codex-tools.md pointer in the prompt stub of every other public skill
-//   the Per-skill notes table in poteto-mode/references/copilot-tools.md
+//   the Per-skill notes table in melbs-mode/references/copilot-tools.md
 //     -> the GitHub Copilot preamble under the same heading, after any Codex one
 //   DRIVER_PLAYBOOKS -> the driver-skill line under each playbook's first heading
 //   plugins/pstack/models.json's roles, again
-//     -> the role list in setup-pstack's scripts/sheet.awk, which checks a Copilot sheet
+//     -> the role list in setup-mstack's scripts/sheet.awk, which checks a Copilot sheet
 //     -> the list of skills that dispatch on role models in hooks/session-start-copilot.md
 //   plugins/pstack/agents/comment-sicko.md, LICENSE, LICENSE-cursor-team-kit,
 //   and NOTICE-skills.md
-//     -> portable copies under poteto-mode/references/{agents,licenses}/
+//     -> portable copies under melbs-mode/references/{agents,licenses}/
 //   No other model name (a claude-* ID or a backticked family name) may appear
 //   in skill prose; the scan below fails on strays.
 //
@@ -74,23 +74,23 @@ const VERSIONED_MANIFESTS = [
 export const PORTABLE_ASSETS = [
   {
     source: "plugins/pstack/agents/comment-sicko.md",
-    target: "poteto-mode/references/agents/comment-sicko.md",
+    target: "melbs-mode/references/agents/comment-sicko.md",
   },
-  { source: "LICENSE", target: "poteto-mode/references/licenses/LICENSE" },
+  { source: "LICENSE", target: "melbs-mode/references/licenses/LICENSE" },
   {
     source: "LICENSE-cursor-team-kit",
-    target: "poteto-mode/references/licenses/LICENSE-cursor-team-kit",
+    target: "melbs-mode/references/licenses/LICENSE-cursor-team-kit",
   },
-  { source: "LICENSE-thermos", target: "poteto-mode/references/licenses/LICENSE-thermos" },
-  { source: "NOTICE-skills.md", target: "poteto-mode/references/licenses/NOTICE.md" },
+  { source: "LICENSE-thermos", target: "melbs-mode/references/licenses/LICENSE-thermos" },
+  { source: "NOTICE-skills.md", target: "melbs-mode/references/licenses/NOTICE.md" },
 ];
 
 // The generator removes every entry of these directories that no planned path
 // runs through, so no hand-written file may live in one.
 export const OWNED_DIRS = [
   ...PROMPT_RUNTIMES.map((runtime) => runtime.prompts),
-  `${SKILLS}/poteto-mode/references/agents`,
-  `${SKILLS}/poteto-mode/references/licenses`,
+  `${SKILLS}/melbs-mode/references/agents`,
+  `${SKILLS}/melbs-mode/references/licenses`,
 ];
 
 // Replace the manifest's single "version" value, preserving all formatting.
@@ -182,7 +182,7 @@ export function agentSkills(skillsDir) {
       throw new Error(`${path}: disable-model-invocation: true breaks model-initiated entry (CHANGES 0.9.8)`);
     }
     const userInvocable = front["user-invocable"] !== false;
-    // CHANGES 0.9.9: principle leaves are read by path from poteto-mode and
+    // CHANGES 0.9.9: principle leaves are read by path from melbs-mode and
     // stay out of the slash menu.
     if (name.startsWith("principle-") && userInvocable) {
       throw new Error(`${path}: principle leaves carry user-invocable: false (CHANGES 0.9.9)`);
@@ -227,7 +227,7 @@ export function validatePluginLayout(pluginRoot) {
       // lookbehind scanned a long line about nine times slower.
       for (const [, name] of line.matchAll(/(?:^|\W|\\[a-z])subagent_type[\s\\"'`*]*[:=][\s\\"'`*]*([a-z0-9-]+)(?![\w-]|\.\w)/g)) {
         if (agents.includes(name)) {
-          bareDispatches.push(`${relative(pluginRoot, file)}:${i + 1}: subagent_type: "${name}" (use "pstack:${name}")`);
+          bareDispatches.push(`${relative(pluginRoot, file)}:${i + 1}: subagent_type: "${name}" (use "mstack:${name}")`);
         }
       }
     });
@@ -307,7 +307,7 @@ export function promptStub({ name, menu }, runtime, { preamble } = {}) {
   const pointer = preamble
     ? ""
     : " Resolve Claude tool names, Claude model names, and Claude built-in skills through " +
-      `\`poteto-mode/references/${runtime.mapping}\`, including its Per-skill notes.`;
+      `\`melbs-mode/references/${runtime.mapping}\`, including its Per-skill notes.`;
   return (
     `---\nname: ${name}\ndescription: ${menu}\ndisable-model-invocation: true\n---\n\n` +
     `Invoke the \`${name}\` skill and follow it.${pointer}\n`
@@ -425,13 +425,13 @@ export function regions(models) {
       render: () => blankPadded(effortSection(models.efforts, models.defaultEffort)),
     })),
     {
-      file: skillFile("setup-pstack"),
+      file: skillFile("setup-mstack"),
       name: "Models section",
       locate: section("Models"),
       render: () => blankPadded(setupModelsSection(models)),
     },
     {
-      file: skillFile("setup-pstack"),
+      file: skillFile("setup-mstack"),
       name: "override sheet",
       locate: fenceUnder("Write the override sheet", "markdown"),
       render: () => [overrideSheetBlock(models)],
@@ -443,13 +443,13 @@ export function regions(models) {
       render: () => blankPadded(runtime.modelNames(models)),
     })),
     {
-      file: skillFile("setup-pstack").replace("SKILL.md", "scripts/sheet.awk"),
+      file: skillFile("setup-mstack").replace("SKILL.md", "scripts/sheet.awk"),
       name: "role list",
       locate: between(SHEET_ROLES_OPEN, "  return n"),
       render: () => sheetRoles(models),
     },
     {
-      file: skillFile("setup-pstack").replace("SKILL.md", "copilot.md"),
+      file: skillFile("setup-mstack").replace("SKILL.md", "copilot.md"),
       name: "roles by tier",
       locate: tableRows("| Tier | Roles |", "| "),
       render: () =>
@@ -470,7 +470,7 @@ export function regions(models) {
 }
 
 const PREAMBLE_RUNTIMES = RUNTIMES.filter((runtime) => runtime.preamble);
-const DRIVER_LINE = "Resolve the driver skill through [poteto-mode's Non-negotiables](../SKILL.md#non-negotiables).";
+const DRIVER_LINE = "Resolve the driver skill through [melbs-mode's Non-negotiables](../SKILL.md#non-negotiables).";
 const DRIVER_PLAYBOOKS = ["autopilot-full", "multi-phase-plan", "orchestrate", "refactoring", "shipping"];
 const LEAD_LINES = [...PREAMBLE_RUNTIMES.map((runtime) => runtime.preamble), DRIVER_LINE];
 
@@ -500,7 +500,7 @@ export function loadLeadLines(root = repo) {
       if (runtime.preamble) leads.set(file, [...(leads.get(file) ?? []), runtime.preamble]);
     }
   }
-  for (const playbook of DRIVER_PLAYBOOKS) leads.set(`${SKILLS}/poteto-mode/playbooks/${playbook}.md`, [DRIVER_LINE]);
+  for (const playbook of DRIVER_PLAYBOOKS) leads.set(`${SKILLS}/melbs-mode/playbooks/${playbook}.md`, [DRIVER_LINE]);
   return leads;
 }
 
@@ -675,7 +675,7 @@ export function modelsSection(roles) {
   const bullets = roles.map((r) => `- ${r.role}: ${codeList(r.models)}`).join("\n");
   return (
     "Role defaults, stamped from `plugins/pstack/models.json` (edit there, rerun `tools/generate.mjs`). " +
-    "A matching role line in the `pstack-models.md` override sheet overrides each at runtime; `/setup-pstack` writes it and lists its path per runtime.\n\n" +
+    "A matching role line in the `pstack-models.md` override sheet overrides each at runtime; `/setup-mstack` writes it and lists its path per runtime.\n\n" +
     bullets
   );
 }
@@ -748,7 +748,7 @@ export function overrideSheetBlock(models) {
     "A model may carry a reasoning effort, as in `opus @xhigh` (levels: " + models.efforts.join(", ") + "); " +
     "the role's subagent then runs at that level, each entry of a panel list on its own. " +
     "`default effort` sets the level for a value without one; `session` keeps the parent session's effort. " +
-    "`session hook: off` stops the Claude Code, Codex, or Muse SessionStart hook, or the pstack Pi extension, from injecting the poteto-mode mandate; " +
+    "`session hook: off` stops the Claude Code, Codex, or Muse SessionStart hook, or the pstack Pi extension, from injecting the melbs-mode mandate; " +
     "any other value, or no line, leaves it on.\n\n" +
     rows +
     `\n\ndefault effort: ${models.defaultEffort}\nsession hook: on`

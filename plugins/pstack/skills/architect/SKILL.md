@@ -5,11 +5,11 @@ description: "Sketch types, signatures, and module structure before code, then s
 
 # Architect
 
-On Codex, read the [platform mapping](../poteto-mode/references/codex-tools.md), including its per-skill notes, before following this skill.
+On Codex, read the [platform mapping](../melbs-mode/references/codex-tools.md), including its per-skill notes, before following this skill.
 
-On GitHub Copilot, read the [platform mapping](../poteto-mode/references/copilot-tools.md), including its per-skill notes, before following this skill.
+On GitHub Copilot, read the [platform mapping](../melbs-mode/references/copilot-tools.md), including its per-skill notes, before following this skill.
 
-On Muse, read the [platform mapping](../poteto-mode/references/muse-tools.md), including its per-skill notes, before following this skill.
+On Muse, read the [platform mapping](../melbs-mode/references/muse-tools.md), including its per-skill notes, before following this skill.
 
 Sketch types, function signatures, class shapes, and module boundaries with `not implemented` bodies and pseudocode. Synthesize across multiple model perspectives, then fill in code against the chosen sketch.
 
@@ -89,7 +89,7 @@ The caller's usage is written first and the type sketch derived from it. One fil
 
 ## Models
 
-Role defaults, stamped from `plugins/pstack/models.json` (edit there, rerun `tools/generate.mjs`). A matching role line in the `pstack-models.md` override sheet overrides each at runtime; `/setup-pstack` writes it and lists its path per runtime.
+Role defaults, stamped from `plugins/pstack/models.json` (edit there, rerun `tools/generate.mjs`). A matching role line in the `pstack-models.md` override sheet overrides each at runtime; `/setup-mstack` writes it and lists its path per runtime.
 
 - architect runners: `opus`, `fable`, `sonnet`, `haiku`
 

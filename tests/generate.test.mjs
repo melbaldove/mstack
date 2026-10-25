@@ -353,10 +353,10 @@ describe("slashCommands", () => {
     }
   });
 
-  test("the live reference names exactly the public skills, poteto-mode first", () => {
+  test("the live reference names exactly the public skills, melbs-mode first", () => {
     const text = readFileSync(join(repoRoot, "docs/reference.md"), "utf8");
     const rows = slashCommands(text, publicSkills(join(repoRoot, "plugins/pstack/skills")));
-    expect(rows[0].name).toBe("poteto-mode");
+    expect(rows[0].name).toBe("melbs-mode");
   });
 });
 
@@ -457,7 +457,7 @@ describe("deriveSkill", () => {
   });
 
   test("stamps a file's lead line in its own paragraph under the first heading", () => {
-    for (const file of ["plugins/pstack/skills/teach/SKILL.md", "plugins/pstack/skills/poteto-mode/playbooks/refactoring.md"]) {
+    for (const file of ["plugins/pstack/skills/teach/SKILL.md", "plugins/pstack/skills/melbs-mode/playbooks/refactoring.md"]) {
       const text = "---\nname: teach\ndescription: d\n---\n\n# Title\n\nbody\n";
       const out = deriveSkill(file, text, models, leads);
       expect(out).toBe(text.replace("# Title\n\n", `# Title\n\n${leads.get(file).join("\n\n")}\n\n`));
@@ -501,13 +501,13 @@ describe("lead lines", () => {
   test("Codex, Copilot, and Muse stamp a preamble on their noted skills and Pi stamps none", () => {
     expect(RUNTIMES.map((r) => r.name)).toEqual(["Codex", "Pi", "GitHub Copilot", "Muse"]);
     expect(codex.preamble).toBe(
-      "On Codex, read the [platform mapping](../poteto-mode/references/codex-tools.md), including its per-skill notes, before following this skill.",
+      "On Codex, read the [platform mapping](../melbs-mode/references/codex-tools.md), including its per-skill notes, before following this skill.",
     );
     expect(copilot.preamble).toBe(
-      "On GitHub Copilot, read the [platform mapping](../poteto-mode/references/copilot-tools.md), including its per-skill notes, before following this skill.",
+      "On GitHub Copilot, read the [platform mapping](../melbs-mode/references/copilot-tools.md), including its per-skill notes, before following this skill.",
     );
     expect(RUNTIMES.at(-1).preamble).toBe(
-      "On Muse, read the [platform mapping](../poteto-mode/references/muse-tools.md), including its per-skill notes, before following this skill.",
+      "On Muse, read the [platform mapping](../melbs-mode/references/muse-tools.md), including its per-skill notes, before following this skill.",
     );
     expect(pi.preamble).toBeNull();
     expect([...leads.values()].flat().filter((line) => line.includes("pi-tools.md"))).toEqual([]);
@@ -521,9 +521,9 @@ describe("lead lines", () => {
   });
 
   test("a prompt stub points at its runtime's mapping file unless its skill carries that runtime's preamble", () => {
-    const pointer = "through `poteto-mode/references/codex-tools.md`, including its Per-skill notes.";
+    const pointer = "through `melbs-mode/references/codex-tools.md`, including its Per-skill notes.";
     expect(promptStub({ name: "tdd", menu: "m" }, codex, { preamble: false })).toContain(pointer);
-    expect(promptStub({ name: "tdd", menu: "m" }, pi, { preamble: false })).toContain("`poteto-mode/references/pi-tools.md`");
+    expect(promptStub({ name: "tdd", menu: "m" }, pi, { preamble: false })).toContain("`melbs-mode/references/pi-tools.md`");
     expect(promptStub({ name: "how", menu: "m" }, codex, { preamble: true })).toBe(
       "---\nname: how\ndescription: m\ndisable-model-invocation: true\n---\n\nInvoke the `how` skill and follow it.\n",
     );
@@ -582,7 +582,7 @@ describe("plan, changes, apply", () => {
   const snapshot = (dir) => Object.fromEntries(walk(dir).map((path) => [path, readFileSync(path, "utf8")]));
   const quiet = { log: () => {} };
   const STUB = "plugins/pstack/.codex-plugin/prompts/tdd.md";
-  const STRAY = "plugins/pstack/skills/poteto-mode/references/agents/stray.md";
+  const STRAY = "plugins/pstack/skills/melbs-mode/references/agents/stray.md";
 
   test("the working tree is what the plan says", () => {
     expect(changes(repoRoot, plan(repoRoot))).toEqual([]);
@@ -719,18 +719,18 @@ describe("plan, changes, apply", () => {
     const cases = [
       [
         PORTABLE_ASSETS,
-        { source: "NOTICE-skills.md", target: "poteto-mode/references/NOTICE.md" },
-        "plugins/pstack/skills/poteto-mode/references/NOTICE.md is not directly inside a generator-owned directory",
+        { source: "NOTICE-skills.md", target: "melbs-mode/references/NOTICE.md" },
+        "plugins/pstack/skills/melbs-mode/references/NOTICE.md is not directly inside a generator-owned directory",
       ],
       [
         PORTABLE_ASSETS,
-        { source: "LICENSE", target: "poteto-mode/references/licenses/old/LICENSE" },
-        "plugins/pstack/skills/poteto-mode/references/licenses/old/LICENSE is not directly inside a generator-owned directory",
+        { source: "LICENSE", target: "melbs-mode/references/licenses/old/LICENSE" },
+        "plugins/pstack/skills/melbs-mode/references/licenses/old/LICENSE is not directly inside a generator-owned directory",
       ],
       [
         OWNED_DIRS,
-        "plugins/pstack/skills/poteto-mode/references/agents/nested",
-        "generator-owned directory plugins/pstack/skills/poteto-mode/references/agents/nested is nested inside plugins/pstack/skills/poteto-mode/references/agents",
+        "plugins/pstack/skills/melbs-mode/references/agents/nested",
+        "generator-owned directory plugins/pstack/skills/melbs-mode/references/agents/nested is nested inside plugins/pstack/skills/melbs-mode/references/agents",
       ],
     ];
     for (const [list, entry, message] of cases) {
@@ -789,7 +789,7 @@ describe("plan, changes, apply", () => {
   });
 
   test("plan refuses a path two producers write whole with different text", () => {
-    const target = "poteto-mode/references/licenses/LICENSE";
+    const target = "melbs-mode/references/licenses/LICENSE";
     PORTABLE_ASSETS.push({ source: "NOTICE-skills.md", target });
     try {
       expect(() => plan(repoRoot)).toThrow(`plugins/pstack/skills/${target} is planned twice with different text`);
@@ -808,7 +808,7 @@ describe("plan, changes, apply", () => {
   test("problems reports a lead line in a file that does not own it", () => {
     const root = repoCopy();
     append(root, "plugins/pstack/skills/tdd/SKILL.md", `\n${codex.preamble}\n`);
-    const codexTools = "plugins/pstack/skills/poteto-mode/references/codex-tools.md";
+    const codexTools = "plugins/pstack/skills/melbs-mode/references/codex-tools.md";
     writeFileSync(join(root, codexTools), readFileSync(join(root, codexTools), "utf8").replace(/^\| `why` \|.*\n/m, ""));
     const failures = problems(root).filter((f) => f.startsWith("generator-owned lead lines"));
     expect(failures).toHaveLength(1);
@@ -820,7 +820,7 @@ describe("plan, changes, apply", () => {
     const root = repoCopy();
     append(root, ...STRAY_SLUG);
     append(root, "plugins/pstack/skills/deslop/SKILL.md", "\n[gone](missing.md)\n");
-    append(root, "plugins/pstack/skills/unslop/SKILL.md", '\nsubagent_type: "poteto-agent"\n');
+    append(root, "plugins/pstack/skills/unslop/SKILL.md", '\nsubagent_type: "melbs-agent"\n');
     const failures = problems(root);
     expect(failures).toEqual([
       expect.stringContaining("plugins/pstack/skills/tdd/SKILL.md:"),
@@ -834,7 +834,7 @@ describe("plan, changes, apply", () => {
 
   test("a write run regenerates before it validates, so a slug left only in a stale copy passes", () => {
     const root = repoCopy();
-    const copy = "plugins/pstack/skills/poteto-mode/references/agents/comment-sicko.md";
+    const copy = "plugins/pstack/skills/melbs-mode/references/agents/comment-sicko.md";
     append(root, copy, "\nUse claude-opus-99 here.\n");
     expect(generate(root).status).toBe(0);
     expect(readFileSync(join(root, copy), "utf8")).toBe(
@@ -897,7 +897,7 @@ describe("plan, changes, apply", () => {
     writeFileSync(join(root, hooks), readFileSync(join(root, hooks), "utf8").replace("hooks/pre-tool-use.sh", "hooks/gone.sh"));
     expect(problems(root)).toEqual([expect.stringContaining("hooks/gone.sh does not exist")]);
     const text = readFileSync(join(root, manifest), "utf8");
-    writeFileSync(join(root, manifest), text.replace('"name": "pstack"', '"name": "other"'));
+    writeFileSync(join(root, manifest), text.replace('"name": "mstack"', '"name": "other"'));
     expect(problems(root)).toEqual([
       expect.stringContaining(`${manifest}: name "other"`),
       expect.stringContaining("hooks/gone.sh does not exist"),

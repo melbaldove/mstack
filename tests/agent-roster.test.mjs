@@ -17,15 +17,15 @@ const agents = readdirSync(join(pluginRoot, "agents"))
 // description runs the names together in prose, so a name must not continue
 // into a longer one.
 const rosters = [
-  ["pi/agent-tools.ts", (name) => new RegExp(`pstack:${name}(?![\\w-])`)],
-  ["skills/poteto-mode/references/pi-tools.md", (name) => new RegExp(`\`pstack:${name}\``)],
-  ["skills/poteto-mode/references/copilot-tools.md", (name) => new RegExp(`\`pstack:${name}\``)],
-  ["skills/poteto-mode/references/codex-tools.md", (name) => new RegExp(`\`${name}\``)],
+  ["pi/agent-tools.ts", (name) => new RegExp(`mstack:${name}(?![\\w-])`)],
+  ["skills/melbs-mode/references/pi-tools.md", (name) => new RegExp(`\`mstack:${name}\``)],
+  ["skills/melbs-mode/references/copilot-tools.md", (name) => new RegExp(`\`mstack:${name}\``)],
+  ["skills/melbs-mode/references/codex-tools.md", (name) => new RegExp(`\`${name}\``)],
 ];
 
 describe("subagent roster", () => {
-  test("agents/ holds the base poteto-agent", () => {
-    expect(agents).toContain("poteto-agent");
+  test("agents/ holds the base melbs-agent", () => {
+    expect(agents).toContain("melbs-agent");
   });
 
   for (const [file, mention] of rosters) {

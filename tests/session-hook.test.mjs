@@ -82,9 +82,9 @@ describe("SessionStart hook", () => {
   });
 
   test("names only skills that exist", () => {
-    const named = [...mandate.matchAll(/(?:pstack:|`\/)([a-z0-9-]+)/g)].map((m) => m[1]);
+    const named = [...mandate.matchAll(/(?:mstack:|`\/)([a-z0-9-]+)/g)].map((m) => m[1]);
     const skills = new Set(agentSkills(join(pluginRoot, "skills")).map(({ name }) => name));
-    expect(named).toContain("poteto-mode");
+    expect(named).toContain("melbs-mode");
     expect(named.filter((name) => !skills.has(name))).toEqual([]);
   });
 
@@ -207,7 +207,7 @@ describe("Copilot SessionStart context", () => {
     const root = mkdtempSync(join(tmpdir(), "pstack-esc-"));
     try {
       cpSync(join(pluginRoot, "hooks"), join(root, "hooks"), { recursive: true });
-      cpSync(join(pluginRoot, "skills/setup-pstack/scripts"), join(root, "skills/setup-pstack/scripts"), { recursive: true });
+      cpSync(join(pluginRoot, "skills/setup-mstack/scripts"), join(root, "skills/setup-mstack/scripts"), { recursive: true });
       const odd = 'a "quote", a back\\slash, and a\ttab';
       writeFileSync(join(root, "hooks/session-start-copilot-setup.md"), `${odd}\n`);
       const r = spawnSync("sh", ["-c", sessionStart.copilot.hooks[0].command], {
@@ -333,9 +333,9 @@ describe("Muse SessionStart context", () => {
   });
 
   test("the Muse mandate names only skills that exist", () => {
-    const named = [...museMandate.matchAll(/plugin:pstack:([a-z0-9-]+)/g)].map((m) => m[1]);
+    const named = [...museMandate.matchAll(/plugin:mstack:([a-z0-9-]+)/g)].map((m) => m[1]);
     const skills = new Set(agentSkills(join(pluginRoot, "skills")).map(({ name }) => name));
-    expect(named).toContain("poteto-mode");
+    expect(named).toContain("melbs-mode");
     expect(named.filter((name) => !skills.has(name))).toEqual([]);
   });
 });
@@ -347,7 +347,7 @@ describe("a plugin root with a backslash", () => {
     const tmp = mkdtempSync(join(tmpdir(), "pstack-hook-"));
     const root = join(tmp, "back\\tslash", "pstack");
     try {
-      for (const dir of ["hooks", "skills/setup-pstack/scripts"]) cpSync(join(pluginRoot, dir), join(root, dir), { recursive: true });
+      for (const dir of ["hooks", "skills/setup-mstack/scripts"]) cpSync(join(pluginRoot, dir), join(root, dir), { recursive: true });
       const run = (runtime, rootVar, from) =>
         spawnSync("sh", [join(from, "hooks/session-start.sh"), runtime], {
           env: { PATH: process.env.PATH, HOME: tmp, [rootVar]: from },
@@ -355,7 +355,7 @@ describe("a plugin root with a backslash", () => {
         });
       for (const [runtime, rootVar] of [["copilot", "COPILOT_PLUGIN_ROOT"], ["muse", "MUSE_PLUGIN_ROOT"]]) {
         const expected = run(runtime, rootVar, pluginRoot);
-        expect(expected.stdout).toContain("poteto-mode");
+        expect(expected.stdout).toContain("melbs-mode");
         const got = run(runtime, rootVar, root);
         expect({ runtime, status: got.status, out: got.stdout, err: got.stderr }).toEqual({
           runtime,

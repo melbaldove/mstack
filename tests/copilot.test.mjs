@@ -13,7 +13,7 @@ import { mappingCoverage } from "./mapping-coverage.mjs";
 
 const repoRoot = fileURLToPath(new URL("..", import.meta.url));
 const skillsDir = join(repoRoot, "plugins/pstack/skills");
-const mappingPath = join(skillsDir, "poteto-mode/references/copilot-tools.md");
+const mappingPath = join(skillsDir, "melbs-mode/references/copilot-tools.md");
 const mapping = readFileSync(mappingPath, "utf8");
 const models = loadModels();
 
@@ -38,8 +38,8 @@ mappingCoverage(RUNTIMES.find((runtime) => runtime.name === "GitHub Copilot"), [
   ["~/.claude/orchestrate", "`~/.claude/orchestrate/`"],
   ["CLAUDE.md", "`CLAUDE.md`"],
   ["mcp__", "`mcp__`"],
-  ["pstack:poteto-agent", "`pstack:poteto-agent`"],
-  ["pstack:comment-sicko", "`pstack:comment-sicko`"],
+  ["mstack:melbs-agent", "`mstack:melbs-agent`"],
+  ["mstack:comment-sicko", "`mstack:comment-sicko`"],
   ["general-purpose", "`general-purpose`"],
 ]);
 
@@ -57,7 +57,7 @@ describe("copilot-tools.md", () => {
         .map((f) => relative(skillsDir, f).split("/")[0]),
     );
     for (const name of noted) expect(skills.has(name)).toBe(true);
-    for (const name of ["interrogate", "setup-pstack", "no-comments", "reflect", "recall", "babysit"]) {
+    for (const name of ["interrogate", "setup-mstack", "no-comments", "reflect", "recall", "babysit"]) {
       expect(noted).toContain(name);
     }
   });
@@ -89,8 +89,8 @@ describe("Copilot preambles", () => {
     }
   });
 
-  test("poteto-mode's Platform Adaptation names the Copilot mapping", () => {
-    const text = readFileSync(join(skillsDir, "poteto-mode/SKILL.md"), "utf8");
+  test("melbs-mode's Platform Adaptation names the Copilot mapping", () => {
+    const text = readFileSync(join(skillsDir, "melbs-mode/SKILL.md"), "utf8");
     expect(text).toContain("On GitHub Copilot, CLI or app, read [`references/copilot-tools.md`](references/copilot-tools.md)");
   });
 });
@@ -98,7 +98,7 @@ describe("Copilot preambles", () => {
 // Copilot's ask_user is single-select with one question per call, and pstack
 // ships no Copilot models, so setup asks tier by tier from choice lists.
 describe("Copilot setup questions", () => {
-  const setupDir = join(skillsDir, "setup-pstack");
+  const setupDir = join(skillsDir, "setup-mstack");
   const skill = readFileSync(join(setupDir, "SKILL.md"), "utf8");
   const questions = readFileSync(join(setupDir, "copilot.md"), "utf8");
   const sequence = questions.slice(questions.indexOf("## Question sequence"));

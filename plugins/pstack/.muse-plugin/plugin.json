@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "name": "pstack",
-  "displayName": "pstack (Muse port)",
+  "name": "mstack",
+  "displayName": "mstack (Muse port)",
   "version": "0.9.102",
-  "description": "If you want to go fast, go deep first. pstack helps you write less, but higher quality code. Rigorous agent workflows you can parallelize with confidence. Muse port of the Claude Code plugin; skills are shared, tool names resolve via skills/poteto-mode/references/muse-tools.md. Original pstack by Lauren Tan (poteto).",
+  "description": "If you want to go fast, go deep first. pstack helps you write less, but higher quality code. Rigorous agent workflows you can parallelize with confidence. Muse port of the Claude Code plugin; skills are shared, tool names resolve via skills/melbs-mode/references/muse-tools.md. Original pstack by Lauren Tan (poteto).",
   "compat": {
     "source": "native",
     "manifestDir": ".muse-plugin"
@@ -121,18 +121,18 @@
         "enabledDefault": true
       },
       {
+        "id": "melbs-help",
+        "path": "skills/melbs-help/SKILL.md",
+        "enabledDefault": true
+      },
+      {
+        "id": "melbs-mode",
+        "path": "skills/melbs-mode/SKILL.md",
+        "enabledDefault": true
+      },
+      {
         "id": "no-comments",
         "path": "skills/no-comments/SKILL.md",
-        "enabledDefault": true
-      },
-      {
-        "id": "poteto-help",
-        "path": "skills/poteto-help/SKILL.md",
-        "enabledDefault": true
-      },
-      {
-        "id": "poteto-mode",
-        "path": "skills/poteto-mode/SKILL.md",
         "enabledDefault": true
       },
       {
@@ -266,8 +266,8 @@
         "enabledDefault": true
       },
       {
-        "id": "setup-pstack",
-        "path": "skills/setup-pstack/SKILL.md",
+        "id": "setup-mstack",
+        "path": "skills/setup-mstack/SKILL.md",
         "enabledDefault": true
       },
       {

@@ -1,6 +1,6 @@
 # Prints the GitHub Copilot SessionStart output: one JSON object whose
-# additionalContext is the poteto-mode mandate with the Copilot notes inside its
-# closing tag. Run after json.awk and setup-pstack's sheet.awk, with the sheet
+# additionalContext is the melbs-mode mandate with the Copilot notes inside its
+# closing tag. Run after json.awk and setup-mstack's sheet.awk, with the sheet
 # as input, -v found=<1 when the sheet exists>, and PSTACK_HOOKS=<this
 # directory> in the environment.
 # Only a valid sheet's known role lines reach the context, rebuilt from their

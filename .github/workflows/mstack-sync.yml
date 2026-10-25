@@ -1,0 +1,44 @@
+name: mstack sync
+
+on:
+  schedule:
+    - cron: "17 3 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+      - name: Rebuild from upstream
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git remote add upstream https://github.com/michael-denyer/pstack-claude.git
+          mstack/sync.sh
+      - name: Check generated files and tests
+        run: |
+          bun tools/generate.mjs --check
+          bun test tests/
+      - name: Push
+        run: |
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Sync to pstack-claude $(cut -c1-7 mstack/UPSTREAM)"
+          git push
+      - name: Open an issue on failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          title="mstack sync failed"
+          if [ -z "$(gh issue list --state open --search "in:title \"$title\"" --json number --jq '.[].number')" ]; then
+            gh issue create --title "$title" --body "The weekly rebuild from pstack-claude failed: $RUN_URL. Run mstack/sync.sh locally, resolve the patch conflict, update mstack/patches, and push."
+          fi

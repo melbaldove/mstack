@@ -27,17 +27,17 @@ import { validateProsePaths, validateSkillsTree, walk } from "../tools/validate-
 const repoRoot = fileURLToPath(new URL("..", import.meta.url));
 const skillsDir = join(repoRoot, "plugins/pstack/skills");
 const requiredPortableFiles = [
-  "poteto-mode/references/agents/comment-sicko.md",
-  "poteto-mode/references/licenses/LICENSE",
-  "poteto-mode/references/licenses/LICENSE-cursor-team-kit",
-  "poteto-mode/references/licenses/LICENSE-thermos",
-  "poteto-mode/references/licenses/NOTICE.md",
+  "melbs-mode/references/agents/comment-sicko.md",
+  "melbs-mode/references/licenses/LICENSE",
+  "melbs-mode/references/licenses/LICENSE-cursor-team-kit",
+  "melbs-mode/references/licenses/LICENSE-thermos",
+  "melbs-mode/references/licenses/NOTICE.md",
 ];
 
 describe("shared Agent Skills tree", () => {
-  test("public skills include poteto-mode and exclude every principle leaf", () => {
+  test("public skills include melbs-mode and exclude every principle leaf", () => {
     const names = publicSkills(skillsDir);
-    expect(names).toContain("poteto-mode");
+    expect(names).toContain("melbs-mode");
     expect(names.some((n) => n.startsWith("principle-"))).toBe(false);
   });
 
@@ -81,7 +81,7 @@ describe("shared Agent Skills tree", () => {
           "# Reference",
           "",
           "Read `../playbooks/babysit.md` first.",
-          "Write the log to `/tmp/<slug>-resume.md` and run `/setup-pstack`.",
+          "Write the log to `/tmp/<slug>-resume.md` and run `/setup-mstack`.",
           "Edit `plugins/pstack/models.json`, then rerun `tools/generate.mjs`.",
           "Cursor keeps rules in `.cursor/rules/`; Claude Code has no `hooks/nope.md`.",
         ].join("\n"),
@@ -313,7 +313,7 @@ describe("shared Agent Skills tree", () => {
         symlinkSync(join(skillsDir, name), join(installed, name), "dir");
       }
 
-      const poteto = join(installed, "poteto-mode");
+      const poteto = join(installed, "melbs-mode");
       for (const file of [
         join(poteto, "SKILL.md"),
         join(poteto, "references", "codex-tools.md"),

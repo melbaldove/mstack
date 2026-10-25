@@ -86,26 +86,26 @@ describe("static plugin invariants", () => {
 
   test("a skill dispatching a plugin agent by its bare name fails and names the site", () => {
     const root = plugin((r) => {
-      agent(r, "poteto-agent");
-      skill(r, "caller", "", 'Spawn with `subagent_type: "poteto-agent"`.\n');
+      agent(r, "melbs-agent");
+      skill(r, "caller", "", 'Spawn with `subagent_type: "melbs-agent"`.\n');
     });
     expect(() => check(root)).toThrow(
-      'skills/caller/SKILL.md:6: subagent_type: "poteto-agent" (use "pstack:poteto-agent")',
+      'skills/caller/SKILL.md:6: subagent_type: "melbs-agent" (use "mstack:melbs-agent")',
     );
   });
 
   test.each([
-    "subagent_type: poteto-agent",
-    "subagent_type: 'poteto-agent'",
-    "subagent_type: `poteto-agent`",
-    'subagent_type:"poteto-agent"',
-    '"subagent_type": "poteto-agent"',
+    "subagent_type: melbs-agent",
+    "subagent_type: 'melbs-agent'",
+    "subagent_type: `melbs-agent`",
+    'subagent_type:"melbs-agent"',
+    '"subagent_type": "melbs-agent"',
   ])("a bare dispatch spelled %s fails and names the site", (line) => {
     const root = plugin((r) => {
-      agent(r, "poteto-agent");
+      agent(r, "melbs-agent");
       skill(r, "caller", "", `Spawn with ${line}.\n`);
     });
-    expect(() => check(root)).toThrow('skills/caller/SKILL.md:6: subagent_type: "poteto-agent" (use "pstack:poteto-agent")');
+    expect(() => check(root)).toThrow('skills/caller/SKILL.md:6: subagent_type: "melbs-agent" (use "mstack:melbs-agent")');
   });
 
   test.each([
@@ -123,27 +123,27 @@ describe("static plugin invariants", () => {
     const root = plugin((r) => shippedAgents.forEach((name) => agent(r, name)));
     for (const name of shippedAgents) {
       skill(root, "caller", "", `${spelling.replace("NAME", name)}\n`);
-      expect(() => check(root)).toThrow(`skills/caller/SKILL.md:6: subagent_type: "${name}" (use "pstack:${name}")`);
+      expect(() => check(root)).toThrow(`skills/caller/SKILL.md:6: subagent_type: "${name}" (use "mstack:${name}")`);
     }
   });
 
   test.each([
-    'subagent_type: "pstack:poteto-agent"',
-    "subagent_type: pstack:poteto-agent",
-    "subagent_type: `pstack:poteto-agent`",
-    'subagent_type: "poteto-agent-extra"',
-    "subagent_type: poteto-agent_v2",
-    "subagent_type: poteto-agent.local",
-    "subagent_type: poteto-agentX",
-    "subagent_type: poteto-agent.2",
-    "subagent_type: poteto-agent-extra_v2",
-    "subagent_type: poteto-agent-extra.local",
-    "my_subagent_type: poteto-agent",
-    "my\\_subagent_type: poteto-agent",
-    "presubagent_type: poteto-agent",
+    'subagent_type: "mstack:melbs-agent"',
+    "subagent_type: mstack:melbs-agent",
+    "subagent_type: `mstack:melbs-agent`",
+    'subagent_type: "melbs-agent-extra"',
+    "subagent_type: melbs-agent_v2",
+    "subagent_type: melbs-agent.local",
+    "subagent_type: melbs-agentX",
+    "subagent_type: melbs-agent.2",
+    "subagent_type: melbs-agent-extra_v2",
+    "subagent_type: melbs-agent-extra.local",
+    "my_subagent_type: melbs-agent",
+    "my\\_subagent_type: melbs-agent",
+    "presubagent_type: melbs-agent",
   ])("a namespaced, longer, or differently keyed dispatch %s passes", (line) => {
     const root = plugin((r) => {
-      agent(r, "poteto-agent");
+      agent(r, "melbs-agent");
       skill(r, "caller", "", `Spawn with ${line}.\n`);
     });
     expect(() => check(root)).not.toThrow();

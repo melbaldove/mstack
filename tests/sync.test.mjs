@@ -129,8 +129,8 @@ describe("applySubstitutions", () => {
   test("a model default points at the Models section that owns the file, whatever the slug", () => {
     const line = (slug) => `your configured hillclimb model (default \`${slug}\`)`;
     for (const slug of ["grok-4.7-xhigh-fast", "claude-fable-5-1-thinking-max", "gpt-6-sol-max"]) {
-      expect(applySubstitutions(line(slug), RULES.substitutions, "skills/poteto-mode/playbooks/hillclimb.md").text).toBe(
-        "your configured hillclimb model (default in poteto-mode's Models section)",
+      expect(applySubstitutions(line(slug), RULES.substitutions, "skills/melbs-mode/playbooks/hillclimb.md").text).toBe(
+        "your configured hillclimb model (default in melbs-mode's Models section)",
       );
       expect(applySubstitutions(line(slug), RULES.substitutions, "skills/reflect/SKILL.md").text).toBe(
         "your configured hillclimb model (default in [Models](#models))",
@@ -148,7 +148,7 @@ describe("applySubstitutions", () => {
   });
 
   test("no rule rewrites another rule's output", () => {
-    for (const rel of ["skills/x/SKILL.md", "skills/poteto-mode/playbooks/x.md"]) {
+    for (const rel of ["skills/x/SKILL.md", "skills/melbs-mode/playbooks/x.md"]) {
       for (const rule of RULES.substitutions) {
         expect(applySubstitutions(rule.replacement, RULES.substitutions, rel).text).toBe(rule.replacement);
       }
@@ -189,7 +189,7 @@ describe("applySubstitutions", () => {
       "Families go by model name, such as Opus, Fable, or Sonnet.",
     ],
     [
-      "skills/setup-pstack/SKILL.md",
+      "skills/setup-mstack/SKILL.md",
       "One runner is claude-opus-5-5-xhigh and one is gpt-5.5-high-fast. The last is grok-4.7-medium-fast.",
       "One runner is <slug> and one is <slug>. The last is <slug>.",
     ],
@@ -209,14 +209,14 @@ describe("applySubstitutions", () => {
       "Read this run's transcript under Claude Code's per-project transcripts directory at `${CLAUDE_CONFIG_DIR:-$HOME/.claude}/projects/<encoded-cwd>/`, which `node <plugin>/skills/reflect/scripts/claude-project-dir.mjs` prints. Don't glob across `${CLAUDE_CONFIG_DIR:-$HOME/.claude}/projects/`.",
     ],
     [
-      "skills/poteto-mode/playbooks/eval.md",
+      "skills/melbs-mode/playbooks/eval.md",
       "Read each candidate's local transcript under the active workspace's `agent-transcripts/` directory (the system prompt names this path).",
       "Read each candidate's local transcript under Claude Code's per-project transcripts directory at `${CLAUDE_CONFIG_DIR:-$HOME/.claude}/projects/<encoded-cwd>/`, which `node <plugin>/skills/reflect/scripts/claude-project-dir.mjs` prints.",
     ],
     [
-      "skills/poteto-mode/playbooks/multi-phase-plan.md",
-      'Explore in subagents with `subagent_type: "poteto-agent"` and an explicit model.',
-      'Explore in subagents with `subagent_type: "pstack:poteto-agent"` and an explicit model.',
+      "skills/melbs-mode/playbooks/multi-phase-plan.md",
+      'Explore in subagents with `subagent_type: "melbs-agent"` and an explicit model.',
+      'Explore in subagents with `subagent_type: "mstack:melbs-agent"` and an explicit model.',
     ],
     [
       "skills/automate-me/SKILL.md",
@@ -224,39 +224,39 @@ describe("applySubstitutions", () => {
       "an inline mining pass, the **plugin-dev:skill-development** skill (authoring), and the **unslop** skill. Use the **plugin-dev:skill-development** skill to author the skill. Follow `plugin-dev:skill-development`'s YAML rules.",
     ],
     [
-      "skills/poteto-mode/playbooks/authoring-a-skill.md",
+      "skills/melbs-mode/playbooks/authoring-a-skill.md",
       "1. Use the **create-skill** skill (Cursor's built-in for authoring SKILL.md files).",
       "1. Use the **plugin-dev:skill-development** skill (Claude Code's authoring guidance for SKILL.md files).",
     ],
     [
-      "skills/poteto-mode/playbooks/autonomous-run.md",
+      "skills/melbs-mode/playbooks/autonomous-run.md",
       "Pick the wake mechanism using Cursor's `/loop` command (a built-in, not a pstack skill).",
       "Pick the wake mechanism using Claude Code's `loop` skill (a built-in, not a pstack skill).",
     ],
     [
-      "skills/poteto-mode/SKILL.md",
+      "skills/melbs-mode/SKILL.md",
       "on an explicit pause, going offline, a Cursor restart, or imminent context compaction.",
       "on an explicit pause, going offline, a session restart, or imminent context compaction.",
     ],
     [
-      "skills/poteto-mode/playbooks/babysit.md",
+      "skills/melbs-mode/playbooks/babysit.md",
       'This playbook replaces Cursor\'s built-in babysit skill for these requests, for "address the bugbot comments".',
       'This playbook replaces the bundled **babysit** skill for these requests, for "address the review-bot comments".',
     ],
     [
-      "skills/poteto-mode/playbooks/autopilot-full.md",
+      "skills/melbs-mode/playbooks/autopilot-full.md",
       "One Cursor cloud agent per PR owns build, skeptical Bugbot triage, and the fixes.",
       "One background subagent per PR, in its own worktree, owns build, skeptical review-bot triage, and the fixes.",
     ],
     [
-      "skills/poteto-mode/playbooks/autopilot-stack.md",
+      "skills/melbs-mode/playbooks/autopilot-stack.md",
       "On the operator's explicit go, arm a `/goal` with the full program objective. The goal continues across turns until the chain is done.",
       "On the operator's explicit go, write the full program objective into the standing orders and restate it in your todolist. That objective stands across turns until the chain is done.",
     ],
     [
-      "agents/poteto-agent.md",
-      "search `~/.cursor/plugins/` for a file whose path ends in `skills/poteto-mode/SKILL.md`. If more than one file matches, use the copy whose `.cursor-plugin/plugin.json` has the highest `version`.",
-      "search `${CLAUDE_CODE_PLUGIN_CACHE_DIR:-${CLAUDE_CONFIG_DIR:-$HOME/.claude}/plugins}/` for a file whose path ends in `skills/poteto-mode/SKILL.md`. If more than one file matches, use the copy whose `.claude-plugin/plugin.json` has the highest `version`.",
+      "agents/melbs-agent.md",
+      "search `~/.cursor/plugins/` for a file whose path ends in `skills/melbs-mode/SKILL.md`. If more than one file matches, use the copy whose `.cursor-plugin/plugin.json` has the highest `version`.",
+      "search `${CLAUDE_CODE_PLUGIN_CACHE_DIR:-${CLAUDE_CONFIG_DIR:-$HOME/.claude}/plugins}/` for a file whose path ends in `skills/melbs-mode/SKILL.md`. If more than one file matches, use the copy whose `.claude-plugin/plugin.json` has the highest `version`.",
     ],
   ])("%s: an upstream sentence takes the port's one form", (rel, upstream, port) => {
     const { text } = applySubstitutions(upstream, RULES.substitutions, rel);
@@ -346,7 +346,7 @@ describe("denylistHits", () => {
   test("UI repair advice points to the canonical driver policy", () => {
     const hits = denylistHits("playbook.md", "Drive with control-ui.", RULES.denylist);
     expect(hits).toHaveLength(1);
-    expect(hits[0]).toContain("poteto-mode/SKILL.md");
+    expect(hits[0]).toContain("melbs-mode/SKILL.md");
     expect(hits[0]).not.toContain("`verify` built-in");
   });
 

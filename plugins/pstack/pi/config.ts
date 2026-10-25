@@ -154,14 +154,14 @@ export function checkEffort(effort: string, settings: Pick<Settings, "modelsFile
   return effort;
 }
 
-// Claude Code registers each plugin agent file as pstack:<file name>, beside
+// Claude Code registers each plugin agent file as mstack:<file name>, beside
 // the built-in general-purpose type, which has no agent file.
 export function loadAgentTypes(settings: Pick<Settings, "pluginRoot">): Map<string, AgentDefinition> {
   const types = new Map<string, AgentDefinition>([[GENERAL_PURPOSE, { body: "" }]]);
   const dir = join(settings.pluginRoot, "agents");
   if (existsSync(dir)) {
     for (const file of readdirSync(dir).filter((f) => f.endsWith(".md")).sort()) {
-      const type = `pstack:${basename(file, ".md")}`;
+      const type = `mstack:${basename(file, ".md")}`;
       types.set(type, parseAgentFile(readFileSync(join(dir, file), "utf8")));
     }
   }

@@ -1,11 +1,11 @@
 {
-  "name": "pstack-claude",
+  "name": "mstack",
   "interface": {
-    "displayName": "pstack"
+    "displayName": "mstack"
   },
   "plugins": [
     {
-      "name": "pstack",
+      "name": "mstack",
       "source": {
         "source": "local",
         "path": "./plugins/pstack"

@@ -7,6 +7,8 @@ description: Cut AI tells from any writing.
 
 Edit text to remove AI patterns. Scan for the patterns below, then rewrite. Preserve meaning and match the intended tone.
 
+In replies to the user, the user's **Communication** rules win where they conflict with a pattern here, such as rules 28 and 33 on dense sentences.
+
 ## Patterns to detect and fix
 
 Rule numbers are stable ids that other skills cite. A removed rule leaves a gap.

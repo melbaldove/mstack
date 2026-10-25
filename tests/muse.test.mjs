@@ -32,7 +32,7 @@ mappingCoverage(muse, [
   ["plugin-dev", "`plugin-dev:skill-development`"],
   [".claude/skills", "`.claude/skills/`"],
   ["CLAUDE.md", "`CLAUDE.md`"],
-  ["pstack:poteto-agent", "`pstack:poteto-agent`"],
+  ["mstack:melbs-agent", "`mstack:melbs-agent`"],
   ["general-purpose", "`general-purpose`"],
 ]);
 
@@ -62,10 +62,10 @@ describe("Muse manifest", () => {
   test("stampMuseManifest rewrites the skill list and leaves the hook alone", () => {
     const stale = structuredClone(manifest);
     stale.capabilities.skills = [];
-    const stamped = JSON.parse(stampMuseManifest(JSON.stringify(stale), { skills: ["how", "poteto-mode"] }));
+    const stamped = JSON.parse(stampMuseManifest(JSON.stringify(stale), { skills: ["how", "melbs-mode"] }));
     expect(stamped.capabilities.skills).toEqual([
       { id: "how", path: "skills/how/SKILL.md", enabledDefault: true },
-      { id: "poteto-mode", path: "skills/poteto-mode/SKILL.md", enabledDefault: true },
+      { id: "melbs-mode", path: "skills/melbs-mode/SKILL.md", enabledDefault: true },
     ]);
     expect(stamped.capabilities.hooks).toEqual(manifest.capabilities.hooks);
   });

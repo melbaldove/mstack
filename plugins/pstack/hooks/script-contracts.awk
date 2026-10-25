@@ -3,11 +3,11 @@
 BEGIN {
   CONTRACT["skills/show-me-your-work/scripts/log.sh"] = "log"
   CONTRACT["skills/reflect/scripts/find-transcript.mjs"] = "transcript"
-  CONTRACT["skills/setup-pstack/scripts/check-sheet.sh"] = "optional-path"
-  CONTRACT["skills/poteto-mode/scripts/check-playbooks.mjs"] = "optional-path"
-  CONTRACT["skills/poteto-mode/scripts/check-plan.mjs"] = "one-path"
-  CONTRACT["skills/poteto-mode/scripts/worktree-audit.mjs"] = "paths"
-  CONTRACT["skills/poteto-mode/scripts/resume.mjs"] = "resume"
+  CONTRACT["skills/setup-mstack/scripts/check-sheet.sh"] = "optional-path"
+  CONTRACT["skills/melbs-mode/scripts/check-playbooks.mjs"] = "optional-path"
+  CONTRACT["skills/melbs-mode/scripts/check-plan.mjs"] = "one-path"
+  CONTRACT["skills/melbs-mode/scripts/worktree-audit.mjs"] = "paths"
+  CONTRACT["skills/melbs-mode/scripts/resume.mjs"] = "resume"
 }
 
 function script_contract(script, runner, T, first, n,    kind, count, i) {

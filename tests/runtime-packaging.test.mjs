@@ -50,12 +50,12 @@ describe("validateMuseManifest", () => {
     schemaVersion: 1,
     compat: { source: "native", manifestDir: ".muse-plugin" },
     capabilities: {
-      skills: [{ id: "poteto-mode", path: "skills/poteto-mode/SKILL.md", enabledDefault: true }],
+      skills: [{ id: "melbs-mode", path: "skills/melbs-mode/SKILL.md", enabledDefault: true }],
       commands: [],
       hooks: [{ id: "session-start", event: "SessionStart", command: ["sh", "hooks/session-start.sh", "muse"] }],
     },
   };
-  const pathExists = (rel) => rel === "plugins/pstack/skills/poteto-mode/SKILL.md" || rel === "plugins/pstack/hooks/session-start.sh";
+  const pathExists = (rel) => rel === "plugins/pstack/skills/melbs-mode/SKILL.md" || rel === "plugins/pstack/hooks/session-start.sh";
   test("needs the Claude Code name, native compat, existing paths, and one SessionStart hook", () => {
     expect(() => validateMuseManifest(ok, { claude, pathExists })).not.toThrow();
     expect(() => validateMuseManifest({ ...ok, name: "other" }, { claude, pathExists })).toThrow(
@@ -87,7 +87,7 @@ describe("validateMuseManifest", () => {
 
   test("rejects a command whose id duplicates a skill id", () => {
     const dup = structuredClone(ok);
-    dup.capabilities.commands = [{ id: "poteto-mode", path: "skills/poteto-mode/SKILL.md" }];
+    dup.capabilities.commands = [{ id: "melbs-mode", path: "skills/melbs-mode/SKILL.md" }];
     expect(() => validateMuseManifest(dup, { claude, pathExists })).toThrow("duplicates a skill id");
   });
 });

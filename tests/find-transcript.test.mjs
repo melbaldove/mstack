@@ -67,7 +67,7 @@ describe("find-transcript", () => {
 
   test("a skill invocation is the typed prompt and keeps its arguments", async () => {
     const dir = tempDir();
-    const skill = userString("<command-message>pstack:reflect</command-message>\n<command-name>/pstack:reflect</command-name>\n<command-args>the release lanes</command-args>");
+    const skill = userString("<command-message>mstack:reflect</command-message>\n<command-name>/mstack:reflect</command-name>\n<command-args>the release lanes</command-args>");
     const path = transcript(dir, "skill.jsonl", [meta, skill, user("a later prompt")], 100);
     expect(await openingPrompt(path)).toContain("the release lanes");
   });

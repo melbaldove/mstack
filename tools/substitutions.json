@@ -12,7 +12,7 @@
     },
     {
       "pattern": "repro this with /verify-<app>.",
-      "files": "^skills/poteto-help/",
+      "files": "^skills/melbs-help/",
       "replacement": "repro this with /verify.",
       "rationale": "the port's create-verification-skill writes a project skill named verify (#71)"
     },
@@ -71,12 +71,12 @@
     },
     {
       "pattern": "subagent_type: \"thermo-nuclear-review-subagent\"",
-      "replacement": "subagent_type: \"pstack:thermo-nuclear-review-subagent\"",
+      "replacement": "subagent_type: \"mstack:thermo-nuclear-review-subagent\"",
       "rationale": "Claude Code dispatches plugin agents by their namespaced name"
     },
     {
       "pattern": "subagent_type: \"thermo-nuclear-code-quality-review-subagent\"",
-      "replacement": "subagent_type: \"pstack:thermo-nuclear-code-quality-review-subagent\"",
+      "replacement": "subagent_type: \"mstack:thermo-nuclear-code-quality-review-subagent\"",
       "rationale": "Claude Code dispatches plugin agents by their namespaced name"
     },
     {
@@ -101,7 +101,7 @@
     },
     {
       "pattern": "Spawn `Task` with `subagent_type: \"Comment Sicko\"`",
-      "replacement": "Spawn an `Agent` with `subagent_type: \"pstack:comment-sicko\"`",
+      "replacement": "Spawn an `Agent` with `subagent_type: \"mstack:comment-sicko\"`",
       "rationale": "plugin agents register under the plugin namespace by file name (#58); must precede the `Task` rule"
     },
     {
@@ -152,8 +152,8 @@
     },
     {
       "pattern": "Use the `interrogate reviewers` line in `~/.cursor/rules/pstack-models.mdc`,",
-      "replacement": "Use the `interrogate reviewers` line in the `pstack-models.md` override sheet (`/setup-pstack` lists its path per runtime),",
-      "rationale": "interrogate has no Models section to name the sheet's home, so the sentence points at setup-pstack; must precede the sheet-path rule"
+      "replacement": "Use the `interrogate reviewers` line in the `pstack-models.md` override sheet (`/setup-mstack` lists its path per runtime),",
+      "rationale": "interrogate has no Models section to name the sheet's home, so the sentence points at setup-mstack; must precede the sheet-path rule"
     },
     {
       "pattern": "(usually `.cursor/skills/verify-*/`)",
@@ -162,7 +162,7 @@
     },
     {
       "pattern": "run `scripts/worktree-audit.sh [-b <pr-base-ref>] [repo-path]` (principle-build-the-lever). Without `-b` it checks `MERGED` against `origin/HEAD`, so pass `-b origin/<branch>` when PRs target another branch.",
-      "replacement": "run `skills/poteto-mode/scripts/worktree-audit.mjs` under the installed plugin (principle-build-the-lever).",
+      "replacement": "run `skills/melbs-mode/scripts/worktree-audit.mjs` under the installed plugin (principle-build-the-lever).",
       "rationale": "the port ships its own audit script, which reads MERGED from each PR's state and needs no base ref; a skill-relative path does not resolve from the working directory"
     },
     {
@@ -187,12 +187,12 @@
     },
     {
       "pattern": "This playbook replaces Cursor's built-in babysit skill for these requests, so do not route there even though its description matches the same words.",
-      "replacement": "This playbook supersedes the bundled **babysit** skill for these requests, so do not route there even though its description matches the same words. `/babysit` stays the standalone entry point outside poteto-mode.",
+      "replacement": "This playbook supersedes the bundled **babysit** skill for these requests, so do not route there even though its description matches the same words. `/babysit` stays the standalone entry point outside melbs-mode.",
       "rationale": "the bundled babysit skill stays reachable by slash command; must precede the built-in babysit rule"
     },
     {
       "pattern": "status comes from `scripts/watch-pr/watch-pr`.",
-      "replacement": "status comes from the watcher at `skills/poteto-mode/scripts/watch-pr/watch-pr` under the installed plugin.",
+      "replacement": "status comes from the watcher at `skills/melbs-mode/scripts/watch-pr/watch-pr` under the installed plugin.",
       "rationale": "a skill-relative path does not resolve from the working directory"
     },
     {
@@ -221,13 +221,13 @@
       "rationale": "Claude Code's /loop schedules its own wake-up; there is no cloud root"
     },
     {
-      "pattern": "re-read this playbook from trunk with `git show origin/main:pstack/skills/poteto-mode/playbooks/autopilot-full.md`",
-      "replacement": "re-read this playbook from disk (`skills/poteto-mode/playbooks/autopilot-full.md` under the installed plugin)",
+      "pattern": "re-read this playbook from trunk with `git show origin/main:pstack/skills/melbs-mode/playbooks/autopilot-full.md`",
+      "replacement": "re-read this playbook from disk (`skills/melbs-mode/playbooks/autopilot-full.md` under the installed plugin)",
       "rationale": "the installed plugin, not an upstream checkout, is what the session runs"
     },
     {
-      "pattern": "re-read this playbook from trunk with `git show origin/main:pstack/skills/poteto-mode/playbooks/autopilot-stack.md`",
-      "replacement": "re-read this playbook from disk (`skills/poteto-mode/playbooks/autopilot-stack.md` under the installed plugin)",
+      "pattern": "re-read this playbook from trunk with `git show origin/main:pstack/skills/melbs-mode/playbooks/autopilot-stack.md`",
+      "replacement": "re-read this playbook from disk (`skills/melbs-mode/playbooks/autopilot-stack.md` under the installed plugin)",
       "rationale": "same, for the stack playbook"
     },
     {
@@ -283,7 +283,7 @@
     {
       "pattern": "control skill",
       "replacement": "driver skill",
-      "rationale": "driver selection lives in poteto-mode/SKILL.md Non-negotiables; preserve the older generator trigger in its local description"
+      "rationale": "driver selection lives in melbs-mode/SKILL.md Non-negotiables; preserve the older generator trigger in its local description"
     },
     {
       "pattern": "restart Cursor",
@@ -292,9 +292,9 @@
     },
     {
       "regex": "\\(default `(?:claude|gpt|grok|gemini|composer)-[^`]+`\\)",
-      "files": "^skills/poteto-mode/playbooks/",
-      "replacement": "(default in poteto-mode's Models section)",
-      "rationale": "model defaults live in models.json and are stamped into Models sections, never hard-coded in prose; playbooks belong to poteto-mode"
+      "files": "^skills/melbs-mode/playbooks/",
+      "replacement": "(default in melbs-mode's Models section)",
+      "rationale": "model defaults live in models.json and are stamped into Models sections, never hard-coded in prose; playbooks belong to melbs-mode"
     },
     {
       "regex": "\\(default `(?:claude|gpt|grok|gemini|composer)-[^`]+`\\)",
@@ -310,13 +310,13 @@
     },
     {
       "regex": "Defaults `(?:claude|gpt|grok|gemini|composer)-[^`]+` for code, `(?:claude|gpt|grok|gemini|composer)-[^`]+` for prose and judgment",
-      "files": "^skills/poteto-mode/SKILL\\.md$",
+      "files": "^skills/melbs-mode/SKILL\\.md$",
       "replacement": "Role defaults in [Models](#models), with \"judgment and prose\" covering prose and judgment",
-      "rationale": "the delegate defaults are stamped into poteto-mode's Models section, so an upstream model bump on this line is not a change to the port"
+      "rationale": "the delegate defaults are stamped into melbs-mode's Models section, so an upstream model bump on this line is not a change to the port"
     },
     {
       "regex": "strongest judgment model \\(`(?:claude|gpt|grok|gemini|composer)-[^`]+`\\)",
-      "files": "^skills/poteto-mode/SKILL\\.md$",
+      "files": "^skills/melbs-mode/SKILL\\.md$",
       "replacement": "strongest-judgment model (default in [Models](#models))",
       "rationale": "same line, the strongest-judgment default"
     },
@@ -333,9 +333,9 @@
     },
     {
       "regex": "(?:claude|gpt|grok|gemini|composer)-[0-9a-z.]+(?:-[0-9a-z.]+)+(?<!\\.)",
-      "files": "^skills/setup-pstack/SKILL\\.md$",
+      "files": "^skills/setup-mstack/SKILL\\.md$",
       "replacement": "<slug>",
-      "rationale": "the port writes its own sheet from models.json and replaces Cursor's budget step, so every upstream slug in setup-pstack is scrubbed to the placeholder the port already uses; a conflict there can then be written and resolved, and a model bump alone is no conflict. Must follow the default-phrase rules above"
+      "rationale": "the port writes its own sheet from models.json and replaces Cursor's budget step, so every upstream slug in setup-mstack is scrubbed to the placeholder the port already uses; a conflict there can then be written and resolved, and a model bump alone is no conflict. Must follow the default-phrase rules above"
     },
     {
       "pattern": "the `pstack-models.mdc` rule and a default.",
@@ -415,12 +415,12 @@
     },
     {
       "pattern": "subagent_type: \"comment-sicko\"",
-      "replacement": "subagent_type: \"pstack:comment-sicko\"",
+      "replacement": "subagent_type: \"mstack:comment-sicko\"",
       "rationale": "Claude Code dispatches plugin agents by their namespaced name, and the bare comment-sicko id upstream adopted in #486 errors"
     },
     {
-      "pattern": "subagent_type: \"poteto-agent\"",
-      "replacement": "subagent_type: \"pstack:poteto-agent\"",
+      "pattern": "subagent_type: \"melbs-agent\"",
+      "replacement": "subagent_type: \"mstack:melbs-agent\"",
       "rationale": "plugin agents register under the plugin namespace; the bare name errors (#58)"
     },
     {
@@ -484,46 +484,46 @@
       "rationale": "Claude Code sets fast mode for the session, not per spawn, so a spawn picks only its effort"
     },
     {
-      "pattern": "pick the reasoning level and speed the job needs. The `/setup-pstack` budget sets each role's starting level, xhigh by default.",
-      "files": "^skills/poteto-mode/SKILL\\.md$",
+      "pattern": "pick the reasoning level and speed the job needs. The `/setup-mstack` budget sets each role's starting level, xhigh by default.",
+      "files": "^skills/melbs-mode/SKILL\\.md$",
       "replacement": "pick the reasoning level the job needs, set as [Reasoning effort](#reasoning-effort) describes. The role's `@level`, or the sheet's `default effort` line, sets its starting level, and `session` starts from the session's level.",
       "rationale": "the port's per-spawn effort lever is the override sheet's @level and the Agent call's effort parameter, not a slug suffix"
     },
     {
       "pattern": "Use fast mode only when the job is urgent, meaning CI or trunk is red or a person is blocked on the result right now. Otherwise use standard speed, the same slug without `-fast`.",
-      "files": "^skills/poteto-mode/SKILL\\.md$",
+      "files": "^skills/melbs-mode/SKILL\\.md$",
       "replacement": "Claude Code sets fast mode for the whole session, so a spawn changes only its effort.",
       "rationale": "Claude Code has no per-spawn fast slug"
     },
     {
       "regex": "stays on the `swarm workers` model and speed \\(`[^`]+` by default\\)",
-      "files": "^skills/poteto-mode/SKILL\\.md$",
+      "files": "^skills/melbs-mode/SKILL\\.md$",
       "replacement": "stays on the `swarm workers` model and effort (default in the **swarm** skill's Models section)",
       "rationale": "model defaults live in models.json and are stamped into Models sections, never hard-coded in prose"
     },
     {
       "pattern": "Change only the effort level and whether the slug is fast, and keep the family the role names",
-      "files": "^skills/poteto-mode/SKILL\\.md$",
+      "files": "^skills/melbs-mode/SKILL\\.md$",
       "replacement": "Change only the effort level, and keep the model the role names",
       "rationale": "Claude Code has no per-spawn fast slug"
     },
     {
       "pattern": "If the family has no slug at that level and speed, use its nearest slug.",
-      "files": "^skills/poteto-mode/SKILL\\.md$",
+      "files": "^skills/melbs-mode/SKILL\\.md$",
       "replacement": "If the model does not take that level, use its nearest level.",
       "rationale": "on Claude Code the effort is a level on the dispatch, not a slug"
     },
     {
       "pattern": "rejects the adjusted slug, do not try another adjusted slug.",
-      "files": "^skills/poteto-mode/SKILL\\.md$",
+      "files": "^skills/melbs-mode/SKILL\\.md$",
       "replacement": "rejects the adjusted level, do not try another level.",
       "rationale": "on Claude Code the effort is a level on the dispatch, not a slug"
     },
     {
       "regex": " \\(?(?:with|through) (?:the matching|its) driver skill,? \\(?such as `control-(?:ui|cli)` or `control-(?:ui|cli)` from `cursor-team-kit`(?:, or a named driver where none exists)?\\)(?: or a named driver)?",
-      "files": "^skills/poteto-mode/playbooks/",
+      "files": "^skills/melbs-mode/playbooks/",
       "replacement": " through the driver skill",
-      "rationale": "driver selection lives in poteto-mode/SKILL.md Non-negotiables, which resolve the project's driver or a named one"
+      "rationale": "driver selection lives in melbs-mode/SKILL.md Non-negotiables, which resolve the project's driver or a named one"
     },
     {
       "pattern": "Each owner is a Cursor cloud agent that builds",
@@ -537,37 +537,37 @@
     },
     {
       "pattern": "- **Sub-coordinator.** Always local, durable,",
-      "files": "^skills/poteto-mode/playbooks/orchestrate\\.md$",
+      "files": "^skills/melbs-mode/playbooks/orchestrate\\.md$",
       "replacement": "- **Sub-coordinator.** Durable,",
       "rationale": "every Claude Code subagent is local, so the placement word distinguishes nothing"
     },
     {
       "pattern": "spawns its own workers and verifiers (nesting works to depth 3, and a nested spawn has the full Task schema including `environment`).",
-      "files": "^skills/poteto-mode/playbooks/orchestrate\\.md$",
+      "files": "^skills/melbs-mode/playbooks/orchestrate\\.md$",
       "replacement": "spawns its own workers and verifiers where the runtime lets a subagent spawn one. Where it does not, it owns its track's units directly with the same review separation.",
       "rationale": "Claude Code subagents cannot always spawn subagents, and the Agent tool has no environment parameter"
     },
     {
       "pattern": "- **Worker / verifier.** Always `environment: \"cloud\"` unless the task needs this machine: `control-ui` or `control-cli` runtime verification (from `cursor-team-kit`). Reading local transcripts under `agent-transcripts/`. Simulators and local IDE state. Auth that exists only here. Cloud agents cannot read the local store, so their briefs inline what they need or point at repo paths.",
-      "files": "^skills/poteto-mode/playbooks/orchestrate\\.md$",
+      "files": "^skills/melbs-mode/playbooks/orchestrate\\.md$",
       "replacement": "- **Worker / verifier.** Background subagents (`run_in_background: true`). Claude Code has no remote worker environment, so isolation is a worktree or branch per writer, not a separate machine. Runtime verification goes through the driver skill. The brief names its resolved skill path or exact commands. A subagent never sees this chat, so its brief inlines what it needs or points at repo and store paths.",
       "rationale": "Claude Code runs every subagent on this machine, so the cloud placement rule becomes a worktree rule"
     },
     {
       "regex": "(?:Restacks|Chain rebases) run in cloud\\. A local (?:restack|rebase) at this scale takes the laptop down\\.",
-      "files": "^skills/poteto-mode/playbooks/orchestrate\\.md$",
+      "files": "^skills/melbs-mode/playbooks/orchestrate\\.md$",
       "replacement": "A chain rebase at this scale is slow and blocks whoever runs it, so give it its own unit and keep the coordinator out of it.",
       "rationale": "Claude Code has no cloud placement for a long rebase, so the rule isolates it as a unit instead"
     },
     {
       "pattern": "re-reads this playbook from trunk",
-      "files": "^skills/poteto-mode/playbooks/",
+      "files": "^skills/melbs-mode/playbooks/",
       "replacement": "re-reads this playbook from disk under the installed plugin",
       "rationale": "the playbook runs from the installed plugin, and the user's trunk is not pstack's"
     },
     {
       "pattern": "re-reads both playbooks from trunk",
-      "files": "^skills/poteto-mode/playbooks/",
+      "files": "^skills/melbs-mode/playbooks/",
       "replacement": "re-reads both playbooks from disk under the installed plugin",
       "rationale": "the playbooks run from the installed plugin, and the user's trunk is not pstack's"
     },
@@ -607,15 +607,15 @@
     },
     {
       "token": "pstack-models.mdc",
-      "hint": "Cursor's rule file; the port's override sheet is pstack-models.md, at the path setup-pstack lists per runtime"
+      "hint": "Cursor's rule file; the port's override sheet is pstack-models.md, at the path setup-mstack lists per runtime"
     },
     {
       "token": "`verify` skill (UIs)",
-      "hint": "use the driver policy in poteto-mode/SKILL.md Non-negotiables"
+      "hint": "use the driver policy in melbs-mode/SKILL.md Non-negotiables"
     },
     {
       "token": "`verify` for UIs",
-      "hint": "use the driver policy in poteto-mode/SKILL.md Non-negotiables"
+      "hint": "use the driver policy in melbs-mode/SKILL.md Non-negotiables"
     },
     {
       "token": "/visualize",
@@ -623,11 +623,11 @@
     },
     {
       "token": "control-cli",
-      "hint": "use the driver policy in poteto-mode/SKILL.md Non-negotiables; rewrite the sentence, don't token-swap"
+      "hint": "use the driver policy in melbs-mode/SKILL.md Non-negotiables; rewrite the sentence, don't token-swap"
     },
     {
       "token": "control-ui",
-      "hint": "use the driver policy in poteto-mode/SKILL.md Non-negotiables; rewrite the sentence, don't token-swap"
+      "hint": "use the driver policy in melbs-mode/SKILL.md Non-negotiables; rewrite the sentence, don't token-swap"
     },
     {
       "token": "AskQuestion",

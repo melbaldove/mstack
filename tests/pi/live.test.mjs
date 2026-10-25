@@ -243,19 +243,19 @@ suite("pstack on live pi", () => {
   );
 
   test(
-    "effort: the effort parameter runs a pstack:poteto-agent child at thinking high with the poteto-agent body as its system prompt",
+    "effort: the effort parameter runs a mstack:melbs-agent child at thinking high with the melbs-agent body as its system prompt",
     async () => {
       await withParent(async (parent) => {
         await parent.run(
-          'Make one agent tool call in the foreground with subagent_type "pstack:poteto-agent", effort "high", description "effort", prompt "Reply with exactly one word: done". Then reply with exactly one word: ok.',
+          'Make one agent tool call in the foreground with subagent_type "mstack:melbs-agent", effort "high", description "effort", prompt "Reply with exactly one word: done". Then reply with exactly one word: ok.',
         );
         const record = agentByDescription(await parent.sessionFile(), "effort").at(-1);
-        expect(record).toMatchObject({ status: "completed", agent: { subagentType: "pstack:poteto-agent", thinking: "high" } });
+        expect(record).toMatchObject({ status: "completed", agent: { subagentType: "mstack:melbs-agent", thinking: "high" } });
         const child = childEntries(record);
         const levels = child.filter((e) => e.type === "thinking_level_change").map((e) => e.thinkingLevel);
         expect(levels.at(-1)).toBe("high");
         const childSections = sections(child);
-        expect(childSections.addendum).toContain(agentBody("agents/poteto-agent.md"));
+        expect(childSections.addendum).toContain(agentBody("agents/melbs-agent.md"));
         expect(childSections[SHEET_KEY]).toBe(tagged(SHEET_KEY, SHEET));
         expect(childSections[MANDATE_KEY]).toBeUndefined();
       });
@@ -264,7 +264,7 @@ suite("pstack on live pi", () => {
   );
 
   test(
-    "worktree: an isolated agent runs in its own worktree, removed when clean and kept with changes; pstack:poteto-agent carries its agent file",
+    "worktree: an isolated agent runs in its own worktree, removed when clean and kept with changes; mstack:melbs-agent carries its agent file",
     async () => {
       await withParent(async (parent) => {
         const cleanFrom = await parent.run(
@@ -285,11 +285,11 @@ suite("pstack on live pi", () => {
         expect(git("branch", "--list", clean.agent.worktree.branch)).toBe("");
 
         const dirtyFrom = await parent.run(
-          'Make one agent tool call in the foreground with subagent_type "pstack:poteto-agent", isolation "worktree", description "wt-dirty", prompt "Use the bash tool to run exactly: echo hi > note.txt. Then reply with exactly one word: done". Then reply with exactly one word: ok.',
+          'Make one agent tool call in the foreground with subagent_type "mstack:melbs-agent", isolation "worktree", description "wt-dirty", prompt "Use the bash tool to run exactly: echo hi > note.txt. Then reply with exactly one word: done". Then reply with exactly one word: ok.',
         );
         const dirty = agentByDescription(file, "wt-dirty").at(-1);
-        expect(dirty.agent.subagentType).toBe("pstack:poteto-agent");
-        expect(sections(childEntries(dirty)).addendum).toContain(agentBody("agents/poteto-agent.md"));
+        expect(dirty.agent.subagentType).toBe("mstack:melbs-agent");
+        expect(sections(childEntries(dirty)).addendum).toContain(agentBody("agents/melbs-agent.md"));
         const [dirtyResult] = parent.toolResults("agent", dirtyFrom);
         expect(textOf(dirtyResult)).toContain(`worktree: ${dirty.agent.worktree.path} (branch ${dirty.agent.worktree.branch})`);
         expect(readFileSync(join(dirty.agent.worktree.path, "note.txt"), "utf8")).toBe("hi\n");

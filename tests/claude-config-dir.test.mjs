@@ -15,7 +15,7 @@ const CLAUDE_DIR = new RegExp(
     /(?:\.claude|CLAUDE_CONFIG_DIR)\}?\/(?:projects|shell-snapshots)\b/,
     /(?:~|(?<![A-Z_])HOME\}?|CLAUDE_CONFIG_DIR\}?)\/(?:\.claude\}?\/)?(?:skills|plugins)\b/,
     /\0\/plugins\b/,
-    // pstack's own orchestrate store and setup-pstack's resolved include line stay under ~/.claude.
+    // pstack's own orchestrate store and setup-mstack's resolved include line stay under ~/.claude.
     /(?:~|(?<![A-Z_])\$\{?HOME\}?)\/\.claude\/(?!orchestrate\b|pstack-models\.md\b)/,
   ]
     .map((pattern) => pattern.source)

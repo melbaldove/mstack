@@ -48,7 +48,7 @@ function view_rule(    path) {
 function task_rule(    type, model) {
   type = arg("agent_type")
   model = arg("model")
-  if (JBAD || index(type, "pstack:") != 1 || model == "") return
+  if (JBAD || index(type, "mstack:") != 1 || model == "") return
   if (!sheet_read(sheet) || sheet_problems() != "") return
   if (model in SHEET_MODELS) return
   if (MODEL_LIST == "") {
@@ -57,7 +57,7 @@ function task_rule(    type, model) {
   }
   deny("pstack model check: `" model "` is not one of the user's saved pstack model choices (" sheet "). Set `model` to the model saved for this role: one of " MODEL_LIST "." \
     (MODEL_ALIASES ? " A role saved as inherit-parent or auto omits `model`." : "") \
-    " To change the choices, the user reruns setup-pstack.")
+    " To change the choices, the user reruns setup-mstack.")
 }
 
 # Tokenize a strict shell form, then let the registered script contract select

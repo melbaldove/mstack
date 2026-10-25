@@ -4,4 +4,4 @@ description: aim a task at what you are really after, the way a top expert would
 disable-model-invocation: true
 ---
 
-Invoke the `sharpen` skill and follow it. Resolve Claude tool names, Claude model names, and Claude built-in skills through `poteto-mode/references/codex-tools.md`, including its Per-skill notes.
+Invoke the `sharpen` skill and follow it. Resolve Claude tool names, Claude model names, and Claude built-in skills through `melbs-mode/references/codex-tools.md`, including its Per-skill notes.

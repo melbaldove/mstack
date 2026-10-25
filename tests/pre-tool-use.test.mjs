@@ -13,7 +13,7 @@ const pluginRoot = fileURLToPath(new URL("../plugins/pstack/", import.meta.url))
 const preToolUse = JSON.parse(readFileSync(join(pluginRoot, "hooks/copilot-hooks.json"), "utf8")).hooks.PreToolUse;
 const command = preToolUse[0].hooks[0].command;
 const allow = '{"permissionDecision":"allow"}\n';
-const playbook = join(pluginRoot, "skills/poteto-mode/playbooks/bug-fix.md");
+const playbook = join(pluginRoot, "skills/melbs-mode/playbooks/bug-fix.md");
 
 // Copilot sends Claude-format input to PascalCase hooks (observed on Copilot
 // CLI 1.0.89): tool_name is the Claude name, so `view` arrives as `Read`.
@@ -173,7 +173,7 @@ const runWith = (sheetText, payload, extraEnv = {}) => {
 const quiet = { status: 0, out: "", err: "" };
 
 describe("PreToolUse model check for pstack agents", () => {
-  const agent = (model, agent_type = "pstack:poteto-agent") =>
+  const agent = (model, agent_type = "mstack:melbs-agent") =>
     input("Agent", { agent_type, model, mode: "background", name: "w", prompt: "do it" });
 
   test("allows by silence a model the sheet names, in any role or panel slot", () => {
@@ -189,7 +189,7 @@ describe("PreToolUse model check for pstack agents", () => {
     expect(reason).toContain("`claude-haiku-4.5` is not one of the user's saved pstack model choices");
     expect(reason).toContain("one of `gpt-5.5`, `claude-opus-5.5`, `claude-sonnet-5`, `gemini-3.8-flash`.");
     expect(reason.match(/`gpt-5.5`/g)).toHaveLength(1);
-    expect(reason).toContain("setup-pstack");
+    expect(reason).toContain("setup-mstack");
   });
 
   test("a role value's effort suffix does not change the model it names", () => {
@@ -200,7 +200,7 @@ describe("PreToolUse model check for pstack agents", () => {
   });
 
   test("the camelCase task form is checked too", () => {
-    const payload = JSON.stringify({ toolName: "task", toolArgs: { agent_type: "pstack:comment-sicko", model: "o9" } });
+    const payload = JSON.stringify({ toolName: "task", toolArgs: { agent_type: "mstack:comment-sicko", model: "o9" } });
     expect(deny(runWith(sheet(), payload).out)).toContain("`o9`");
   });
 
@@ -216,10 +216,10 @@ describe("PreToolUse model check for pstack agents", () => {
   });
 
   const silent = {
-    "a call with no model": [sheet(), input("Agent", { agent_type: "pstack:poteto-agent", prompt: "x" })],
+    "a call with no model": [sheet(), input("Agent", { agent_type: "mstack:melbs-agent", prompt: "x" })],
     "an empty model": [sheet(), agent("")],
     "a non-pstack agent": [sheet(), agent("claude-haiku-4.5", "general-purpose")],
-    "an agent type that only contains pstack:": [sheet(), agent("claude-haiku-4.5", "my-pstack:agent")],
+    "an agent type that only contains mstack:": [sheet(), agent("claude-haiku-4.5", "my-pstack:agent")],
     "no sheet": [null, agent("claude-haiku-4.5")],
     "a sheet with no role lines": ["session hook: on\n", agent("claude-haiku-4.5")],
     "a sheet missing a role": [sheet({ drop: "hillclimb" }), agent("claude-haiku-4.5")],
@@ -243,7 +243,7 @@ describe("PreToolUse model check for pstack agents", () => {
     const invoke = (relative, args = []) => spawnSync("sh", [join(pluginRoot, relative), ...args], {
       env: { PATH: process.env.PATH, ...env }, encoding: "utf8",
     });
-    const checked = invoke("skills/setup-pstack/scripts/check-sheet.sh");
+    const checked = invoke("skills/setup-mstack/scripts/check-sheet.sh");
     expect({ status: checked.status, out: checked.stdout, err: checked.stderr }).toEqual({ status: 0, out: "sheet ok\n", err: "" });
     const started = invoke("hooks/session-start.sh", ["copilot"]);
     expect(started.status).toBe(0);
@@ -283,15 +283,15 @@ describe("PreToolUse vendored script runs", () => {
     "a log with prose resembling an outside path": `bash ${log} log.tsv review /outside/private.txt why evidence result`,
     "surrounding spaces": `  bash ${log} log.tsv review decision why evidence result  `,
     "direct execution": `${log} log.tsv review decision why evidence result`,
-    "a project flag with an absolute value": `node ${root}/skills/poteto-mode/scripts/resume.mjs begin --project=${workspace}`,
-    "a project flag with a relative value": `node ${root}/skills/poteto-mode/scripts/resume.mjs begin --project=.`,
-    "resume defaults": `node ${root}/skills/poteto-mode/scripts/resume.mjs read`,
-    "resume publication": `node ${root}/skills/poteto-mode/scripts/resume.mjs publish --note note.md --artifact=a.md --artifact b.md`,
+    "a project flag with an absolute value": `node ${root}/skills/melbs-mode/scripts/resume.mjs begin --project=${workspace}`,
+    "a project flag with a relative value": `node ${root}/skills/melbs-mode/scripts/resume.mjs begin --project=.`,
+    "resume defaults": `node ${root}/skills/melbs-mode/scripts/resume.mjs read`,
+    "resume publication": `node ${root}/skills/melbs-mode/scripts/resume.mjs publish --note note.md --artifact=a.md --artifact b.md`,
     "a relative transcript directory": `node ${find} notes/today prompt`,
-    "a playbook check": `node ${root}/skills/poteto-mode/scripts/check-playbooks.mjs`,
-    "a playbook check in a project": `node ${root}/skills/poteto-mode/scripts/check-playbooks.mjs .`,
-    "an audit with defaults": `node ${root}/skills/poteto-mode/scripts/worktree-audit.mjs`,
-    "an audit with explicit roots": `node ${root}/skills/poteto-mode/scripts/worktree-audit.mjs . transcripts more-transcripts`,
+    "a playbook check": `node ${root}/skills/melbs-mode/scripts/check-playbooks.mjs`,
+    "a playbook check in a project": `node ${root}/skills/melbs-mode/scripts/check-playbooks.mjs .`,
+    "an audit with defaults": `node ${root}/skills/melbs-mode/scripts/worktree-audit.mjs`,
+    "an audit with explicit roots": `node ${root}/skills/melbs-mode/scripts/worktree-audit.mjs . transcripts more-transcripts`,
   };
   for (const [name, command] of Object.entries(allowed)) {
     test(`approves ${name}`, () => expect(run(bash(command), env)).toEqual({ status: 0, out: allow, err: "" }));
@@ -315,10 +315,10 @@ describe("PreToolUse vendored script runs", () => {
     "a wrong interpreter for a registered script": `sh ${find} ${workspace} prompt`,
     "an incomplete transcript command": `node ${find} ${workspace}`,
     "an incomplete log command": `bash ${log} log.tsv review`,
-    "an unknown resume option": `node ${root}/skills/poteto-mode/scripts/resume.mjs begin --new-option=path`,
-    "a missing resume option value": `node ${root}/skills/poteto-mode/scripts/resume.mjs begin --project`,
-    "a read with publication arguments": `node ${root}/skills/poteto-mode/scripts/resume.mjs read --note note.md`,
-    "a publication without a note": `node ${root}/skills/poteto-mode/scripts/resume.mjs publish --artifact a.md`,
+    "an unknown resume option": `node ${root}/skills/melbs-mode/scripts/resume.mjs begin --new-option=path`,
+    "a missing resume option value": `node ${root}/skills/melbs-mode/scripts/resume.mjs begin --project`,
+    "a read with publication arguments": `node ${root}/skills/melbs-mode/scripts/resume.mjs read --note note.md`,
+    "a publication without a note": `node ${root}/skills/melbs-mode/scripts/resume.mjs publish --artifact a.md`,
     "a chained rm": `node ${find} ${workspace} prompt;rm -rf ~`,
     "a spaced chain": `node ${find} ${workspace} prompt ; rm -rf ~`,
     "command substitution": `node ${find} ${workspace} prompt $(whoami)`,
@@ -348,13 +348,13 @@ describe("PreToolUse vendored script runs", () => {
     "a .. script path": `node ${root}/skills/reflect/scripts/../../../hooks/session-start.sh`,
     "a .. argument": `node ${find} ${workspace} prompt ../../etc/passwd`,
     "a quoted .. argument": `node ${find} ${workspace} prompt '../x'`,
-    "a relative flag that climbs into a sibling": `node ${root}/skills/poteto-mode/scripts/resume.mjs begin --project=../outside`,
-    "a relative flag naming the parent": `node ${root}/skills/poteto-mode/scripts/resume.mjs begin --project=..`,
+    "a relative flag that climbs into a sibling": `node ${root}/skills/melbs-mode/scripts/resume.mjs begin --project=../outside`,
+    "a relative flag naming the parent": `node ${root}/skills/melbs-mode/scripts/resume.mjs begin --project=..`,
     "an absolute argument outside the workspace": `bash ${log} /etc/profile review decision why evidence result`,
     // A path operand in the plugin could rewrite the context every session loads.
     "a log appended to the plugin's session context": `bash ${log} ${root}/hooks/session-start-copilot.md review decision why evidence result`,
-    "a path in the plugin": `node ${root}/skills/poteto-mode/scripts/check-plan.mjs ${root}/skills/reflect/SKILL.md`,
-    "a flag holding an outside path": `node ${root}/skills/poteto-mode/scripts/resume.mjs begin --project=/etc/x`,
+    "a path in the plugin": `node ${root}/skills/melbs-mode/scripts/check-plan.mjs ${root}/skills/reflect/SKILL.md`,
+    "a flag holding an outside path": `node ${root}/skills/melbs-mode/scripts/resume.mjs begin --project=/etc/x`,
     "a sibling prefix": `node ${root}-evil/skills/reflect/scripts/find-transcript.mjs`,
     "a script outside scripts/": `node ${root}/skills/reflect/SKILL.md`,
     "a hook script": `sh ${root}/hooks/session-start.sh`,
@@ -394,7 +394,7 @@ describe("PreToolUse vendored script runs", () => {
     try {
       expect(run(bash(`bash ${log} ${link}/log.tsv review decision why evidence result`), env)).toEqual(quiet);
       expect(run(bash(`bash ${log} linked-outside/log.tsv review decision why evidence result`), env)).toEqual(quiet);
-      expect(run(bash(`node ${root}/skills/poteto-mode/scripts/resume.mjs begin --project=linked-outside`), env)).toEqual(quiet);
+      expect(run(bash(`node ${root}/skills/melbs-mode/scripts/resume.mjs begin --project=linked-outside`), env)).toEqual(quiet);
     } finally {
       rmSync(link);
       rmSync(outside, { recursive: true });
@@ -425,8 +425,8 @@ describe("PreToolUse vendored script runs", () => {
     expect(run(bash(`bash ${log} session-start-copilot.md review decision why evidence result`, join(root, "hooks")), env)).toEqual(quiet);
   });
 
-  // setup-pstack runs its sheet check in this form after it writes the sheet.
-  test("approves setup-pstack's sheet check", () => {
-    expect(run(bash(`sh ${root}/skills/setup-pstack/scripts/check-sheet.sh`), env)).toEqual({ status: 0, out: allow, err: "" });
+  // setup-mstack runs its sheet check in this form after it writes the sheet.
+  test("approves setup-mstack's sheet check", () => {
+    expect(run(bash(`sh ${root}/skills/setup-mstack/scripts/check-sheet.sh`), env)).toEqual({ status: 0, out: allow, err: "" });
   });
 });

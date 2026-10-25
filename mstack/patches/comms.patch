@@ -1,0 +1,82 @@
+diff --git a/README.md b/README.md
+index b64f8f6..cdffc7c 100644
+--- a/README.md
++++ b/README.md
+@@ -1,5 +1,7 @@
+ # pstack
+ 
++**This is mstack**, Melbourne Baldove's fork of [pstack-claude](https://github.com/michael-denyer/pstack-claude). It renames the plugin to `mstack` and `poteto-mode` to `melbs-mode`, and has replies follow the user's own Communication rules. See [`mstack/README.md`](mstack/README.md).
++
+ [![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-support-yellow?logo=buy-me-a-coffee&logoColor=white)](https://buymeacoffee.com/codenyer)
+ 
+ Lauren Tan's [pstack](https://github.com/cursor/plugins/tree/main/pstack) is an opinionated Cursor skill stack that improves agent outcomes. This is a port for Claude Code, Codex, Pi, GitHub Copilot, Muse, and other agent harnesses. It tracks upstream and also carries named policy forks, each declared in [`tools/forks.json`](tools/forks.json).
+diff --git a/plugins/pstack/skills/melbs-help/references/prompting.md b/plugins/pstack/skills/melbs-help/references/prompting.md
+index 6b72b2e..2d03a05 100644
+--- a/plugins/pstack/skills/melbs-help/references/prompting.md
++++ b/plugins/pstack/skills/melbs-help/references/prompting.md
+@@ -48,4 +48,4 @@ A prompt states the intent and the check for done. The playbook supplies the ste
+ 
+ - Restate the goal: "i said the goal is to repro. i did not ask for a fix yet."
+ - Name the principle: "apply prove it works. show me the real output, not the build log."
+-- A principle name works because the agent already read the rule. Its reply names the decision the rule changed.
++- A principle name works because the agent already read the rule.
+diff --git a/plugins/pstack/skills/melbs-mode/SKILL.md b/plugins/pstack/skills/melbs-mode/SKILL.md
+index 179fba9..0334abb 100644
+--- a/plugins/pstack/skills/melbs-mode/SKILL.md
++++ b/plugins/pstack/skills/melbs-mode/SKILL.md
+@@ -1,6 +1,6 @@
+ ---
+ name: melbs-mode
+-description: poteto's agent style for concise, detailed responses, deliberate subagents, unslopped prose, simple code, and verified work. Use for poteto, /melbs-mode, or requests to work in this style.
++description: Melbourne's agent style for terse, precise replies, deliberate subagents, unslopped prose, simple code, and verified work. Use for melbs, /melbs-mode, or requests to work in this style.
+ ---
+ 
+ # Melbs mode
+@@ -15,7 +15,7 @@ Use the session's task-tracking tools for the todolist. On Claude Code these are
+ 
+ ## Non-negotiables
+ 
+-The Principles section below grounds every trigger. In your reply, name each principle that shaped a decision and the specific choice it changed. Cite only principles whose leaf SKILL.md you read this session.
++The Principles section below grounds every trigger. Cite only principles whose leaf SKILL.md you read this session.
+ 
+ Remaining triggers:
+ 
+@@ -109,21 +109,16 @@ You own every subagent's work. Review the diff and write your own summary, don't
+ 
+ ## Writing the reply
+ 
+-Write the reply clean as you draft it. A cleanup pass after drafting does not remove these patterns.
++Write replies to the user per the **Communication** rules in the user's global agent instructions. They override any reply format a playbook or skill names. A playbook's **Reply** line lists what its reply can cover. Include each item the user needs, in the form the Communication rules choose.
+ 
+-- **Short declarative sentences.** One thought per sentence, ended with a period.
+-- **No long-dash character anywhere.** Write a file-list bullet as a sentence ("`main.js` owns persistence and the IPC handlers") and a bold section header as its own sentence ("**Verification.** End to end via CDP").
+-- **A colon as a mid-sentence connector is also out** (unslop rule 14). A colon before a list is fine.
+-- **Terse is not an excuse to drop content.** Every item the playbook's reply names stays. Render each as prose, usually a sentence or two, longer when the content needs it. No section headers, and no item expanded into its own block.
+-- **Frame impact for the consumer and the maintainer.** Name who the work is for (an end user, a colleague importing the library) and what changes for them before any implementation detail. Then what the next engineer who owns this code inherits. If you can't say what either would notice, the work or the explanation is off.
+ - **Never fabricate a link, citation, or transcript reference.** Link only artifacts you produced or read this session.
+-- **Every claim carries its evidence or its label in the same sentence.** Measured, inferred, or guess. A prediction or an unseen cause is a guess. Never hand the human a check you could run.
++- **Never hand the user a check you could run.**
+ 
+-Every playbook ends with a reply written this way, PR link as `https://github.com/<owner>/<repo>/pull/<number>`. Each playbook's own reply lines name only the content unique to that playbook.
++Give a PR link as `https://github.com/<owner>/<repo>/pull/<number>`.
+ 
+ ## Comments
+ 
+-Comments follow the same rule as the reply. Write them clean as you go. Keep a comment only for a non-obvious *why* the code can't show. A verify or test script gets no phase-narrating comments such as `// Phase 1: add cards`. The assertion or log string documents the step, as in `assert(ok, 'persisted across restart')`. This applies to every file you produce, including the delegate's diff.
++Write comments clean as you go. Keep a comment only for a non-obvious *why* the code can't show. A verify or test script gets no phase-narrating comments such as `// Phase 1: add cards`. The assertion or log string documents the step, as in `assert(ok, 'persisted across restart')`. This applies to every file you produce, including the delegate's diff.
+ 
+ ## Playbooks
+ 
+diff --git a/plugins/pstack/skills/unslop/SKILL.md b/plugins/pstack/skills/unslop/SKILL.md
+index be42292..c5a7c71 100644
+--- a/plugins/pstack/skills/unslop/SKILL.md
++++ b/plugins/pstack/skills/unslop/SKILL.md
+@@ -7,6 +7,8 @@ description: Cut AI tells from any writing.
+ 
+ Edit text to remove AI patterns. Scan for the patterns below, then rewrite. Preserve meaning and match the intended tone.
+ 
++In replies to the user, the user's **Communication** rules win where they conflict with a pattern here, such as rules 28 and 33 on dense sentences.
++
+ ## Patterns to detect and fix
+ 
+ Rule numbers are stable ids that other skills cite. A removed rule leaves a gap.

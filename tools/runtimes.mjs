@@ -5,12 +5,12 @@
 import { code, codeList, PLUGIN, SKILLS } from "./plugin.mjs";
 
 // Every runtime other than Claude Code that reads the skills through a mapping
-// file under poteto-mode/references/. A row gives the runtime the generated
+// file under melbs-mode/references/. A row gives the runtime the generated
 // Model names section in its mapping file, and a row with a `key` its
 // models.json block, checked by `checkModels`. A `skillPreambles` runtime also gets a preamble under
 // the first heading of each skill its Per-skill notes table lists, and a
 // runtime with a `prompts` directory a slash stub per public skill there. Pi
-// has neither: its one pointer is hand-written in poteto-mode's Platform
+// has neither: its one pointer is hand-written in melbs-mode's Platform
 // Adaptation section. `manifest` is the file the generator stamps VERSION
 // into, `validate` checks the runtime's packaging against the tree once that
 // manifest parses, and `hooks` lists the hooks files the manifest names,
@@ -71,10 +71,10 @@ export const RUNTIMES = [
   },
 ].map((runtime) => ({
   ...runtime,
-  tools: `${SKILLS}/poteto-mode/references/${runtime.mapping}`,
+  tools: `${SKILLS}/melbs-mode/references/${runtime.mapping}`,
   notesHeader: `| Skill | On ${runtime.name} |`,
   preamble: runtime.skillPreambles
-    ? `On ${runtime.name}, read the [platform mapping](../poteto-mode/references/${runtime.mapping}), ` +
+    ? `On ${runtime.name}, read the [platform mapping](../melbs-mode/references/${runtime.mapping}), ` +
       "including its per-skill notes, before following this skill."
     : null,
 }));
@@ -136,8 +136,8 @@ export function validateMuseManifest(manifest, { claude, pathExists }) {
       }
     }
   }
-  if (!manifest.capabilities.skills.some((entry) => entry.id === "poteto-mode")) {
-    throw new Error(`${at}: capabilities.skills has no "poteto-mode"`);
+  if (!manifest.capabilities.skills.some((entry) => entry.id === "melbs-mode")) {
+    throw new Error(`${at}: capabilities.skills has no "melbs-mode"`);
   }
   const hooks = manifest.capabilities?.hooks ?? [];
   const sessionStart = hooks.filter((hook) => hook.event === "SessionStart");
@@ -199,7 +199,7 @@ function tierModelNamesSection(models, { label, block, worker, panel, dispatch, 
     panel(codeList(block.panel)) +
     "\n\n" +
     (dispatch ? `${dispatch}\n\n` : "") +
-    `\`/setup-pstack\` writes the configured model list. On ${label}, set it to your ${ids}.`
+    `\`/setup-mstack\` writes the configured model list. On ${label}, set it to your ${ids}.`
   );
 }
 
@@ -254,7 +254,7 @@ export function piModelNamesSection(models) {
     "parent's current model. Diverse-model panels (`arena`, `architect`, `interrogate`, `how` critics, `reflect`) " +
     "stay diverse only while their aliases resolve to distinct models. If one model family is all you can reach, " +
     "vary the reasoning effort and note in the verdict that diversity was reduced.\n\n" +
-    "`/setup-pstack` writes the configured model list. On Pi, keep the aliases and remap them with `pi models:`."
+    "`/setup-mstack` writes the configured model list. On Pi, keep the aliases and remap them with `pi models:`."
   );
 }
 
@@ -311,7 +311,7 @@ export function validatePiPackage(text, { pathExists }) {
 export const roleSkills = (models) => [...new Set(models.roles.map((r) => r.skill))].sort();
 
 // Copilot ships no default slugs: the models a Copilot account can reach vary
-// by plan and policy, so the user picks them in setup-pstack.
+// by plan and policy, so the user picks them in setup-mstack.
 export function copilotModelNamesSection(models) {
   return (
     "Skills name Claude Code model aliases in their Models sections. Those aliases are not Copilot model IDs, " +
@@ -328,12 +328,12 @@ export function copilotModelNamesSection(models) {
     ") and read and write exactly that path; do not append `.copilot` or any other segment to it. A session with its " +
     "own `COPILOT_HOME` then never touches `~/.copilot`.\n" +
     `- No sheet, or the hook reports \`sheet invalid\`: before a skill that needs a role model (${roleSkills(models).map(code).join(", ")}), stop, load ` +
-    "`setup-pstack` with the `skill` tool, and finish it first. In that same session, use the values it just wrote; " +
+    "`setup-mstack` with the `skill` tool, and finish it first. In that same session, use the values it just wrote; " +
     "later sessions get them from the hook. Do not ask again on later runs.\n" +
     "- A role line in the sheet is the user's explicit model instruction, so pass it as the `task` tool's " +
     "`model` parameter. `inherit-parent` or `auto` omits `model`.\n" +
     "- The plugin's `PreToolUse` hook enforces this for pstack agents. While the sheet is valid, it denies a `task` " +
-    "call whose `agent_type` starts with `pstack:` and whose `model` is not one of the sheet's values, and its reason " +
+    "call whose `agent_type` starts with `mstack:` and whose `model` is not one of the sheet's values, and its reason " +
     "lists the saved IDs. Retry with the role's saved model; never retry on another unsaved model. It leaves calls " +
     "with no `model` and other agent types alone.\n" +
     `- Roles that default to the worker model (${tierRoles(models, "worker")}): the worker model the user chose.\n` +
@@ -343,9 +343,9 @@ export function copilotModelNamesSection(models) {
     "signal comes from model diversity, so fill a panel from distinct vendors in the `task` tool's `model` " +
     "list (Claude, GPT, Gemini, Grok, and so on). pstack ships no default Copilot panel. If only one vendor is " +
     "reachable, vary reasoning effort and note in the verdict that diversity was reduced.\n\n" +
-    "`setup-pstack` lists the models from the `model` enum of the `task` tool and writes only IDs it saw there. " +
+    "`setup-mstack` lists the models from the `model` enum of the `task` tool and writes only IDs it saw there. " +
     "After it writes the sheet, it runs its `check-sheet.sh` script, which applies the hook's checks.\n\n" +
-    "Run `setup-pstack`, and the parent session that orchestrates a panel, on a model at least as strong as " +
+    "Run `setup-mstack`, and the parent session that orchestrates a panel, on a model at least as strong as " +
     "gpt-5.4-mini or a Sonnet-class Claude model. On a Haiku-class model, setup picked models the user never " +
     "chose in about half of the smoke runs."
   );

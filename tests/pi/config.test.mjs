@@ -17,7 +17,7 @@ test("depth comes from the reader on each use and PI_CODING_AGENT_DIR moves the 
   expect(defaultSettings(() => 0, {}).agentDir).toBe(join(homedir(), ".pi", "agent"));
 });
 
-test("an agent file loads as pstack:<name> with its body and model, and an effort is checked against models.json", () => {
+test("an agent file loads as mstack:<name> with its body and model, and an effort is checked against models.json", () => {
   const root = mkdtempSync(join(tmpdir(), "pstack-agents-"));
   try {
     const models = { available: [], efforts: ["low"], pi: { fallback: "anthropic", models: {} } };
@@ -25,7 +25,7 @@ test("an agent file loads as pstack:<name> with its body and model, and an effor
     mkdirSync(join(root, "agents"));
     writeFileSync(join(root, "agents", "slow.md"), "---\nmodel: opus\n---\nbody\n");
     const settings = { pluginRoot: root, modelsFile: join(root, "models.json") };
-    expect(loadAgentTypes(settings).get("pstack:slow")).toEqual({ body: "body", model: "opus" });
+    expect(loadAgentTypes(settings).get("mstack:slow")).toEqual({ body: "body", model: "opus" });
     expect(checkEffort("low", settings)).toBe("low");
     expect(() => checkEffort("medium", settings)).toThrow('effort "medium" is not one of low');
   } finally {
