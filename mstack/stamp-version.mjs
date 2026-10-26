@@ -1,16 +1,18 @@
-import { createHash } from "node:crypto";
-import { readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { readFileSync, writeFileSync } from "node:fs";
 
 const upstream = process.argv[2];
 if (!upstream) throw new Error("usage: bun mstack/stamp-version.mjs <upstream-sha>");
 
-const forkInputs = ["mstack/rename.mjs", ...readdirSync("mstack/patches").sort().map((file) => `mstack/patches/${file}`)];
-const digest = createHash("sha256");
-for (const file of forkInputs) digest.update(readFileSync(file));
+const forkInputs = ["mstack/rename.mjs", "mstack/patches"];
+const git = (...args) => execFileSync("git", args, { encoding: "utf8" }).trim();
+const committedChanges = Number(git("rev-list", "--count", "HEAD", "--", ...forkInputs));
+const pendingChange = git("status", "--porcelain", "--", ...forkInputs) ? 1 : 0;
+const forkBuild = committedChanges + pendingChange;
+if (forkBuild > 9999) throw new Error("the fork build number no longer fits in four digits");
 
 const [major, minor, patch] = readFileSync("VERSION", "utf8").trim().split(".");
-const build = String(parseInt(digest.digest("hex").slice(0, 8), 16) % 1000).padStart(3, "0");
-const version = `${major}.${minor}.${patch}${build}`;
+const version = `${major}.${minor}.${patch}${String(forkBuild).padStart(4, "0")}`;
 writeFileSync("VERSION", `${version}\n`);
 
 const changes = readFileSync("CHANGES.md", "utf8");
