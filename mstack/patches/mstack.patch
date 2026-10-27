@@ -1,5 +1,5 @@
 diff --git a/.claude-plugin/marketplace.json b/.claude-plugin/marketplace.json
-index 666d82b..1f6689c 100644
+index ec2ee0e..3808042 100644
 --- a/.claude-plugin/marketplace.json
 +++ b/.claude-plugin/marketplace.json
 @@ -4,7 +4,7 @@
@@ -85,7 +85,7 @@ index 0000000..b954636
 +
 +Invoke the `shape` skill and follow it. Resolve Claude tool names, Claude model names, and Claude built-in skills through `melbs-mode/references/codex-tools.md`, including its Per-skill notes.
 diff --git a/plugins/pstack/.muse-plugin/plugin.json b/plugins/pstack/.muse-plugin/plugin.json
-index 5915abd..669dba4 100644
+index e89e0dc..5b654f1 100644
 --- a/plugins/pstack/.muse-plugin/plugin.json
 +++ b/plugins/pstack/.muse-plugin/plugin.json
 @@ -40,11 +40,21 @@
@@ -189,6 +189,23 @@ index f94749c..07c3934 100644
  - The rigor level, biased high. One-way doors and high blast radius get more. Reversible low-stakes steps get less. Rigor is gates and artifacts, not "try harder".
  
  Present the framing and tradeoffs before committing to a long run. Reversible work proceeds (the **never-block-on-the-human** principle skill), but a multi-hour run earns one checkpoint.
+diff --git a/plugins/pstack/skills/ketchup/SKILL.md b/plugins/pstack/skills/ketchup/SKILL.md
+index 6a61942..3d923d9 100644
+--- a/plugins/pstack/skills/ketchup/SKILL.md
++++ b/plugins/pstack/skills/ketchup/SKILL.md
+@@ -33,10 +33,10 @@ For a call between options, give every option the work weighed, each with what i
+ 
+ ## Visuals
+ 
+-A visual is a picture: a screenshot, a video, a Mermaid diagram, a chart or diagram you render from the data, or a generated image. A Markdown table is not a visual, even with before and after columns.
++A visual is a picture: a screenshot, a video, a D2 diagram rendered to SVG, a chart or diagram you render from the data, or a generated image. A Markdown table is not a visual, even with before and after columns.
+ 
+ When something is easier to grasp as a picture than as sentences, draw it: how a design or system works, a PR stack or dependency chain with each PR's state, a before and after of a fix, or options side by side. Never draw a status list, a list of action items, or boxes with nothing connecting them. Never give a fact twice, in text or across visuals.
+ 
+ Keep each visual small enough to read at a glance: at most six boxes, with at most eight words in each. Write labels as plain words a person would say, not tags like "Tests: pass". A fact that needs a sentence belongs in the text, or nowhere.
+ 
+-Embed screenshots and videos inline when the change is visible, not only as links. If a visible change has none, mark its summary line "No screenshot yet," and say there what changed on screen. Draw diagrams and charts from facts you have: a Mermaid diagram for how things connect and a chart rendered from the data for numbers. Never invent a number, and never draw or generate a picture of a screen you did not capture. Link only artifacts that exist.
++Embed screenshots and videos inline when the change is visible, not only as links. If a visible change has none, mark its summary line "No screenshot yet," and say there what changed on screen. Draw diagrams and charts from facts you have: a D2 diagram rendered to SVG for how things connect and a chart rendered from the data for numbers. Never invent a number, and never draw or generate a picture of a screen you did not capture. Link only artifacts that exist.
 diff --git a/plugins/pstack/skills/melbs-help/references/prompting.md b/plugins/pstack/skills/melbs-help/references/prompting.md
 index 6b72b2e..2d03a05 100644
 --- a/plugins/pstack/skills/melbs-help/references/prompting.md
