@@ -1,5 +1,5 @@
 diff --git a/.claude-plugin/marketplace.json b/.claude-plugin/marketplace.json
-index ec2ee0e..3808042 100644
+index c85cfe5..e79deae 100644
 --- a/.claude-plugin/marketplace.json
 +++ b/.claude-plugin/marketplace.json
 @@ -4,7 +4,7 @@
@@ -12,7 +12,7 @@ index ec2ee0e..3808042 100644
      {
        "name": "mstack",
 diff --git a/README.md b/README.md
-index b64f8f6..cdffc7c 100644
+index 45fc201..debf5d5 100644
 --- a/README.md
 +++ b/README.md
 @@ -1,5 +1,7 @@
@@ -24,15 +24,15 @@ index b64f8f6..cdffc7c 100644
  
  Lauren Tan's [pstack](https://github.com/cursor/plugins/tree/main/pstack) is an opinionated Cursor skill stack that improves agent outcomes. This is a port for Claude Code, Codex, Pi, GitHub Copilot, Muse, and other agent harnesses. It tracks upstream and also carries named policy forks, each declared in [`tools/forks.json`](tools/forks.json).
 diff --git a/docs/reference.md b/docs/reference.md
-index 94b6647..8721231 100644
+index 09478d2..94b9aae 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
 @@ -4,13 +4,16 @@ Start with the [README](../README.md) for installation and your first task.
  
  ## Slash commands
  
--The package includes 65 skill directories: 41 public skills and 24 `principle-*` references. Claude Code uses `/mstack:<name>`, Pi uses `/skill:<name>`, and Muse lists each user-invocable skill as `/<name>`. In Codex, request a skill by name or install the [optional shortcuts](#codex) for the `/name` form below.
-+The package includes 68 skill directories: 44 public skills and 24 `principle-*` references. Claude Code uses `/mstack:<name>`, Pi uses `/skill:<name>`, and Muse lists each user-invocable skill as `/<name>`. In Codex, request a skill by name or install the [optional shortcuts](#codex) for the `/name` form below.
+-The package includes 67 skill directories: 43 public skills and 24 `principle-*` references. Claude Code uses `/mstack:<name>`, Pi uses `/skill:<name>`, and Muse lists each user-invocable skill as `/<name>`. In Codex, request a skill by name or install the [optional shortcuts](#codex) for the `/name` form below.
++The package includes 70 skill directories: 46 public skills and 24 `principle-*` references. Claude Code uses `/mstack:<name>`, Pi uses `/skill:<name>`, and Muse lists each user-invocable skill as `/<name>`. In Codex, request a skill by name or install the [optional shortcuts](#codex) for the `/name` form below.
  
  Find each skill's instructions in the [skills tree](../plugins/pstack/skills/).
  
@@ -85,7 +85,7 @@ index 0000000..b954636
 +
 +Invoke the `shape` skill and follow it. Resolve Claude tool names, Claude model names, and Claude built-in skills through `melbs-mode/references/codex-tools.md`, including its Per-skill notes.
 diff --git a/plugins/pstack/.muse-plugin/plugin.json b/plugins/pstack/.muse-plugin/plugin.json
-index e89e0dc..5b654f1 100644
+index 20e3774..5391c08 100644
 --- a/plugins/pstack/.muse-plugin/plugin.json
 +++ b/plugins/pstack/.muse-plugin/plugin.json
 @@ -40,11 +40,21 @@
@@ -110,7 +110,7 @@ index e89e0dc..5b654f1 100644
        {
          "id": "correct",
          "path": "skills/correct/SKILL.md",
-@@ -270,6 +280,11 @@
+@@ -275,6 +285,11 @@
          "path": "skills/setup-mstack/SKILL.md",
          "enabledDefault": true
        },
@@ -217,7 +217,7 @@ index 6b72b2e..2d03a05 100644
 -- A principle name works because the agent already read the rule. Its reply names the decision the rule changed.
 +- A principle name works because the agent already read the rule.
 diff --git a/plugins/pstack/skills/melbs-mode/SKILL.md b/plugins/pstack/skills/melbs-mode/SKILL.md
-index 179fba9..056de60 100644
+index 00f3bc3..e28caf4 100644
 --- a/plugins/pstack/skills/melbs-mode/SKILL.md
 +++ b/plugins/pstack/skills/melbs-mode/SKILL.md
 @@ -1,6 +1,6 @@
@@ -237,7 +237,7 @@ index 179fba9..056de60 100644
  
  Remaining triggers:
  
-@@ -109,21 +109,16 @@ You own every subagent's work. Review the diff and write your own summary, don't
+@@ -110,21 +110,16 @@ You own every subagent's work. Review the diff and write your own summary, don't
  
  ## Writing the reply
  
@@ -264,7 +264,7 @@ index 179fba9..056de60 100644
  ## Playbooks
  
 diff --git a/plugins/pstack/skills/melbs-mode/playbooks/autonomous-run.md b/plugins/pstack/skills/melbs-mode/playbooks/autonomous-run.md
-index ada1fd7..5cf4043 100644
+index 0da7b52..b269263 100644
 --- a/plugins/pstack/skills/melbs-mode/playbooks/autonomous-run.md
 +++ b/plugins/pstack/skills/melbs-mode/playbooks/autonomous-run.md
 @@ -2,12 +2,12 @@
@@ -276,7 +276,7 @@ index ada1fd7..5cf4043 100644
  2. Pick the wake mechanism using Claude Code's `loop` skill (a built-in, not a pstack skill). An event to watch (CI, a merge, a ref advancing) gets a watcher subagent that wakes you on the event, with a long time-based heartbeat as fallback. No event gets a fixed-interval heartbeat sized to when the result is worth re-checking. Pick each subagent's reasoning level for the job, per the Subagents section.
  3. Each iteration makes the smallest change the evidence justifies, verifies it against the predicate, commits if it advanced, discards changes that didn't help. Belt-and-suspenders that "might help" gets reverted, not left to ride.
     Sequence the work via the **sequence-verifiable-units** principle skill, verifying each unit before the next instead of batching checks at the end.
- 4. Mid-run discoveries are yours. Address broken skills, related bugs, flaky verifiers, review noise, tooling failures, orphaned follow-ups, and fixable drift yourself via melbs-mode. Put out-of-band fixes in their own PR. Do not park reversible work for the human or use `AskUserQuestion`. Surface only irreversible actions, genuine product or preference calls no experiment can settle, or a real dead end. Keep the predicate as the main drive, and return to it after each side fix.
+ 4. Mid-run discoveries that support the goal are yours. Address broken skills, related bugs, flaky verifiers, review noise, tooling failures, orphaned follow-ups, and fixable drift yourself via melbs-mode. Put out-of-band fixes in their own PR. Do not park reversible work for the human or use `AskUserQuestion`. Surface only irreversible actions, genuine product or preference calls no experiment can settle, or a real dead end. Keep the predicate as the main drive, and return to it after each side fix.
  5. Checkpoint every iteration via the **show-me-your-work** skill, a row for what changed and whether the predicate moved.
 -6. Stop when the predicate is met. A plateau is not a stop, so keep going and pivot your approach to push past it. Surface a genuine dead end rather than spinning, and never relax the predicate to declare victory.
 +6. Stop when the predicate is met, or when the time budget runs out. Within the budget a plateau is not a stop, so keep going and pivot your approach to push past it. Surface a genuine dead end rather than spinning, and never relax the predicate to declare victory. Cutting scope is different: drop the pitch's nice-to-haves in the open and report the cut. When the budget runs out, stop and report what passed and what is still unsolved. The unsolved part goes back to shaping.
