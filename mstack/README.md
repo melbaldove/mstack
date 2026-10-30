@@ -6,6 +6,8 @@ mstack is Melbourne Baldove's build of [pstack-claude](https://github.com/michae
 2. `patches/mstack.patch` carries every content change:
    - Replies follow the user's Communication rules, and code follows the user's Code rules, including no code comments.
    - The `shape`, `breadboard`, and `build` skills add a Shape Up workflow: shape a raw idea into a pitch with a fixed appetite, then build it within that time.
+   - `principle-earn-each-test` lets an agent commit a test only when it protects a behavior nothing else protects and the agent saw it fail, and `test-audit` prunes an existing suite to that bar.
+   - `principle-review-for-real-risk` limits a review to proven failures the change introduces, and stops the review-and-fix loop when a round finds no new real risk.
    - Under a pitch's appetite, the Autonomous run playbook stops when time runs out, `figure-it-out` compares its estimate to the appetite, and `principle-foundational-thinking` sets up only what the first working slice needs.
 
 `UPSTREAM` records the pstack-claude commit of the current build. `stamp-version.mjs` appends a four-digit fork build number to upstream's patch number, so 0.9.102 becomes a version such as 0.9.1020004. The build number counts the commits that changed the rename script or the patches, plus one while such a change is uncommitted, so the version only grows. Claude Code and Codex install a plugin update only when its version string changes, so every change to the fork reaches installed copies.

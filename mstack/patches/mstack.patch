@@ -1,5 +1,5 @@
 diff --git a/.claude-plugin/marketplace.json b/.claude-plugin/marketplace.json
-index c85cfe5..e79deae 100644
+index 43bca33..2052139 100644
 --- a/.claude-plugin/marketplace.json
 +++ b/.claude-plugin/marketplace.json
 @@ -4,7 +4,7 @@
@@ -24,7 +24,7 @@ index 45fc201..debf5d5 100644
  
  Lauren Tan's [pstack](https://github.com/cursor/plugins/tree/main/pstack) is an opinionated Cursor skill stack that improves agent outcomes. This is a port for Claude Code, Codex, Pi, GitHub Copilot, Muse, and other agent harnesses. It tracks upstream and also carries named policy forks, each declared in [`tools/forks.json`](tools/forks.json).
 diff --git a/docs/reference.md b/docs/reference.md
-index 09478d2..94b9aae 100644
+index 09478d2..291085d 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
 @@ -4,13 +4,16 @@ Start with the [README](../README.md) for installation and your first task.
@@ -32,7 +32,7 @@ index 09478d2..94b9aae 100644
  ## Slash commands
  
 -The package includes 67 skill directories: 43 public skills and 24 `principle-*` references. Claude Code uses `/mstack:<name>`, Pi uses `/skill:<name>`, and Muse lists each user-invocable skill as `/<name>`. In Codex, request a skill by name or install the [optional shortcuts](#codex) for the `/name` form below.
-+The package includes 70 skill directories: 46 public skills and 24 `principle-*` references. Claude Code uses `/mstack:<name>`, Pi uses `/skill:<name>`, and Muse lists each user-invocable skill as `/<name>`. In Codex, request a skill by name or install the [optional shortcuts](#codex) for the `/name` form below.
++The package includes 73 skill directories: 47 public skills and 26 `principle-*` references. Claude Code uses `/mstack:<name>`, Pi uses `/skill:<name>`, and Muse lists each user-invocable skill as `/<name>`. In Codex, request a skill by name or install the [optional shortcuts](#codex) for the `/name` form below.
  
  Find each skill's instructions in the [skills tree](../plugins/pstack/skills/).
  
@@ -45,6 +45,14 @@ index 09478d2..94b9aae 100644
  | `/how` | walk through how a subsystem works |
  | `/why` | investigate why something was built this way (parallel multi-MCP evidence) |
  | `/architect` | settle types and module shape before writing code that crosses a function boundary |
+@@ -19,6 +22,7 @@ Find each skill's instructions in the [skills tree](../plugins/pstack/skills/).
+ | `/automate-me` | draft your own personal -mode skill from recent transcripts |
+ | `/reflect` | capture a long task's lessons as a skill edit |
+ | `/correct` | find the mistakes agents keep repeating in a repo and make each one impossible, enforced at the highest level that works |
++| `/test-audit` | prune tests that cost more than they protect, with evidence that each cut behavior is still covered |
+ | `/tdd` | fix a bug by writing the failing test first, then the fix |
+ | `/benchmark-checklist` | vet a measured speedup or regression (limiter, tuning, errors, repeat runs, end-to-end relevance) before you report or act on it |
+ | `/typescript-best-practices` | ground type-system discipline in TypeScript syntax |
 diff --git a/plugins/pstack/.codex-plugin/prompts/breadboard.md b/plugins/pstack/.codex-plugin/prompts/breadboard.md
 new file mode 100644
 index 0000000..563ba68
@@ -84,8 +92,21 @@ index 0000000..b954636
 +---
 +
 +Invoke the `shape` skill and follow it. Resolve Claude tool names, Claude model names, and Claude built-in skills through `melbs-mode/references/codex-tools.md`, including its Per-skill notes.
+diff --git a/plugins/pstack/.codex-plugin/prompts/test-audit.md b/plugins/pstack/.codex-plugin/prompts/test-audit.md
+new file mode 100644
+index 0000000..83af64f
+--- /dev/null
++++ b/plugins/pstack/.codex-plugin/prompts/test-audit.md
+@@ -0,0 +1,7 @@
++---
++name: test-audit
++description: prune tests that cost more than they protect, with evidence that each cut behavior is still covered
++disable-model-invocation: true
++---
++
++Invoke the `test-audit` skill and follow it. Resolve Claude tool names, Claude model names, and Claude built-in skills through `melbs-mode/references/codex-tools.md`, including its Per-skill notes.
 diff --git a/plugins/pstack/.muse-plugin/plugin.json b/plugins/pstack/.muse-plugin/plugin.json
-index 20e3774..5391c08 100644
+index db59222..e1156f1 100644
 --- a/plugins/pstack/.muse-plugin/plugin.json
 +++ b/plugins/pstack/.muse-plugin/plugin.json
 @@ -40,11 +40,21 @@
@@ -110,7 +131,31 @@ index 20e3774..5391c08 100644
        {
          "id": "correct",
          "path": "skills/correct/SKILL.md",
-@@ -275,6 +285,11 @@
+@@ -155,6 +165,11 @@
+         "path": "skills/principle-build-the-lever/SKILL.md",
+         "enabledDefault": true
+       },
++      {
++        "id": "principle-earn-each-test",
++        "path": "skills/principle-earn-each-test/SKILL.md",
++        "enabledDefault": true
++      },
+       {
+         "id": "principle-encode-lessons-in-structure",
+         "path": "skills/principle-encode-lessons-in-structure/SKILL.md",
+@@ -235,6 +250,11 @@
+         "path": "skills/principle-redesign-from-first-principles/SKILL.md",
+         "enabledDefault": true
+       },
++      {
++        "id": "principle-review-for-real-risk",
++        "path": "skills/principle-review-for-real-risk/SKILL.md",
++        "enabledDefault": true
++      },
+       {
+         "id": "principle-separate-before-serializing-shared-state",
+         "path": "skills/principle-separate-before-serializing-shared-state/SKILL.md",
+@@ -275,6 +295,11 @@
          "path": "skills/setup-mstack/SKILL.md",
          "enabledDefault": true
        },
@@ -122,6 +167,18 @@ index 20e3774..5391c08 100644
        {
          "id": "sharpen",
          "path": "skills/sharpen/SKILL.md",
+@@ -310,6 +335,11 @@
+         "path": "skills/technical-writing/SKILL.md",
+         "enabledDefault": true
+       },
++      {
++        "id": "test-audit",
++        "path": "skills/test-audit/SKILL.md",
++        "enabledDefault": true
++      },
+       {
+         "id": "thermo-nuclear-code-quality-review",
+         "path": "skills/thermo-nuclear-code-quality-review/SKILL.md",
 diff --git a/plugins/pstack/skills/breadboard/SKILL.md b/plugins/pstack/skills/breadboard/SKILL.md
 new file mode 100644
 index 0000000..7d4cd06
@@ -217,7 +274,7 @@ index 6b72b2e..2d03a05 100644
 -- A principle name works because the agent already read the rule. Its reply names the decision the rule changed.
 +- A principle name works because the agent already read the rule.
 diff --git a/plugins/pstack/skills/melbs-mode/SKILL.md b/plugins/pstack/skills/melbs-mode/SKILL.md
-index 00f3bc3..e28caf4 100644
+index 00f3bc3..52ff5ed 100644
 --- a/plugins/pstack/skills/melbs-mode/SKILL.md
 +++ b/plugins/pstack/skills/melbs-mode/SKILL.md
 @@ -1,6 +1,6 @@
@@ -237,7 +294,16 @@ index 00f3bc3..e28caf4 100644
  
  Remaining triggers:
  
-@@ -110,21 +110,16 @@ You own every subagent's work. Review the diff and write your own summary, don't
+@@ -73,6 +73,8 @@ Read the leaf skill in full for any principle you apply. Each entry names when i
+ - **Fix Root Causes.** Debugging. Trace each symptom back to the first place the system went wrong and fix it there. A guard is a fix only when the state it handles is legitimate.
+ - **Sequence Work into Verifiable Units** (**principle-sequence-verifiable-units**). Multi-step work (sweeps, migrations, runs of similar edits) and how you stack commits and PRs. Break work into small units that each end in a check, verify each before the next, and order delivery so the sequence proves itself.
+ - **Test Behavior, Not Implementation.** Writing, changing, or keeping a test. Assert what the code's users can observe, so the test fails when that behavior breaks and keeps passing when only the internals change.
++- **Earn Each Test.** Adding or keeping a test, or committing one an agent wrote. Commit a test only when it protects a behavior nothing else protects and you have seen it fail; a bug fix gets one regression test.
++- **Review for Real Risk.** Reviewing a diff, or acting on review findings from a person, bot, or subagent. Report and fix only proven failures the change introduces, and stop the review-and-fix loop when a round finds no new real risk.
+ - **Explain the Number.** Apply before you measure, and before you trust, report, or act on a number you measured (a speedup, a regression, a throughput, a latency, or an eval result). Find what limits it, and rule out that it measured something other than the work you think.
+ 
+ **Delegation**
+@@ -110,21 +112,16 @@ You own every subagent's work. Review the diff and write your own summary, don't
  
  ## Writing the reply
  
@@ -282,6 +348,48 @@ index 0da7b52..b269263 100644
 +6. Stop when the predicate is met, or when the time budget runs out. Within the budget a plateau is not a stop, so keep going and pivot your approach to push past it. Surface a genuine dead end rather than spinning, and never relax the predicate to declare victory. Cutting scope is different: drop the pitch's nice-to-haves in the open and report the cut. When the budget runs out, stop and report what passed and what is still unsolved. The unsolved part goes back to shaping.
  
  **Reply:** the exit condition, iterations run, what landed, what was discarded, final predicate state.
+diff --git a/plugins/pstack/skills/principle-earn-each-test/SKILL.md b/plugins/pstack/skills/principle-earn-each-test/SKILL.md
+new file mode 100644
+index 0000000..4ca4dfc
+--- /dev/null
++++ b/plugins/pstack/skills/principle-earn-each-test/SKILL.md
+@@ -0,0 +1,36 @@
++---
++name: principle-earn-each-test
++description: "Apply before you add or keep a test, and before you commit any test an agent wrote. A test earns its place only when it protects a behavior that nothing else protects and you have seen it fail."
++user-invocable: false
++---
++
++# Earn Each Test
++
++A committed test is a cost that every later session pays. Agents read it, run it, and keep it passing, and it makes the code under it harder to change. Agent-written tests rarely repay that cost: most check little, and writing more of them does not help agents fix more bugs. Commit a test only when it buys protection that nothing else gives.
++
++This principle decides whether a test should exist. **principle-test-behavior-not-implementation** decides what a test that exists asserts. A repository's own testing rules take precedence over both.
++
++## The gate
++
++Answer all four questions before you commit a new or changed test. If you cannot answer one, do not commit the test.
++
++1. Which behavior that a caller can observe does it protect?
++2. Which plausible regression would make it fail?
++3. Why does no existing test already catch that regression? Each contract needs one test, at the strongest boundary that is practical.
++4. Does it need an export, flag, or wrapper that no production code uses? If it does, test through the real boundary instead.
++
++Then prove the test. Undo the fix or reintroduce the bug, and confirm that the test fails for the reason you intend. Restore the fix and confirm that it passes. A test that you have not seen fail proves nothing.
++
++## How many
++
++- A bug fix gets one regression test, at the boundary where the bug was visible. Do not add one for each layer the bug crossed, each tie-break, or each edge case you thought of along the way.
++- A new feature gets a test for each contract that a caller depends on, not for each branch.
++- No test is a valid answer. When the only practical test would mostly exercise mocks or need broad new harness setup, verify on the real artifact instead and say so.
++
++## Probes are not tests
++
++Agents use tests mainly to see values. That is fine while you work. Explore with throwaway scripts, prints, or scratch tests, and delete them before you commit. Commit only what passes the gate.
++
++## In the pull request
++
++For each test you add, give one line on the behavior it protects and say that you saw it fail. If you considered a test and did not write one, say so in one line. To prune tests that already exist, use the **test-audit** skill.
 diff --git a/plugins/pstack/skills/principle-foundational-thinking/SKILL.md b/plugins/pstack/skills/principle-foundational-thinking/SKILL.md
 index a6829c7..71961f5 100644
 --- a/plugins/pstack/skills/principle-foundational-thinking/SKILL.md
@@ -295,6 +403,45 @@ index a6829c7..71961f5 100644
  
  Each increment should land a coherent abstraction or deepen one that exists. Do not spread a new capability across callers as special-case coordination.
  
+diff --git a/plugins/pstack/skills/principle-review-for-real-risk/SKILL.md b/plugins/pstack/skills/principle-review-for-real-risk/SKILL.md
+new file mode 100644
+index 0000000..72159d7
+--- /dev/null
++++ b/plugins/pstack/skills/principle-review-for-real-risk/SKILL.md
+@@ -0,0 +1,33 @@
++---
++name: principle-review-for-real-risk
++description: "Apply when you review a diff, and when you act on review findings from a person, a bot, or a subagent. Report and fix only what the change breaks, with proof, and stop the review-and-fix loop when it stops finding real risk."
++user-invocable: false
++---
++
++# Review for Real Risk
++
++A review is worth what its findings would cost if they shipped. Each finding that is not a real risk costs the author a fix, a test, and another round of review, and that work hides the findings that matter. A reviewer that reports everything it can think of trains its readers to ignore it.
++
++## What earns a finding
++
++A finding names a failure that the change introduces or exposes: a caller, user, or operator gets a wrong result, loses data, gains access they should not have, or can no longer build or run the code. It names the input or state that triggers the failure and the wrong outcome.
++
++Leave out:
++
++- Style, naming, and structure, unless the user asked for a quality review.
++- Risks that need a future change to matter, and defensive checks for states the code cannot reach.
++- Problems in code that the change does not touch or newly depend on.
++- Duplicates. Merge findings that share a root cause.
++
++## Prove it
++
++Trace each finding end to end, or run it: a failing test, a repro script, or command output that shows the wrong behavior. Do not report a finding that depends on code you can read but did not. When you cannot prove a finding and it would be severe, report it once as unproven and say what would settle it.
++
++Rank the findings by what they would cost in production and lead with the worst. State each one's severity honestly. A long list usually means the bar slipped. No findings is a valid result.
++
++## Acting on findings
++
++- Fix a finding that clears the bar. For one that does not, reply with the reason, in one line, and leave the code alone.
++- A fix gets at most one regression test, per **principle-earn-each-test**.
++- Review each later round against the fix's diff only. A finding that the first round could have raised and did not is not a reason for another round.
++- Stop when a round finds no new real risk. After two rounds of fixes, when a blocking finding remains, stop and report it with its evidence, and let the human choose another round, a narrower change, or to drop it.
 diff --git a/plugins/pstack/skills/shape/SKILL.md b/plugins/pstack/skills/shape/SKILL.md
 new file mode 100644
 index 0000000..39a74f2
@@ -325,6 +472,62 @@ index 0000000..39a74f2
 +## When to stop
 +
 +Stop when a builder could start without asking about the problem, the main parts, or the risky decisions. Leave names, formats, schemas, file layouts, and exact rules to the builders, unless one of them is a rabbit hole. Spend shaping time in proportion to the appetite: a pitch for a few hours of work fits on one page.
+diff --git a/plugins/pstack/skills/test-audit/SKILL.md b/plugins/pstack/skills/test-audit/SKILL.md
+new file mode 100644
+index 0000000..7254bb8
+--- /dev/null
++++ b/plugins/pstack/skills/test-audit/SKILL.md
+@@ -0,0 +1,50 @@
++---
++name: test-audit
++description: "Use for /test-audit, or when asked to prune, slim, or audit an existing test suite, or to find tests that cost more than they protect. Reads before it deletes, and reports each cut with the evidence that the behavior is still covered."
++---
++
++# Test Audit
++
++Prune tests that cost more than they protect. Each test that stays must guard a behavior that nothing else guards. New tests follow **principle-earn-each-test**; this skill applies the same bar to tests that already exist.
++
++A repository's own testing rules take precedence over this skill.
++
++## Why
++
++- Agent-written tests mostly do not check anything. In a 2026 study of about 86,000 test patches from agent-authored pull requests, about 80% had weak or no checks of expected behavior ([Banik et al., arXiv 2606.18168](https://arxiv.org/abs/2606.18168)).
++- Writing more tests did not help agents fix more bugs. On SWE-bench Verified, solved and unsolved tasks had similar test-writing rates, and prompting agents to write more or fewer tests did not change the results significantly ([Chen et al., arXiv 2602.07900](https://arxiv.org/abs/2602.07900)).
++- Extra tests lock in code. In October 2026, Sherwood Callaway deleted 800,000 lines of unit tests from the Sazabi monorepo, because they made weak code hard to change or remove, made the agent do more local work, and cost tokens and CI runs ([post](https://x.com/shcallaway/status/2106142042405453879)). In September 2026, OpenClaw removed about 400,000 lines of tests without much change in coverage ([its test-audit skill](https://github.com/openclaw/openclaw/blob/main/.agents/skills/test-audit/SKILL.md)).
++- Tests can also lock in bugs. Engineers report that agent-written tests asserted defective behavior as correct ([Hacker News](https://news.ycombinator.com/item?id=50059523)).
++- Deleting a test moves its risk to the tests that remain. Keep the protection by testing at the boundary that callers use.
++
++## Cut
++
++- Tests with no assertion, assertions that compare a value with itself, and expected values that the code under test computed.
++- Tests of standard library behavior or of trivial helpers, such as a slice, a wrapper, or a constant.
++- Tests that pin an arbitrary choice that no caller depends on, such as which of two equal results wins.
++- Tests that repeat a contract that another test already owns, or that replay a shared helper's test in each caller.
++- Tests that assert internal call order, private helpers, copied lists, or text found in the source.
++- Mocks that supply the behavior that the test then asserts.
++- Test names that promise more than the test exercises.
++
++## Keep
++
++- Contracts that other code or people depend on: public APIs, protocols, configuration, migrations, storage, security, defaults, and observable ordering.
++- The regression test for a real bug, at the boundary where the bug was visible.
++- A slow or static test that guards one of these contracts. Being slow is not a reason to delete a test.
++- A test that fails on the current code. It may have found a bug. Investigate it before you change it.
++
++## Workflow
++
++1. Scope the audit to what the user names, else the test files in the branch diff. Run the area's tests once to record the baseline.
++2. For each candidate, record what it would detect, the remaining test that covers the same behavior, why it was added (`git log -S` or blame), and the command that proves the area still works. Do not delete a test when you lack this evidence.
++3. Report the candidates before you edit. Prefer a few deletions that you are confident about to a large deletion count.
++4. Delete the approved tests, and delete production code that only those tests used.
++5. Rerun the area's tests. Check that coverage did not drop by a material amount. Coverage shows only that lines still run, so for critical code also run mutation testing, or break the behavior by hand and confirm that a remaining test fails.
++
++## Output
++
++- What you removed, by category from **Cut**.
++- What you kept that looked like a candidate, and why.
++- Lines of test code removed, and the new ratio of test code to production code.
++- The command that proved each area still works, and its result.
 diff --git a/plugins/pstack/skills/unslop/SKILL.md b/plugins/pstack/skills/unslop/SKILL.md
 index be42292..c5a7c71 100644
 --- a/plugins/pstack/skills/unslop/SKILL.md

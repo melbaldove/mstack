@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "name": "mstack",
   "displayName": "mstack (Muse port)",
-  "version": "0.9.1120006",
+  "version": "0.9.1120007",
   "description": "If you want to go fast, go deep first. pstack helps you write less, but higher quality code. Rigorous agent workflows you can parallelize with confidence. Muse port of the Claude Code plugin; skills are shared, tool names resolve via skills/melbs-mode/references/muse-tools.md. Original pstack by Lauren Tan (poteto).",
   "compat": {
     "source": "native",
@@ -166,6 +166,11 @@
         "enabledDefault": true
       },
       {
+        "id": "principle-earn-each-test",
+        "path": "skills/principle-earn-each-test/SKILL.md",
+        "enabledDefault": true
+      },
+      {
         "id": "principle-encode-lessons-in-structure",
         "path": "skills/principle-encode-lessons-in-structure/SKILL.md",
         "enabledDefault": true
@@ -246,6 +251,11 @@
         "enabledDefault": true
       },
       {
+        "id": "principle-review-for-real-risk",
+        "path": "skills/principle-review-for-real-risk/SKILL.md",
+        "enabledDefault": true
+      },
+      {
         "id": "principle-separate-before-serializing-shared-state",
         "path": "skills/principle-separate-before-serializing-shared-state/SKILL.md",
         "enabledDefault": true
@@ -323,6 +333,11 @@
       {
         "id": "technical-writing",
         "path": "skills/technical-writing/SKILL.md",
+        "enabledDefault": true
+      },
+      {
+        "id": "test-audit",
+        "path": "skills/test-audit/SKILL.md",
         "enabledDefault": true
       },
       {

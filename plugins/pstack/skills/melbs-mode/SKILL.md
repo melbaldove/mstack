@@ -73,6 +73,8 @@ Read the leaf skill in full for any principle you apply. Each entry names when i
 - **Fix Root Causes.** Debugging. Trace each symptom back to the first place the system went wrong and fix it there. A guard is a fix only when the state it handles is legitimate.
 - **Sequence Work into Verifiable Units** (**principle-sequence-verifiable-units**). Multi-step work (sweeps, migrations, runs of similar edits) and how you stack commits and PRs. Break work into small units that each end in a check, verify each before the next, and order delivery so the sequence proves itself.
 - **Test Behavior, Not Implementation.** Writing, changing, or keeping a test. Assert what the code's users can observe, so the test fails when that behavior breaks and keeps passing when only the internals change.
+- **Earn Each Test.** Adding or keeping a test, or committing one an agent wrote. Commit a test only when it protects a behavior nothing else protects and you have seen it fail; a bug fix gets one regression test.
+- **Review for Real Risk.** Reviewing a diff, or acting on review findings from a person, bot, or subagent. Report and fix only proven failures the change introduces, and stop the review-and-fix loop when a round finds no new real risk.
 - **Explain the Number.** Apply before you measure, and before you trust, report, or act on a number you measured (a speedup, a regression, a throughput, a latency, or an eval result). Find what limits it, and rule out that it measured something other than the work you think.
 
 **Delegation**
