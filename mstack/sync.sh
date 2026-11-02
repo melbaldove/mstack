@@ -11,6 +11,7 @@ cp .github/workflows/mstack-sync.yml "$keep/mstack-sync.yml"
 
 git rm -rqf --ignore-unmatch .
 git checkout "$sha" -- .
+git rm -rqf --ignore-unmatch .github/workflows tests/ci-forks-step.test.mjs
 
 mkdir -p .github/workflows
 cp -R "$keep/mstack" .
