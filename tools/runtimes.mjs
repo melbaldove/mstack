@@ -97,15 +97,28 @@ function tierExamples(label) {
 // planned: one skill capability per skill directory, each pointing at its
 // SKILL.md in the package. Commands stay empty: Muse surfaces each
 // user-invocable skill as a slash command itself and rejects a command whose
-// id duplicates a skill id.
+// id duplicates a skill id. The SessionStart hooks are rewritten from
+// MUSE_HOOKS.
 export function stampMuseManifest(text, { skills }) {
   const manifest = JSON.parse(text);
   manifest.capabilities = {
     ...manifest.capabilities,
     skills: skills.map((name) => ({ id: name, path: `skills/${name}/SKILL.md`, enabledDefault: true })),
+    hooks: MUSE_HOOKS.map(({ id, command }) => ({
+      id,
+      event: "SessionStart",
+      command,
+      timeoutMs: 5000,
+      statusMessage: SESSION_START_STATUS,
+    })),
   };
   return JSON.stringify(manifest, null, 2) + "\n";
 }
+
+// The SessionStart hook's statusMessage. Codex titles the hook with it in
+// its review list, and every runtime that reads it shows it while the hook
+// runs, so users can tell the hook is pstack's.
+export const SESSION_START_STATUS = "Loading pstack routing";
 
 // Muse's native hook schema takes one command argv per hook, with no
 // per-OS variant, and rejects a `commandWindows`-style field. One argv
@@ -152,18 +165,8 @@ export function validateMuseManifest(manifest, { claude, pathExists }) {
   if (!manifest.capabilities.skills.some((entry) => entry.id === "melbs-mode")) {
     throw new Error(`${at}: capabilities.skills has no "melbs-mode"`);
   }
-  const hooks = manifest.capabilities?.hooks ?? [];
-  const sessionStart = hooks.filter((hook) => hook.event === "SessionStart");
-  if (sessionStart.length !== MUSE_HOOKS.length) {
-    throw new Error(`${at}: expected ${MUSE_HOOKS.length} SessionStart hooks, found ${sessionStart.length}`);
-  }
-  // The hook commands are hand-written, not stamped, so each must name
-  // exactly its script inside the plugin.
-  for (const { id, script, command: wanted } of MUSE_HOOKS) {
-    const command = JSON.stringify(sessionStart.find((hook) => hook.id === id)?.command);
-    if (command !== JSON.stringify(wanted) || !pathExists(`${PLUGIN}/${script}`)) {
-      throw new Error(`${at}: SessionStart hook "${id}" command is ${command}, not ${JSON.stringify(wanted)}`);
-    }
+  for (const { id, script } of MUSE_HOOKS) {
+    if (!pathExists(`${PLUGIN}/${script}`)) throw new Error(`${at}: SessionStart hook "${id}" runs ${script}, which is not in the plugin`);
   }
   // The PowerShell hook reads the roles from models.json at runtime, where
   // sheet.awk has them stamped in.

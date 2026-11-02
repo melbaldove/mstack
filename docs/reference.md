@@ -113,7 +113,7 @@ The [CI installation check](../.github/workflows/ci.yml) uses the skills CLI to 
 
 ### Codex
 
-The [native plugin manifest](../plugins/pstack/.codex-plugin/plugin.json) points to the shared skills directory and the Codex [SessionStart hook](../plugins/pstack/hooks/codex-hooks.json). The [marketplace catalog](../.agents/plugins/marketplace.json) lists `pstack` in the `pstack-claude` marketplace. Review and trust the hook through `/hooks`; Codex asks again when its definition changes.
+The [native plugin manifest](../plugins/pstack/.codex-plugin/plugin.json) points to the shared skills directory and the Codex [SessionStart hook](../plugins/pstack/hooks/codex-hooks.json). The [marketplace catalog](../.agents/plugins/marketplace.json) lists `pstack` in the `pstack-claude` marketplace. Review and trust the hook, listed as `Loading pstack routing`, through `/hooks`; Codex asks again when its definition changes.
 
 The [README installation](../README.md#codex) registers that catalog with `codex plugin marketplace add`, then installs the plugin with `codex plugin add`. These commands match the help output from `codex-cli 0.154.0-alpha.6.2`. A fresh native installation was not tested for this documentation change.
 
@@ -167,7 +167,7 @@ Copilot lists only part of a large plugin's skills in its prompt, so some pstack
 
 ### Muse
 
-The Muse build is a native Muse plugin bundle rooted at `plugins/pstack/`. Its [manifest](../plugins/pstack/.muse-plugin/plugin.json) lists every shared skill as a skill capability and one inline `SessionStart` hook that runs the shared hook script with the `muse` argument. The generator owns the manifest's skill list, so it always matches the tree. Muse rejects a command whose id duplicates a skill id, so the build ships no command templates: Muse lists each user-invocable skill as `/<name>` itself, and plugin skills load with `read_skill` as `plugin:mstack:<name>`.
+The Muse build is a native Muse plugin bundle rooted at `plugins/pstack/`. Its [manifest](../plugins/pstack/.muse-plugin/plugin.json) lists every shared skill as a skill capability and two inline `SessionStart` hooks, one running the shell hook script and one running the PowerShell hook script, each with the `muse` argument. The generator owns the manifest's skill list and hooks, so the list always matches the tree and the hooks always run the argvs in `MUSE_HOOKS` in `tools/runtimes.mjs`. Muse rejects a command whose id duplicates a skill id, so the build ships no command templates: Muse lists each user-invocable skill as `/<name>` itself, and plugin skills load with `read_skill` as `plugin:mstack:<name>`.
 
 Install from a clone as the [README](../README.md) shows, then approve the plugin. Muse runs third-party hooks and agent definitions only after `muse plugins approve pstack`; until then the skills work on request and nothing routes automatically. Once approved, the hook prints the [Muse routing instruction](../plugins/pstack/hooks/session-start-muse.md) as plain additional context, plus the saved role lines from `${XDG_CONFIG_HOME:-~/.config}/muse/pstack-models.md` when the sheet has any. Only known role lines whose entries are model IDs or aliases reach the context, rebuilt from their checked values. `session hook: off` in the sheet disables the injection, as on the other runtimes.
 
