@@ -21,6 +21,7 @@ git add mstack .github/workflows/mstack-sync.yml
 bun mstack/rename.mjs
 bun mstack/stamp-version.mjs "$sha"
 bun install --frozen-lockfile --ignore-scripts
+[ -f plugins/package.json ] && (cd plugins && bun install --frozen-lockfile --ignore-scripts)
 bun tools/generate.mjs
 git add -A
 git write-tree > "$(git rev-parse --git-dir)/mstack-renamed-tree"

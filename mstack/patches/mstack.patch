@@ -1,5 +1,5 @@
 diff --git a/.claude-plugin/marketplace.json b/.claude-plugin/marketplace.json
-index 43bca33..2052139 100644
+index 7136c2a..f1e6319 100644
 --- a/.claude-plugin/marketplace.json
 +++ b/.claude-plugin/marketplace.json
 @@ -4,7 +4,7 @@
@@ -12,7 +12,7 @@ index 43bca33..2052139 100644
      {
        "name": "mstack",
 diff --git a/README.md b/README.md
-index 45fc201..debf5d5 100644
+index bbf445d..64396be 100644
 --- a/README.md
 +++ b/README.md
 @@ -1,5 +1,7 @@
@@ -21,18 +21,18 @@ index 45fc201..debf5d5 100644
 +**This is mstack**, Melbourne Baldove's fork of [pstack-claude](https://github.com/michael-denyer/pstack-claude). It renames the plugin to `mstack` and `poteto-mode` to `melbs-mode`, and has replies follow the user's own Communication rules. See [`mstack/README.md`](mstack/README.md).
 +
  [![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-support-yellow?logo=buy-me-a-coffee&logoColor=white)](https://buymeacoffee.com/codenyer)
+ [![Mentioned in Awesome Claude Code](https://awesome.re/mentioned-badge.svg)](https://github.com/hesreallyhim/awesome-claude-code)
  
- Lauren Tan's [pstack](https://github.com/cursor/plugins/tree/main/pstack) is an opinionated Cursor skill stack that improves agent outcomes. This is a port for Claude Code, Codex, Pi, GitHub Copilot, Muse, and other agent harnesses. It tracks upstream and also carries named policy forks, each declared in [`tools/forks.json`](tools/forks.json).
 diff --git a/docs/reference.md b/docs/reference.md
-index 09478d2..291085d 100644
+index 5dfebec..11556fb 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
 @@ -4,13 +4,16 @@ Start with the [README](../README.md) for installation and your first task.
  
  ## Slash commands
  
--The package includes 67 skill directories: 43 public skills and 24 `principle-*` references. Claude Code uses `/mstack:<name>`, Pi uses `/skill:<name>`, and Muse lists each user-invocable skill as `/<name>`. In Codex, request a skill by name or install the [optional shortcuts](#codex) for the `/name` form below.
-+The package includes 73 skill directories: 47 public skills and 26 `principle-*` references. Claude Code uses `/mstack:<name>`, Pi uses `/skill:<name>`, and Muse lists each user-invocable skill as `/<name>`. In Codex, request a skill by name or install the [optional shortcuts](#codex) for the `/name` form below.
+-The package includes 67 skill directories: 43 public skills and 24 `principle-*` references. Claude Code uses `/mstack:<name>`, Pi uses `/skill:<name>`, and Muse lists each user-invocable skill as `/<name>`. In Codex, mention a skill with `$<name>`, such as `$melbs-mode`, or pick one from `/skills`.
++The package includes 73 skill directories: 47 public skills and 26 `principle-*` references. Claude Code uses `/mstack:<name>`, Pi uses `/skill:<name>`, and Muse lists each user-invocable skill as `/<name>`. In Codex, mention a skill with `$<name>`, such as `$melbs-mode`, or pick one from `/skills`.
  
  Find each skill's instructions in the [skills tree](../plugins/pstack/skills/).
  
@@ -106,7 +106,7 @@ index 0000000..83af64f
 +
 +Invoke the `test-audit` skill and follow it. Resolve Claude tool names, Claude model names, and Claude built-in skills through `melbs-mode/references/codex-tools.md`, including its Per-skill notes.
 diff --git a/plugins/pstack/.muse-plugin/plugin.json b/plugins/pstack/.muse-plugin/plugin.json
-index db59222..e1156f1 100644
+index 1b872a8..725fea7 100644
 --- a/plugins/pstack/.muse-plugin/plugin.json
 +++ b/plugins/pstack/.muse-plugin/plugin.json
 @@ -40,11 +40,21 @@
@@ -274,7 +274,7 @@ index 6b72b2e..2d03a05 100644
 -- A principle name works because the agent already read the rule. Its reply names the decision the rule changed.
 +- A principle name works because the agent already read the rule.
 diff --git a/plugins/pstack/skills/melbs-mode/SKILL.md b/plugins/pstack/skills/melbs-mode/SKILL.md
-index 00f3bc3..52ff5ed 100644
+index f0d363b..c2585ad 100644
 --- a/plugins/pstack/skills/melbs-mode/SKILL.md
 +++ b/plugins/pstack/skills/melbs-mode/SKILL.md
 @@ -1,6 +1,6 @@

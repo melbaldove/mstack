@@ -16,6 +16,9 @@ const textRules = [
   [/(?<![\w.-])pstack:(?=\S)/g, "mstack:"],
   [/(?<!github\.com\/)michael-denyer\/pstack-claude/g, "melbaldove/mstack"],
   [/"name": "pstack(-claude)?"/g, '"name": "mstack"'],
+  [/([!=]== |(?:expectedN|n)ame: )"pstack"/g, '$1"mstack"'],
+  [/"pstack\/server"/g, '"mstack/server"'],
+  [/manifest name "pstack"/g, 'manifest name "mstack"'],
   [/"displayName": "pstack/g, '"displayName": "mstack'],
   [/You have pstack\./g, "You have mstack."],
 ];
