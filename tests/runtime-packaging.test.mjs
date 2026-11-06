@@ -1,52 +1,76 @@
 // Runtime packaging contracts: manifests and hook commands.
 import { describe, expect, test } from "bun:test";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { validateHooks } from "../tools/generate.mjs";
-import { MUSE_HOOKS, validateCodexMarketplace, validateCopilotManifest, validateMuseManifest, validatePiPackage } from "../tools/runtimes.mjs";
+import { AGY_HOOKS, MUSE_HOOKS, validateAgyManifest, validateCodexMarketplace, validateCopilotManifest, validateMuseManifest, validatePiPackage } from "../tools/runtimes.mjs";
 
 const repoRoot = fileURLToPath(new URL("..", import.meta.url));
 
 describe("validateCodexMarketplace", () => {
   const manifest = (plugins) => JSON.stringify({ plugins });
   test("needs one entry whose name matches and whose path exists", () => {
-    const ok = { name: "pstack", source: { path: "./plugins/pstack" } };
+    const ok = { name: "mstack", source: { path: "./plugins/pstack" } };
     expect(() =>
-      validateCodexMarketplace(manifest([ok]), { expectedName: "pstack", pathExists: () => true }),
+      validateCodexMarketplace(manifest([ok]), { expectedName: "mstack", pathExists: () => true }),
     ).not.toThrow();
-    expect(() => validateCodexMarketplace(manifest([]), { expectedName: "pstack", pathExists: () => true })).toThrow(
+    expect(() => validateCodexMarketplace(manifest([]), { expectedName: "mstack", pathExists: () => true })).toThrow(
       "expected 1 plugin entry, found 0",
     );
     expect(() =>
-      validateCodexMarketplace(manifest([{ ...ok, name: "other" }]), { expectedName: "pstack", pathExists: () => true }),
-    ).toThrow('plugin name "other" != Codex manifest name "pstack"');
-    expect(() => validateCodexMarketplace(manifest([ok]), { expectedName: "pstack", pathExists: () => false })).toThrow(
+      validateCodexMarketplace(manifest([{ ...ok, name: "other" }]), { expectedName: "mstack", pathExists: () => true }),
+    ).toThrow('plugin name "other" != Codex manifest name "mstack"');
+    expect(() => validateCodexMarketplace(manifest([ok]), { expectedName: "mstack", pathExists: () => false })).toThrow(
       "does not resolve to a directory",
     );
   });
 });
 
 describe("validateCopilotManifest", () => {
-  const claude = { name: "pstack" };
-  const ok = { name: "pstack", hooks: "hooks/copilot-hooks.json" };
+  const claude = { name: "mstack" };
+  const ok = { name: "mstack", hooks: "hooks/copilot-hooks.json" };
   test("needs the Claude Code name and a hooks file that exists", () => {
     const pathExists = (rel) => rel === "plugins/pstack/hooks/copilot-hooks.json";
     expect(() => validateCopilotManifest(ok, { claude, pathExists })).not.toThrow();
     expect(() => validateCopilotManifest({ ...ok, name: "other" }, { claude, pathExists })).toThrow(
-      'name "other" != Claude Code manifest name "pstack"',
+      'name "other" != Claude Code manifest name "mstack"',
     );
     expect(() => validateCopilotManifest({ ...ok, hooks: "hooks/nope.json" }, { claude, pathExists })).toThrow(
       'hooks "hooks/nope.json" is not a file in the plugin',
     );
-    expect(() => validateCopilotManifest({ name: "pstack" }, { claude, pathExists })).toThrow("is not a file in the plugin");
+    expect(() => validateCopilotManifest({ name: "mstack" }, { claude, pathExists })).toThrow("is not a file in the plugin");
+  });
+});
+
+describe("validateAgyManifest", () => {
+  const manifest = { name: "mstack", logo: "assets/pstack-icon.png" };
+  const options = {
+    claude: { name: "mstack" },
+    read: () => JSON.stringify(AGY_HOOKS),
+    statOf: (rel) => [manifest.logo, "hooks/session-start.sh"].includes(rel) ? { mode: 0o755, isFile: () => true } : null,
+  };
+
+  test("checks the native manifest and its routing command", () => {
+    expect(() => validateAgyManifest(manifest, options)).not.toThrow();
+    expect(() => validateAgyManifest({ ...manifest, name: "other" }, options)).toThrow("!= Claude Code manifest name");
+    expect(() => validateAgyManifest({ ...manifest, logo: "missing.png" }, options)).toThrow("missing.png is not a file");
+    expect(() => validateAgyManifest(manifest, { ...options, read: () => "{}" })).toThrow("pstack-routing.SessionStart");
+  });
+
+  test("requires the hook script on every host and execute bits on POSIX", () => {
+    const plain = { ...options, statOf: () => ({ mode: 0o644, isFile: () => true }) };
+    expect(() => validateAgyManifest(manifest, plain)).toThrow("hooks/session-start.sh is not executable");
+    expect(() => validateAgyManifest(manifest, { ...plain, checkExecutable: false })).not.toThrow();
+    const missing = { ...options, statOf: (rel) => rel === manifest.logo ? options.statOf(rel) : null };
+    expect(() => validateAgyManifest(manifest, { ...missing, checkExecutable: false })).toThrow("hooks/session-start.sh is not a file");
   });
 });
 
 describe("validateMuseManifest", () => {
-  const claude = { name: "pstack" };
+  const claude = { name: "mstack" };
   const ok = {
-    name: "pstack",
+    name: "mstack",
     schemaVersion: 1,
     compat: { source: "native", manifestDir: ".muse-plugin" },
     capabilities: {
@@ -59,7 +83,7 @@ describe("validateMuseManifest", () => {
   test("needs the Claude Code name, native compat, existing paths, and each hook script", () => {
     expect(() => validateMuseManifest(ok, { claude, pathExists })).not.toThrow();
     expect(() => validateMuseManifest({ ...ok, name: "other" }, { claude, pathExists })).toThrow(
-      'name "other" != Claude Code manifest name "pstack"',
+      'name "other" != Claude Code manifest name "mstack"',
     );
     expect(() => validateMuseManifest({ ...ok, schemaVersion: 2 }, { claude, pathExists })).toThrow("is not 1");
     expect(() => validateMuseManifest({ ...ok, compat: { source: "claude", manifestDir: ".claude-plugin" } }, { claude, pathExists })).toThrow(
@@ -92,6 +116,7 @@ describe("manifests", () => {
   const piPackage = json("package.json");
   const copilot = json("plugins/pstack/.github/plugin/plugin.json");
   const muse = json("plugins/pstack/.muse-plugin/plugin.json");
+  const kimi = json("kimi.plugin.json");
 
   test("the plugin and marketplace manifests agree on every fact they repeat", () => {
     const shared = ({ name, author, homepage, repository, license, keywords }) =>
@@ -106,11 +131,42 @@ describe("manifests", () => {
     expect(copilot.version).toBe(claude.version);
     expect(muse.name).toBe(claude.name);
     expect(muse.version).toBe(claude.version);
+    expect(kimi.name).toBe(claude.name);
+    expect(kimi.version).toBe(claude.version);
     expect(codexMarketplace.name).toBe(claudeMarketplace.name);
     expect(codexMarketplace.interface.displayName).toBe(codex.interface.displayName);
     expect(codexMarketplace.plugins.map(({ name, source, category }) => [name, source.path, category])).toEqual([
       [codex.name, claudeMarketplace.plugins[0].source, codex.interface.category],
     ]);
+  });
+
+  test("the Kimi system prompt carries the routing instruction and the mapping pointer", () => {
+    const prompt = readFileSync(join(repoRoot, kimi.systemPromptPath), "utf8");
+    expect(prompt).toContain("mstack:melbs-mode");
+    expect(prompt).toContain(readFileSync(join(repoRoot, "plugins/pstack/hooks/session-start-context.md"), "utf8").trim());
+    expect(prompt).toContain("kimi-tools.md");
+  });
+
+  test("every Build's copy of the routing mandate keeps the base mandate's criteria and routing paragraph", () => {
+    const hooks = join(repoRoot, "plugins/pstack/hooks");
+    const base = "session-start-context.md";
+    const lines = readFileSync(join(hooks, base), "utf8").split("\n");
+    const shared = lines.slice(lines.findIndex((l) => l.startsWith("- ")), lines.findIndex((l) => l.startsWith("It routes")) + 1).join("\n");
+    const copies = readdirSync(hooks).filter(
+      (file) => file !== base && file.endsWith(".md") && readFileSync(join(hooks, file), "utf8").includes("when a task meets any of these:"),
+    );
+    expect(shared.split("\n").length).toBeGreaterThan(3);
+    expect(copies.length).toBeGreaterThanOrEqual(5);
+    for (const copy of copies) expect({ copy, shared: readFileSync(join(hooks, copy), "utf8").includes(shared) }).toEqual({ copy, shared: true });
+  });
+
+  test("Kimi instructions locate the packaged mapping", () => {
+    const prompt = readFileSync(join(repoRoot, kimi.systemPromptPath), "utf8");
+    for (const instructions of [kimi.skillInstructions, prompt]) {
+      const path = instructions.match(/<KIMI_CODE_HOME>\/plugins\/managed\/pstack\/([^`\s]+kimi-tools\.md)/)?.[1];
+      expect(path).toBeDefined();
+      expect(existsSync(join(repoRoot, path))).toBe(true);
+    }
   });
 });
 
@@ -135,14 +191,14 @@ describe("Codex hook discovery", () => {
   });
 
   test("an Agent Plugins manifest at the plugin root hides the hooks, as 0.9.83 did", () => {
-    const manifest = JSON.stringify({ $schema: "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json", name: "pstack" });
+    const manifest = JSON.stringify({ $schema: "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json", name: "mstack" });
     expect(codexHookEvents((rel) => (rel === "plugin.json" ? manifest : shipped(rel)))).toEqual([]);
   });
 });
 
 describe("validatePiPackage", () => {
   const ENTRY = "plugins/pstack/pi/index.ts";
-  const manifest = (pi, extra = {}) => JSON.stringify({ name: "pstack", keywords: ["pi-package"], ...extra, pi });
+  const manifest = (pi, extra = {}) => JSON.stringify({ name: "mstack", keywords: ["pi-package"], ...extra, pi });
   const good = { skills: ["./plugins/pstack/skills"], extensions: [`./${ENTRY}`] };
   const everything = () => true;
 
@@ -214,6 +270,14 @@ describe("validateHooks", () => {
     );
     expect(() => validateHooks(hooks('"${CLAUDE_PLUGIN_ROOT}/hooks/session-start.sh"'), { statOf: () => plain })).toThrow(
       "hooks/session-start.sh is not executable",
+    );
+  });
+
+  test("a host without POSIX execute bits still checks every hook path", () => {
+    const cmd = hooks('"${CLAUDE_PLUGIN_ROOT}/hooks/session-start.sh"');
+    expect(() => validateHooks(cmd, { statOf: () => plain, checkExecutable: false })).not.toThrow();
+    expect(() => validateHooks(cmd, { statOf: () => null, checkExecutable: false })).toThrow(
+      "SessionStart: hooks/session-start.sh does not exist",
     );
   });
 
