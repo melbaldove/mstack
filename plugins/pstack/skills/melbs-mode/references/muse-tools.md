@@ -46,7 +46,7 @@ Skills name Claude defaults (a single-role default for code/prose/judgment, a wo
 - Single-model roles: your primary Muse model (for example `muse-wonder-1.0`).
 - Roles that default to the Claude worker model (`feature, refactoring`): your fast Muse model (for example `muse-spark-1.3`).
 - Roles that default to the strongest Claude model (`strongest judgment`): your strongest Muse model (for example `muse-wonder-full-1.0`).
-- Diverse-model panels (`arena`, `architect`, `interrogate`, `how` critics, `reflect`): the adversarial signal comes from model diversity, so use the distinct Muse models available to you. A good default panel is `muse-wonder-full-1.0`, `muse-wonder-1.0`, `muse-spark-1.3`. Muse serves one model family, so vary reasoning effort across the panel too and note in the verdict that diversity was reduced.
+- Diverse-model panels (`arena`, `architect`, `interrogate`): the adversarial signal comes from model diversity, so use the distinct Muse models available to you. A good default panel is `muse-wonder-full-1.0`, `muse-wonder-1.0`, `muse-spark-1.3`. Muse serves one model family, so vary reasoning effort across the panel too and note in the verdict that diversity was reduced.
 
 Pass a role's model where the dispatch takes one: a Workflow child's `model`, or the session model when the dispatch has no model field. `subagent_spawn` takes an agent definition, not a model, so a role dispatched that way runs on the session's model and effort; a Workflow child takes both (see Subagent policy). `inherit-parent` or `auto` omits `model`.
 
@@ -98,7 +98,7 @@ Affected skill entry points point here. Most skills need only the tables above. 
 
 ## Vendored scripts
 
-`skills/melbs-mode/scripts/` ships the `watch-pr` PR watcher, the `orch` store CLI, and `worktree-audit.mjs`. These scripts use bun and Node.js and run the same on Muse; invoke them through `bash`. They need `bun` and `gh`, or `origin` when the forge is Origin. Run `worktree-audit.mjs` with `node`, as its shebang does. The audit finds each worktree's last chat only in the transcript directories that exist (Claude Code, Codex, Pi); it does not scan Muse sessions, so pass a Muse sessions directory explicitly when a worktree's last chat was a Muse one. It imports the transcript walker from the `reflect` skill, so keep the `reflect` skill installed beside `melbs-mode`.
+`skills/melbs-mode/scripts/` ships the `watch-pr` PR watcher and `worktree-audit.mjs`. These scripts use bun and Node.js and run the same on Muse; invoke them through `bash`. They need `bun` and `gh`, or `origin` when the forge is Origin. Run `worktree-audit.mjs` with `node`, as its shebang does. The audit finds each worktree's last chat only in the transcript directories that exist (Claude Code, Codex, Pi); it does not scan Muse sessions, so pass a Muse sessions directory explicitly when a worktree's last chat was a Muse one. It imports the transcript walker from the `reflect` skill, so keep the `reflect` skill installed beside `melbs-mode`.
 
 ## Instructions file
 

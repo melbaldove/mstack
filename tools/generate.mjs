@@ -9,12 +9,6 @@
 //   CHANGES.md must carry a heading for the current VERSION (release completeness)
 //   each skill's frontmatter (name + description) defines the shared Agent
 //   Skills boundary consumed natively by Codex, Prime, opencode, and Gemini CLI
-//   docs/reference.md's "Slash commands" table (one row per public skill, in editorial
-//   order; the row text is the slash-menu one-liner)
-//     -> its prompt stub in the prompts directory of each RUNTIMES row that has one
-//   The row set must equal the public skills (every Agent Skill not marked
-//   user-invocable: false); a skill without a row or a row without a skill
-//   fails by name.
 //   plugins/pstack/models.json (the model policy: role defaults, diverse panel,
 //   available slugs, and one block per RUNTIMES row: Codex equivalents, Pi IDs)
 //     -> each model-consuming skill's "## Models" and "## Reasoning effort" sections
@@ -22,8 +16,7 @@
 //     -> the "## Model names" section of each runtime's mapping file
 //        (melbs-mode/references/codex-tools.md, pi-tools.md, copilot-tools.md)
 //   the Per-skill notes table in melbs-mode/references/codex-tools.md
-//     -> the Codex preamble under the first heading of each listed skill's SKILL.md,
-//        and the codex-tools.md pointer in the prompt stub of every other public skill
+//     -> the Codex preamble under the first heading of each listed skill's SKILL.md
 //   the Per-skill notes table in melbs-mode/references/copilot-tools.md
 //     -> the GitHub Copilot preamble under the same heading, after any Codex one
 //   DRIVER_PLAYBOOKS -> the driver-skill line under each playbook's first heading
@@ -38,7 +31,10 @@
 //
 // Also validated: each RUNTIMES row's packaging, through the row's `validate`
 // (tools/runtimes.mjs), and every hooks file, the Claude Code plugin's and the
-// ones each row's manifest names.
+// ones each row's manifest names. docs/reference.md's "Slash commands" table
+// must hold one row per public skill (every Agent Skill not marked
+// user-invocable: false); a skill without a row or a row without a skill
+// fails by name.
 
 import {
   existsSync,
@@ -51,19 +47,18 @@ import {
   statSync,
   writeFileSync,
 } from "node:fs";
-import { basename, dirname, join, relative } from "node:path";
+import { basename, dirname, join, posix, relative, sep } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 import { Type } from "typebox";
 import { Value } from "typebox/value";
 
 import { code, codeList, PLUGIN, SKILLS } from "./plugin.mjs";
-import { RUNTIMES, roleSkills } from "./runtimes.mjs";
+import { PLATFORM_ADAPTATION_OPEN, platformAdaptation, RUNTIMES, roleSkills } from "./runtimes.mjs";
 import { markdownFiles, pathIsInside, validateProsePaths, validateSkillsTree, walk } from "./validate-skills.mjs";
 
 const repo = join(dirname(fileURLToPath(import.meta.url)), "..");
-
-const PROMPT_RUNTIMES = RUNTIMES.filter((runtime) => runtime.prompts);
+const repoRelative = (root, file) => relative(root, file).split(sep).join("/");
 
 const VERSIONED_MANIFESTS = [
   ".claude-plugin/marketplace.json",
@@ -88,7 +83,6 @@ export const PORTABLE_ASSETS = [
 // The generator removes every entry of these directories that no planned path
 // runs through, so no hand-written file may live in one.
 export const OWNED_DIRS = [
-  ...PROMPT_RUNTIMES.map((runtime) => runtime.prompts),
   `${SKILLS}/melbs-mode/references/agents`,
   `${SKILLS}/melbs-mode/references/licenses`,
 ];
@@ -196,11 +190,9 @@ export function agentSkills(skillsDir) {
 export function validatePluginLayout(pluginRoot) {
   // CHANGES 0.9.13 (#22): Claude Code lists a plugin's commands and its
   // user-invocable skills in the slash menu, so a command trampoline beside a
-  // same-named skill shows twice. Trampolines live in a runtime's prompts
-  // directory, which only that runtime reads.
+  // same-named skill shows twice.
   if (existsSync(join(pluginRoot, "commands"))) {
-    const prompts = PROMPT_RUNTIMES.map((runtime) => runtime.prompts).join(", ");
-    throw new Error(`${PLUGIN}/commands/ exists; trampolines belong in ${prompts} (CHANGES 0.9.13)`);
+    throw new Error(`${PLUGIN}/commands/ exists; remove it, since each skill already serves its own slash command and Claude Code would list a command beside it (CHANGES 0.9.13)`);
   }
   // #265: Codex reads a root plugin.json with an Agent Plugins $schema ahead
   // of .codex-plugin/plugin.json, and loads no plugin hooks in that format, so
@@ -227,7 +219,7 @@ export function validatePluginLayout(pluginRoot) {
       // lookbehind scanned a long line about nine times slower.
       for (const [, name] of line.matchAll(/(?:^|\W|\\[a-z])subagent_type[\s\\"'`*]*[:=][\s\\"'`*]*([a-z0-9-]+)(?![\w-]|\.\w)/g)) {
         if (agents.includes(name)) {
-          bareDispatches.push(`${relative(pluginRoot, file)}:${i + 1}: subagent_type: "${name}" (use "mstack:${name}")`);
+          bareDispatches.push(`${repoRelative(pluginRoot, file)}:${i + 1}: subagent_type: "${name}" (use "mstack:${name}")`);
         }
       }
     });
@@ -243,7 +235,7 @@ export function validatePluginLayout(pluginRoot) {
     const raw = readFileSync(file);
     if (raw.includes(0)) continue;
     raw.toString("utf8").split("\n").forEach((line, i) => {
-      if (/^(<{7}|\|{7}|={7}|>{7})( |$)/.test(line)) markers.push(`${relative(pluginRoot, file)}:${i + 1}: ${line}`);
+      if (/^(<{7}|\|{7}|={7}|>{7})( |$)/.test(line)) markers.push(`${repoRelative(pluginRoot, file)}:${i + 1}: ${line}`);
     });
   }
   if (markers.length) {
@@ -261,28 +253,18 @@ export function publicSkills(skillsDir) {
 
 const COMMANDS_DOC = "docs/reference.md";
 const COMMAND_TABLE_HEADER = "| command | use it when |";
-// promptStub writes the menu text unquoted into YAML frontmatter, where ": " or
-// a trailing ":" starts a mapping, " #" starts a comment, and a leading
-// indicator character is a parse error or a different node.
-const UNSAFE_PLAIN_YAML = /:\s|:$|\s#|^(?:[,[\]{}#&*!|>'"%@`]|[-?:](?:\s|$))/;
 
-// The reference table is the source of the Codex slash-menu one-liners and their
-// order. Returns [{ name, menu }] in row order; throws when the row set and the
+// The reference table lists each public skill once, in editorial order.
+// Returns [{ name }] in row order; throws when the row set and the
 // public skills disagree, naming each side's leftovers.
 export function slashCommands(markdown, skillNames) {
   const lines = markdown.split("\n");
   const range = tableRows(COMMAND_TABLE_HEADER, "|")(lines);
   if (!range) throw new Error(`${COMMANDS_DOC}: "${COMMAND_TABLE_HEADER}" table header not found`);
   const rows = lines.slice(range[0], range[1]).map((line, i) => {
-    const m = line.match(/^\| `\/([^`]+)` \| (.+) \|$/);
+    const m = line.match(/^\| `\/([^`]+)` \| .+ \|$/);
     if (!m) throw new Error(`${COMMANDS_DOC}: slash-command row ${i + 1} is not "| \`/name\` | text |": ${line}`);
-    if (UNSAFE_PLAIN_YAML.test(m[2])) {
-      throw new Error(
-        `${COMMANDS_DOC}: slash-command row ${i + 1} text is not a plain YAML value ` +
-          `(no ": ", " #", trailing ":", or leading indicator): ${line}`,
-      );
-    }
-    return { name: m[1], menu: m[2] };
+    return { name: m[1] };
   });
   const rowNames = new Set(rows.map((r) => r.name));
   const skills = new Set(skillNames);
@@ -297,21 +279,6 @@ export function slashCommands(markdown, skillNames) {
   }
   if (rows.length !== rowNames.size) throw new Error(`${COMMANDS_DOC} slash-command table repeats a command`);
   return rows;
-}
-
-// Optional slash shortcut for a runtime with a prompts directory. Skills also
-// link to the platform mapping so native invocation and skills-only installs
-// do not depend on these stubs. A skill with the runtime's stamped preamble
-// already sends the reader to the mapping, so its stub does not say it again.
-export function promptStub({ name, menu }, runtime, { preamble } = {}) {
-  const pointer = preamble
-    ? ""
-    : " Resolve Claude tool names, Claude model names, and Claude built-in skills through " +
-      `\`melbs-mode/references/${runtime.mapping}\`, including its Per-skill notes.`;
-  return (
-    `---\nname: ${name}\ndescription: ${menu}\ndisable-model-invocation: true\n---\n\n` +
-    `Invoke the \`${name}\` skill and follow it.${pointer}\n`
-  );
 }
 
 // Locators find a generator-owned span of a file and return its [start, end)
@@ -420,6 +387,12 @@ export function regions(models) {
       name: "override sheet",
       locate: fenceUnder("Write the override sheet", "markdown"),
       render: () => [overrideSheetBlock(models)],
+    },
+    {
+      file: skillFile("melbs-mode"),
+      name: "Platform Adaptation sentence",
+      locate: lineStartingWith(PLATFORM_ADAPTATION_OPEN),
+      render: () => [platformAdaptation()],
     },
     ...RUNTIMES.map((runtime) => ({
       file: runtime.tools,
@@ -734,7 +707,7 @@ export function overrideSheetBlock(models) {
     "A model may carry a reasoning effort, as in `opus @xhigh` (levels: " + models.efforts.join(", ") + "); " +
     "the role's subagent then runs at that level, each entry of a panel list on its own. " +
     "`default effort` sets the level for a value without one; `session` uses the runtime's platform mapping to start from the parent session's effort. On Codex this requires active-turn metadata or an explicit effort choice. " +
-    "`session hook: off` stops the Claude Code, Codex, or Muse SessionStart hook, or the pstack Pi extension, from injecting the melbs-mode mandate; " +
+    "`session hook: off` stops the supported runtime's pstack routing hook from injecting the melbs-mode mandate; " +
     "any other value, or no line, leaves it on.\n\n" +
     rows +
     `\n\ndefault effort: ${models.defaultEffort}\nsession hook: on`
@@ -821,7 +794,7 @@ function shapeFaults(schema, value, subject) {
 // directly must be executable, or the SessionStart hook fails silently for
 // every user.
 // The root is the variable the runtime exports with the plugin's directory.
-export function validateHooks(hooksJson, { statOf, file = "hooks/hooks.json", root = "CLAUDE_PLUGIN_ROOT" }) {
+export function validateHooks(hooksJson, { statOf, file = "hooks/hooks.json", root = "CLAUDE_PLUGIN_ROOT", checkExecutable = true }) {
   const raw = JSON.parse(hooksJson);
   const faults = shapeFaults(HOOKS_FILE, raw, "file");
   if (faults.length) throw new Error(`${file}:\n  ${faults.join("\n  ")}`);
@@ -848,7 +821,7 @@ export function validateHooks(hooksJson, { statOf, file = "hooks/hooks.json", ro
         refs.forEach((rel, i) => {
           const st = statOf(rel);
           if (!st) faults.push(`${event}: ${rel} does not exist in the plugin`);
-          else if (i === 0 && executed && !(st.mode & 0o111)) faults.push(`${event}: ${rel} is not executable`);
+          else if (checkExecutable && i === 0 && executed && !(st.mode & 0o111)) faults.push(`${event}: ${rel} is not executable`);
         });
       }
     }
@@ -881,20 +854,15 @@ export function plan(root, models) {
   };
   for (const file of VERSIONED_MANIFESTS) stamp(file, (text) => stampVersion(text, version, file));
   for (const file of new Set(regions(models).map((r) => r.file))) stamp(file, (text) => applyRegions(file, text, models));
-  const leads = loadLeadLines(root);
-  for (const [file, line] of leads) {
+  for (const [file, line] of loadLeadLines(root)) {
     stamp(file, (text) => {
       const stamped = stampLeadLine(text, line);
       if (stamped === null) throw new Error(`${file}: no heading to stamp its lead line under`);
       return stamped;
     });
   }
-  for (const runtime of PROMPT_RUNTIMES) {
-    for (const skill of slashCommands(read(COMMANDS_DOC), publicSkills(join(root, SKILLS)))) {
-      const preamble = (leads.get(`${SKILLS}/${skill.name}/SKILL.md`) ?? []).includes(runtime.preamble);
-      put(`${runtime.prompts}/${skill.name}.md`, promptStub(skill, runtime, { preamble }));
-    }
-  }
+  // Checked here so a table that disagrees with the public skills fails before anything is written.
+  slashCommands(read(COMMANDS_DOC), publicSkills(join(root, SKILLS)));
   for (const runtime of RUNTIMES.filter((r) => r.stampManifest)) {
     stamp(runtime.manifest, (text) =>
       runtime.stampManifest(text, { skills: agentSkills(join(root, SKILLS)).map(({ name }) => name) }),
@@ -907,7 +875,7 @@ export function plan(root, models) {
   const realRoot = realpathSync(root);
   for (const { source, target } of PORTABLE_ASSETS) {
     const path = `${SKILLS}/${target}`;
-    if (!OWNED_DIRS.includes(dirname(path))) {
+    if (!OWNED_DIRS.includes(posix.dirname(path))) {
       throw new Error(`${path} is not directly inside a generator-owned directory (${OWNED_DIRS.join(", ")})`);
     }
     if (!pathIsInside(realRoot, realpathSync(join(root, source)))) {
@@ -925,7 +893,7 @@ function lstatNoSymlinks(root, path) {
     at = join(at, part);
     st = lstatSync(at, { throwIfNoEntry: false });
     if (!st) return null;
-    if (st.isSymbolicLink()) throw new Error(`${relative(root, at)} is a symlink; the generator never writes through one`);
+    if (st.isSymbolicLink()) throw new Error(`${repoRelative(root, at)} is a symlink; the generator never writes through one`);
   }
   return st;
 }
@@ -1001,7 +969,7 @@ export function problems(root, models) {
   if (models) {
     attempt(() => {
       const strays = markdownFiles(skillsDir).flatMap((full) =>
-        strayModelSlugs(relative(root, full), readFileSync(full, "utf8"), models),
+        strayModelSlugs(repoRelative(root, full), readFileSync(full, "utf8"), models),
       );
       if (strays.length) {
         throw new Error(
@@ -1014,7 +982,7 @@ export function problems(root, models) {
   attempt(() => {
     const leads = loadLeadLines(root);
     const strays = markdownFiles(skillsDir).flatMap((full) => {
-      const file = relative(root, full);
+      const file = repoRelative(root, full);
       return readFileSync(full, "utf8")
         .split("\n")
         .flatMap((line, i) =>
@@ -1031,7 +999,10 @@ export function problems(root, models) {
   });
   attempt(() => validateSkillsTree(skillsDir));
   attempt(() => validateProsePaths(skillsDir));
-  for (const packaged of packages) attempt(() => packaged.runtime.validate({ ...packaged, read, pathExists }));
+  // Windows stat modes cannot represent the POSIX execute bits; Unix checks
+  // still verify them, and every host checks that the hook paths exist.
+  const checkExecutable = process.platform !== "win32";
+  for (const packaged of packages) attempt(() => packaged.runtime.validate({ ...packaged, read, pathExists, statOf, checkExecutable, agentSkills: (dir) => agentSkills(join(root, dir)) }));
   attempt(() => validatePluginLayout(pluginRoot));
   attempt(() => validateAgentFrontmatter(pluginRoot));
   const hooksFiles = [
@@ -1041,7 +1012,7 @@ export function problems(root, models) {
     ),
   ];
   for (const { file, root } of hooksFiles) {
-    attempt(() => validateHooks(readFileSync(join(pluginRoot, file), "utf8"), { statOf, file, root }));
+    attempt(() => validateHooks(readFileSync(join(pluginRoot, file), "utf8"), { statOf, file, root, checkExecutable }));
   }
   return failures;
 }
