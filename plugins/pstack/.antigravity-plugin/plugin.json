@@ -1,6 +1,6 @@
 {
   "name": "mstack",
-  "version": "0.9.1310008",
+  "version": "0.9.1320008",
   "description": "If you want to go fast, go deep first. pstack helps you write less, but higher quality code. rigorous agent workflows you can parallelize with confidence. Ported from cursor/plugins/pstack to Antigravity. Original pstack by Lauren Tan (poteto).",
   "author": "Michael Denyer",
   "logo": "assets/pstack-icon.png",
