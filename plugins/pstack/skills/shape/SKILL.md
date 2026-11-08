@@ -1,6 +1,6 @@
 ---
 name: shape
-description: Use when the user runs /shape, or brings a raw idea, request, or problem that isn't bounded yet and wants it ready for agents to build. Produces a short pitch with the problem, appetite, solution as a breadboard, rabbit holes, and no-gos.
+description: Use when the user runs /shape, or brings a raw idea, request, or problem that isn't bounded yet and wants it ready for agents to build. Produces a short pitch with the problem, what done means, what must never happen, appetite, solution as a breadboard, rabbit holes, and no-gos.
 ---
 
 # Shape
@@ -17,7 +17,7 @@ The bet, the appetite, the choice between solutions, and the no-gos are the user
 2. **Get the appetite before designing.** Ask how much the work is worth: a small batch of a few hours of agent time, or a big batch of a day or two. Also ask how much of the user's own review time it's worth. When even a big batch can't hold it, narrow the problem or split off a meaningful part. The appetite is a budget, not an estimate, so never derive it from a solution you have already sketched. Design to fit it. When a solution doesn't fit, change the solution or cut scope, not the appetite.
 3. **Breadboard the solution** with the **breadboard** skill, for work with or without a UI. The breadboard is the source of truth for the solution, and the pitch's prose follows its structure. When the layout itself is the problem, use a coarse sketch instead.
 4. **Find the rabbit holes:** parts that could make the work take several times the appetite. Check them against the real system. Patch each one with a decision, declare it out of bounds, or cut the part.
-5. **Write the pitch** to a file in the repo the work changes, such as `pitches/<name>.md`, and show it to the user. It has five parts: problem, appetite, solution, rabbit holes, and no-gos.
+5. **Write the pitch** to a file in the repo the work changes, such as `pitches/<name>.md`, and show it to the user. It has seven parts: problem, done means, never, appetite, solution, rabbit holes, and no-gos. Done means is what the user sees when the work succeeds. Never lists the outcomes that must not happen, such as a ticket sold twice; the design's invariants come from it, and the **skeleton** skill reads both.
 
 ## When to stop
 

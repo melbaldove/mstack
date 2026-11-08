@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Skeleton</title>
+<style>
+:root{color-scheme:light dark;--fg:var(--foreground,#1f2328);--mu:var(--muted-foreground,#646b73);--cd:var(--card,#fff);--bd:var(--border,#e2dfd8);--cb:var(--code-background,#f5f3ee);--ch:var(--secondary,#efede7);--ok:var(--success,#2f7d32);--wa:var(--warning,#a06f00);--ba:var(--destructive,#b3261e);--ac:var(--info,#2f6fb3);--r:var(--radius,10px);--sans:var(--font-sans,system-ui,sans-serif);--mono:var(--font-mono,ui-monospace,Menlo,monospace)}
+@media (prefers-color-scheme:dark){:root{--fg:var(--foreground,#e6e6e3);--mu:var(--muted-foreground,#9aa0a6);--cd:var(--card,#1c1f23);--bd:var(--border,#30353b);--cb:var(--code-background,#131518);--ch:var(--secondary,#262a2f);--ok:var(--success,#86c285);--wa:var(--warning,#e0b84f);--ba:var(--destructive,#f08a80);--ac:var(--info,#6aa8e8)}}
+*{box-sizing:border-box}
+body{margin:0;color:var(--fg);font:15px/1.55 var(--sans);max-width:1000px}
+h1{font-size:20px;margin:0}
+.base{font:12px var(--mono);color:var(--mu);margin-top:2px}
+h2{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mu);margin:26px 0 10px}
+.box{background:var(--cd);border:1px solid var(--bd);border-radius:var(--r);padding:16px}
+.goal{font-size:17px;font-weight:600;line-height:1.4;margin:0 0 10px}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:10px 20px;font-size:14px}
+.cols b{display:block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--mu)}
+.cols ul{margin:2px 0 0;padding-left:18px}
+.ask{border:2px solid var(--wa);margin-bottom:10px}
+.ask .lbl{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--wa)}
+.ask .q{font-size:16px;font-weight:650;margin:4px 0}
+.ask p{margin:4px 0}
+.pick{color:var(--ok);font-weight:700}
+.cmp{display:grid;font-size:14px;margin-top:8px}
+.cmp>div{padding:6px 8px;border-top:1px solid var(--bd)}
+.cmp .h{font-weight:650;border-top:0}
+.cmp .l{color:var(--mu)}
+.cmp .opt{display:none}
+@media (max-width:560px){.cmp{grid-template-columns:1fr!important}.cmp .h{display:none}.cmp .l{font-weight:650;color:var(--fg)}.cmp .v{border-top:0;padding-top:0}.cmp .opt{display:inline;font:600 12px var(--mono);color:var(--mu);margin-right:6px}}
+.decided{font-size:14px;color:var(--mu);margin:6px 0 0}
+.decided b{color:var(--fg)}
+.concepts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:12px;align-items:start}
+.concept h3{margin:0;font-size:16px}
+.purpose{margin:2px 0 0;color:var(--mu);font-size:14px}
+.finding{margin-top:8px;border-left:3px solid var(--wa);background:color-mix(in srgb,var(--wa) 10%,transparent);border-radius:0 6px 6px 0;padding:5px 10px;font-size:14px}
+.finding b{display:block;color:var(--wa);font-size:11px;letter-spacing:.05em;text-transform:uppercase}
+.sec{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mu);margin:12px 0 5px}
+.type{background:var(--cb);border:1px solid var(--bd);border-radius:6px;padding:6px 0;font:12px/1.55 var(--mono)}
+.type div{padding:0 10px;white-space:pre-wrap;overflow-wrap:anywhere}
+.added{background:color-mix(in srgb,var(--ok) 14%,transparent)}
+.changed{background:color-mix(in srgb,var(--wa) 14%,transparent)}
+.mk{font:600 10px/1 var(--sans);letter-spacing:.04em;text-transform:uppercase;border-radius:4px;padding:2px 5px;margin-left:4px}
+.mk.added{color:var(--ok);border:1px solid var(--ok);background:none}
+.mk.changed{color:var(--wa);border:1px solid var(--wa);background:none}
+.sm{display:flex;flex-direction:column;gap:4px;font-size:13.5px}
+.sm div{display:flex;flex-wrap:wrap;gap:4px 6px;align-items:baseline}
+.s{font:12px var(--mono);border:1px solid var(--bd);background:var(--ch);border-radius:999px;padding:2px 8px}
+.sm .by{color:var(--mu)}
+.sm .never .s{color:var(--ba);border-color:var(--ba);background:none;text-decoration:line-through}
+.sm .never .ar{color:var(--ba)}
+.inv{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:5px;font-size:14px}
+.inv .note{display:block;color:var(--mu);font-size:13px}
+.e{font:600 10.5px/1 var(--sans);letter-spacing:.04em;text-transform:uppercase;border:1px solid var(--ok);color:var(--ok);border-radius:4px;padding:2px 5px;margin-left:4px;white-space:nowrap}
+.e.weak{border-color:var(--wa);color:var(--wa)}
+.e.broken{border-color:var(--ba);color:var(--ba)}
+.con{margin:0;padding-left:18px;font-size:14px}
+.cand{position:relative}
+.hint{font-size:13px;color:var(--ac);margin:0 0 10px}
+.layer{display:grid;grid-template-columns:76px 1fr;gap:8px;margin-bottom:6px}
+.who{font-size:12px;color:var(--mu);padding-top:6px}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.n{font:12.5px/1.3 var(--mono);color:var(--fg);border:1px solid var(--bd);background:var(--ch);border-radius:6px;padding:6px 9px;cursor:pointer}
+.n.outside{border-style:dashed}
+.n.store{border-radius:12px}
+.n.added{border:2px solid var(--ok)}
+.n.changed{border:2px solid var(--wa)}
+.n.broken{border:2px solid var(--ba)}
+.flow.focus .n{opacity:.32}
+.flow.focus .n.rel,.flow.focus .n.sel{opacity:1}
+.flow.focus .n.sel{box-shadow:0 0 0 3px var(--ac)}
+@media (max-width:560px){.layer{grid-template-columns:1fr;gap:2px}.who{padding-top:0}}
+.insp{position:absolute;left:10px;right:10px;z-index:5;border:2px solid var(--ac);border-radius:8px;padding:12px 14px;background:var(--cd);box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.insp[hidden]{display:none}
+.insp .top{display:flex;align-items:center;gap:6px}
+.insp .nm{font:650 15px var(--mono)}
+.x{margin-left:auto;background:none;border:0;color:var(--mu);font-size:20px;cursor:pointer}
+.sig{font:11.5px/1.5 var(--mono);color:var(--mu);background:var(--cb);border:1px solid var(--bd);border-radius:6px;padding:5px 8px;margin:6px 0;overflow-wrap:anywhere}
+.insp p{margin:4px 0}
+.warn{margin-top:6px;border-left:3px solid var(--wa);padding:3px 10px;background:color-mix(in srgb,var(--wa) 10%,transparent)}
+.line{font-size:13px;color:var(--mu);margin-top:6px}
+.src{font:12px var(--mono);color:var(--mu);margin-top:6px;overflow-wrap:anywhere}
+</style>
+</head>
+<body>
+<div id="page"></div>
+
+<script id="skeleton-data" type="application/json">
+{
+  "title": "Ticket resale at face value",
+  "mode": "design",
+  "base": "",
+  "intent": {
+    "goal": "A fan who can't go sells their ticket to another fan for no more than face value, and neither can lose money or end up with a ticket that doesn't work.",
+    "done": ["The buyer holds a valid ticket in their name.", "The seller is paid."],
+    "never": ["A ticket sold twice.", "A buyer charged without the ticket.", "A price above face value.", "A buyer out of pocket when an event is cancelled."],
+    "out": ["First-hand sales, auctions, changing prices."]
+  },
+  "decisions": [
+    {
+      "question": "When is the seller paid?",
+      "why": "The issuer can void a ticket after it is sold, and someone has to absorb that.",
+      "pick": "After the event.",
+      "reason": "Voids can happen any time before the event, and only this keeps every buyer whole.",
+      "options": ["After the event", "At transfer"],
+      "measures": [
+        { "label": "Who absorbs a void after the sale", "values": ["The seller", "Us"] },
+        { "label": "How long a seller waits", "values": ["Until the event", "Minutes"] }
+      ]
+    }
+  ],
+  "decided": [
+    "The buyer's card is reserved when they start paying and charged only after the ticket is theirs, because the intent forbids charging a buyer who doesn't get the ticket."
+  ],
+  "concepts": [
+    {
+      "name": "Listing",
+      "purpose": "A ticket offered for sale at no more than face value.",
+      "types": [{ "text": "Listing { id, ticketId, sellerId, price: Price, status: \"listed\" | \"sold\" | \"withdrawn\" | \"voided\" }" }, { "text": "type Price = Brand<Cents, \"AtMostFace\">  // only from priceFor(amount, face)" }],
+      "states": [
+        { "from": "listed", "to": "sold", "by": "transfer confirmed" },
+        { "from": "listed", "to": "withdrawn", "by": "seller, while no one is paying" },
+        { "from": "any", "to": "voided", "by": "issuer voids the ticket" }
+      ],
+      "invariants": [
+        { "text": "Price never above face value.", "enforced": "type" },
+        { "text": "One live listing per ticket.", "enforced": "database" }
+      ],
+      "constraints": ["The issuer, not us, knows who holds a ticket."]
+    },
+    {
+      "name": "Payment",
+      "purpose": "The buyer's money, which moves only if the ticket does.",
+      "types": [{ "text": "Payment { id, holdId, amount: Price, status: \"reserved\" | \"charged\" | \"released\" }" }],
+      "states": [
+        { "from": "reserved", "to": "charged", "by": "transfer confirmed" },
+        { "from": "reserved", "to": "released", "by": "transfer failed, hold expired, or event cancelled" },
+        { "from": "reserved", "to": "charged", "by": "without a confirmed transfer", "never": true }
+      ],
+      "invariants": [
+        { "text": "Charged only for a transferred ticket.", "enforced": "test" },
+        { "text": "A crash after the transfer still ends charged.", "enforced": "repair job" }
+      ],
+      "constraints": ["Card reservations expire after about 7 days."]
+    }
+  ],
+  "boundaries": {
+    "layers": [
+      { "label": "who acts", "nodes": ["buyer", "issuerHook"] },
+      { "label": "actions", "nodes": ["completePurchase", "onIssuerChange"] },
+      { "label": "outside", "nodes": ["issuer", "provider"] },
+      { "label": "stores", "nodes": ["db"] }
+    ],
+    "nodes": {
+      "buyer": { "label": "buyer", "kind": "outside", "does": "Starts paying, then receives the ticket." },
+      "issuerHook": { "label": "issuer webhook", "kind": "outside", "does": "The issuer telling us a ticket was voided or an event cancelled. Can arrive late or twice." },
+      "completePurchase": { "label": "completePurchase", "signature": "completePurchase(holdId): Result<Sale, \"expired\" | \"transfer_rejected\" | \"transfer_unknown\">", "does": "Requests the transfer; charges the card if the issuer confirms, releases it if not.", "src": "resale/purchase.ts (new)" },
+      "onIssuerChange": { "label": "onIssuerChange", "signature": "onIssuerChange(change: IssuerChange): void", "does": "Voids listings, cancels holds, releases or refunds money. Safe to run twice.", "src": "resale/cancellation.ts (new)" },
+      "issuer": { "label": "issuer API", "kind": "outside", "does": "Owns the ticket records: who holds each ticket, its face value, transfers." },
+      "provider": { "label": "payment provider", "kind": "outside", "does": "Reserves, charges, releases and refunds card payments." },
+      "db": { "label": "database", "kind": "store", "does": "Listings, holds, payments and transfers, with the unique indexes that keep one listing per ticket." }
+    },
+    "edges": [["buyer", "completePurchase"], ["issuerHook", "onIssuerChange"], ["completePurchase", "issuer"], ["completePurchase", "provider"], ["completePurchase", "db"], ["onIssuerChange", "provider"], ["onIssuerChange", "db"]]
+  }
+}
+</script>
+
+<script>
+const D = JSON.parse(document.getElementById('skeleton-data').textContent);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const STRONG = new Set(['law', 'type', 'database', 'test', 'model check']);
+const mark = m => m ? `<span class="mk ${m}">${m}</span>` : '';
+const list = (title, items) => items && items.length ? `<div><b>${title}</b><ul>${items.map(i => `<li>${esc(i)}</li>`).join('')}</ul></div>` : '';
+const page = [];
+document.title = D.title;
+
+page.push(`<h1>${esc(D.title)}</h1>${D.base ? `<div class="base">${esc(D.base)}</div>` : ''}`);
+
+const I = D.intent;
+page.push(`<h2>Intent</h2><section class="box"><p class="goal">${esc(I.goal)}</p><div class="cols">${list('Done means', I.done)}${list('Never', I.never)}${list('Out of scope', I.out)}</div></section>`);
+
+if ((D.decisions && D.decisions.length) || (D.decided && D.decided.length)) {
+  page.push(`<h2>${D.decisions && D.decisions.length ? 'Open decisions' : 'Decided'}</h2>`);
+  for (const d of D.decisions || []) {
+    const cols = (d.options || []).length;
+    const table = cols && d.measures ? `<div class="cmp" style="grid-template-columns:minmax(120px,1fr) repeat(${cols},1.2fr)"><div class="h"></div>${d.options.map(o => `<div class="h">${esc(o)}</div>`).join('')}${d.measures.map(m => `<div class="l">${esc(m.label)}</div>${m.values.map((v, i) => `<div class="v"><span class="opt">${esc(d.options[i])}</span>${esc(v)}</div>`).join('')}`).join('')}</div>` : '';
+    page.push(`<section class="box ask"><div class="lbl">Waiting on you</div><p class="q">${esc(d.question)}</p><p>${esc(d.why)}</p><p><span class="pick">Pick: ${esc(d.pick)}</span> ${esc(d.reason)}</p>${table}</section>`);
+  }
+  for (const t of D.decided || []) page.push(`<p class="decided"><b>Decided by the intent:</b> ${esc(t)}</p>`);
+}
+
+page.push(`<h2>Concepts</h2><div class="concepts">${D.concepts.map(c => `<article class="box concept"><h3>${esc(c.name)}${mark(c.mark)}</h3><p class="purpose">${esc(c.purpose)}</p>
+  ${(c.findings || []).map(f => `<div class="finding"><b>${esc(f.title)}</b>${esc(f.text)}</div>`).join('')}
+  ${c.types && c.types.length ? `<div class="sec">Types</div><div class="type">${c.types.map(t => `<div class="${t.mark || ''}">${esc(t.text)}</div>`).join('')}</div>` : ''}
+  ${c.states && c.states.length ? `<div class="sec">State machine</div><div class="sm">${c.states.map(s => `<div class="${s.never ? 'never' : ''}"><span class="s">${esc(s.from)}</span><span class="ar">${s.never ? '✕' : '→'}</span><span class="s">${esc(s.to)}</span><span class="by">${s.never ? 'never: ' : ''}${esc(s.by)}</span>${mark(s.mark)}</div>`).join('')}</div>` : ''}
+  ${c.invariants && c.invariants.length ? `<div class="sec">Invariants</div><ul class="inv">${c.invariants.map(v => `<li>${esc(v.text)}<span class="e ${v.enforced === 'broken' ? 'broken' : STRONG.has(v.enforced) ? '' : 'weak'}">${esc(v.enforced === 'broken' ? 'broken today' : v.enforced)}</span>${mark(v.mark)}${v.note ? `<span class="note">${esc(v.note)}</span>` : ''}</li>`).join('')}</ul>` : ''}
+  ${c.constraints && c.constraints.length ? `<div class="sec">Constraints</div><ul class="con">${c.constraints.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : ''}</article>`).join('')}</div>`);
+
+const B = D.boundaries;
+if (B) page.push(`<h2>Boundaries</h2><section class="box cand" id="cand"><p class="hint">Tap a box for its brief.</p><div class="flow">${B.layers.map(l => `<div class="layer"><div class="who">${esc(l.label)}</div><div class="chips">${l.nodes.map(id => `<button type="button" class="n ${B.nodes[id].kind || ''} ${B.nodes[id].mark || ''}" data-id="${id}">${esc(B.nodes[id].label)}</button>`).join('')}</div></div>`).join('')}</div><div class="insp" hidden></div></section>`);
+
+document.getElementById('page').innerHTML = page.join('');
+
+if (B) {
+  const card = document.getElementById('cand'), flow = card.querySelector('.flow'), insp = card.querySelector('.insp');
+  const select = (id, btn) => {
+    const cur = flow.querySelector('.n.sel');
+    flow.querySelectorAll('.n').forEach(b => b.classList.remove('sel', 'rel'));
+    if (!id || (cur && cur.dataset.id === id)) { flow.classList.remove('focus'); insp.hidden = true; return; }
+    const ins = B.edges.filter(([, b]) => b === id).map(([a]) => a), outs = B.edges.filter(([a]) => a === id).map(([, b]) => b);
+    flow.classList.add('focus');
+    flow.querySelectorAll('.n').forEach(b => { if (b.dataset.id === id) b.classList.add('sel'); else if (ins.includes(b.dataset.id) || outs.includes(b.dataset.id)) b.classList.add('rel'); });
+    const n = B.nodes[id], names = ids => ids.map(x => esc(B.nodes[x].label)).join(', ');
+    insp.innerHTML = `<div class="top"><span class="nm">${esc(n.label)}</span>${mark(n.mark)}<button type="button" class="x" aria-label="Close">×</button></div>${n.signature ? `<div class="sig">${esc(n.signature)}</div>` : ''}<p>${esc(n.does)}</p>${n.change ? `<p><b>In this design:</b> ${esc(n.change)}</p>` : ''}${n.warning ? `<div class="warn">${esc(n.warning)}</div>` : ''}${ins.length ? `<div class="line">From: ${names(ins)}</div>` : ''}${outs.length ? `<div class="line">To: ${names(outs)}</div>` : ''}${n.src ? `<div class="src">${esc(n.src)}</div>` : ''}`;
+    insp.hidden = false;
+    insp.style.top = (btn.getBoundingClientRect().bottom - card.getBoundingClientRect().top + 6) + 'px';
+  };
+  card.addEventListener('click', e => {
+    if (e.target.closest('.x')) return select(null);
+    if (e.target.closest('.insp')) return;
+    const b = e.target.closest('.flow .n');
+    select(b ? b.dataset.id : null, b);
+  });
+  document.addEventListener('click', e => { if (!e.target.closest('#cand')) select(null); });
+}
+</script>
+</body>
+</html>

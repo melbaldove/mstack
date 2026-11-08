@@ -5,7 +5,8 @@ mstack is Melbourne Baldove's build of [pstack-claude](https://github.com/michae
 1. `rename.mjs` renames the plugin and marketplace to `mstack`, `poteto-mode` to `melbs-mode`, `poteto-agent` to `melbs-agent`, `poteto-help` to `melbs-help`, and `setup-pstack` to `setup-mstack`. Internal paths, such as `plugins/pstack`, the `pstack-models` sheet, and `PSTACK_*` variables, keep their names.
 2. `patches/mstack.patch` carries every content change:
    - Replies follow the user's Communication rules, and code follows the user's Code rules, including no code comments.
-   - The `shape`, `breadboard`, and `build` skills add a Shape Up workflow: shape a raw idea into a pitch with a fixed appetite, then build it within that time.
+   - The `shape`, `breadboard`, and `build` skills add a Shape Up workflow: shape a raw idea into a pitch with a fixed appetite, then build it within that time. A pitch also states what done means and what must never happen.
+   - The `skeleton` skill lays out a design, or an existing part of a system, as one page: the intent, then each concept's types, state machine, invariants, and constraints, then the boundaries, so the user can decide a design without reading the code. `architect` shows its synthesized design as that page and stops at each decision the intent leaves open.
    - `principle-earn-each-test` lets an agent commit a test only when it protects a behavior nothing else protects and the agent saw it fail, and `test-audit` prunes an existing suite to that bar.
    - `principle-review-for-real-risk` limits a review to proven failures the change introduces, and stops the review-and-fix loop when a round finds no new real risk.
    - Under a pitch's appetite, the Autonomous run playbook stops when time runs out, `figure-it-out` compares its estimate to the appetite, and `principle-foundational-thinking` sets up only what the first working slice needs.

@@ -4,7 +4,7 @@ Start with the [README](../README.md) for installation and your first task.
 
 ## Slash commands
 
-The package includes 73 skill directories: 47 public skills and 26 `principle-*` references. Claude Code uses `/mstack:<name>`, Pi uses `/skill:<name>`, and Muse lists each user-invocable skill as `/<name>`. In Codex, mention a skill with `$<name>`, such as `$melbs-mode`, or pick one from `/skills`.
+The package includes 74 skill directories: 48 public skills and 26 `principle-*` references. Claude Code uses `/mstack:<name>`, Pi uses `/skill:<name>`, and Muse lists each user-invocable skill as `/<name>`. In Codex, mention a skill with `$<name>`, such as `$melbs-mode`, or pick one from `/skills`.
 
 Find each skill's instructions in the [skills tree](../plugins/pstack/skills/).
 
@@ -14,6 +14,7 @@ Find each skill's instructions in the [skills tree](../plugins/pstack/skills/).
 | `/shape` | turn a raw idea into a pitch agents can build in a fixed time, or a spike when the core idea is unproven |
 | `/breadboard` | lay out a system's places, affordances, and connections, with or without a UI |
 | `/build` | build a shaped pitch within its appetite, one working piece first, and stop when time runs out |
+| `/skeleton` | see a design, or a part of an existing system, as its intent, types, state machines, invariants, and boundaries on one page |
 | `/how` | walk through how a subsystem works |
 | `/why` | investigate why something was built this way (parallel multi-MCP evidence) |
 | `/architect` | settle types and module shape before writing code that crosses a function boundary |
