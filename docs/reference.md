@@ -14,7 +14,7 @@ Find each skill's instructions in the [skills tree](../plugins/pstack/skills/).
 | `/shape` | turn a raw idea into a pitch agents can build in a fixed time, or a spike when the core idea is unproven |
 | `/breadboard` | lay out a system's places, affordances, and connections, with or without a UI |
 | `/build` | build a shaped pitch within its appetite, one working piece first, and stop when time runs out |
-| `/skeleton` | see a design, or a part of an existing system, as its intent, types, state machines, invariants, and boundaries on one page |
+| `/skeleton` | see a design, a change already made, or part of an existing system on one page that opens with the answer in plain words, then only the intent, decisions, flows, state machines, invariants, and terms you need |
 | `/how` | walk through how a subsystem works |
 | `/why` | investigate why something was built this way (parallel multi-MCP evidence) |
 | `/architect` | settle types and module shape before writing code that crosses a function boundary |
