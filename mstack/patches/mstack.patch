@@ -1,5 +1,5 @@
 diff --git a/.claude-plugin/marketplace.json b/.claude-plugin/marketplace.json
-index fd950c9..e7fc5b9 100644
+index f2db948..e4f99d4 100644
 --- a/.claude-plugin/marketplace.json
 +++ b/.claude-plugin/marketplace.json
 @@ -4,7 +4,7 @@
@@ -24,7 +24,7 @@ index bbf445d..64396be 100644
  [![Mentioned in Awesome Claude Code](https://awesome.re/mentioned-badge.svg)](https://github.com/hesreallyhim/awesome-claude-code)
  
 diff --git a/docs/reference.md b/docs/reference.md
-index 5dfebec..b486572 100644
+index 5dfebec..8ce4cbb 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
 @@ -4,13 +4,17 @@ Start with the [README](../README.md) for installation and your first task.
@@ -42,7 +42,7 @@ index 5dfebec..b486572 100644
 +| `/shape` | turn a raw idea into a pitch agents can build in a fixed time, or a spike when the core idea is unproven |
 +| `/breadboard` | lay out a system's places, affordances, and connections, with or without a UI |
 +| `/build` | build a shaped pitch within its appetite, one working piece first, and stop when time runs out |
-+| `/skeleton` | see a design, a change already made, or part of an existing system on one page that opens with the answer in plain words, then only the intent, decisions, flows, state machines, invariants, and terms you need |
++| `/skeleton` | see a design, a change already made, or part of an existing system on one page: the answer in plain words, then its types, signatures, rules, state machines, invariants, and call graphs, each explained |
  | `/how` | walk through how a subsystem works |
  | `/why` | investigate why something was built this way (parallel multi-MCP evidence) |
  | `/architect` | settle types and module shape before writing code that crosses a function boundary |
@@ -107,7 +107,7 @@ index 0000000..83af64f
 +
 +Invoke the `test-audit` skill and follow it. Resolve Claude tool names, Claude model names, and Claude built-in skills through `melbs-mode/references/codex-tools.md`, including its Per-skill notes.
 diff --git a/plugins/pstack/.muse-plugin/plugin.json b/plugins/pstack/.muse-plugin/plugin.json
-index a917cfa..e7690b0 100644
+index 687d59c..5c2959a 100644
 --- a/plugins/pstack/.muse-plugin/plugin.json
 +++ b/plugins/pstack/.muse-plugin/plugin.json
 @@ -40,11 +40,21 @@
@@ -508,44 +508,45 @@ index 0000000..1d41c16
 +Stop when a builder could start without asking about the problem, the main parts, or the risky decisions. Leave names, formats, schemas, file layouts, and exact rules to the builders, unless one of them is a rabbit hole. Spend shaping time in proportion to the appetite: a pitch for a few hours of work fits on one page.
 diff --git a/plugins/pstack/skills/skeleton/SKILL.md b/plugins/pstack/skills/skeleton/SKILL.md
 new file mode 100644
-index 0000000..8c33b19
+index 0000000..1a48b1c
 --- /dev/null
 +++ b/plugins/pstack/skills/skeleton/SKILL.md
-@@ -0,0 +1,61 @@
+@@ -0,0 +1,63 @@
 +---
 +name: skeleton
-+description: Use when designing a change that crosses a function or module boundary, building something new, explaining a change already made, or when the user asks how part of a system works or wants to understand or simplify it. Puts the answer first, then only the intent, decisions, flows, state machines, invariants, and terms the reader needs, on one page the user reads instead of the code.
++description: Use when designing a change that crosses a function or module boundary, building something new, explaining a change already made, or when the user asks how part of a system works or wants to understand or simplify it. Puts the answer first, then the full model (types, signatures, rules, state machines, invariants, and who calls what), each part explained in plain words, on one page the user reads instead of the code.
 +---
 +
 +# Skeleton
 +
 +The user keeps their own model of each system while agents write the bodies. The skeleton page gives them that model, so they can understand a design or decide it without reading code.
 +
-+## Signal over noise
++## Rich and readable
 +
-+This rule outranks every other in this skill. The reader must understand the page cold, in one pass.
++This rule outranks every other in this skill. The page carries the whole model, and the reader understands every part of it cold.
 +
 +- Open with the answer, in two to four plain sentences.
-+- Add a block only when the reader needs it to understand or decide. Cut any block that restates another or only fills a slot.
-+- Write in the reader's words. Say what a person sees or does before you name code. Name a code identifier only where the reader needs it to find the code.
-+- Define each term the reader may not know in a Terms block, and give each thing one name.
-+- Never add labels or toggles of your own.
++- Show the full model for each concept the work touches: its types, its function signatures, the rules it decides by, its state machine, its invariants, and who calls what. Copy each from the code; never shorten a signature or a type.
++- Explain every technical part in plain words beside it: each field and variant of a type, each rule, each state, each node of a graph. A part the reader can't read is noise.
++- Draw state machines and call paths as diagrams with arrows, never as lists of names.
++- Define each term the reader may not know, and give each thing one name.
++- Cut only what restates another part. Never add labels or toggles of your own.
 +
 +## Modes
 +
 +- **Design.** A change not built yet. Show the design you recommend, and ask only what the intent leaves open.
-+- **Explain.** A change already made, such as a pull request or a fix. Show what a person saw before, what they see now, and the cause in between.
++- **Explain.** A change already made, such as a pull request or a fix. Show what a person saw before, what they see now, the cause in between, and the model around the change.
 +- **Map.** A request to see how part of a system works, or to understand or simplify it. Show it as the code has it today, with findings.
 +
 +## Steps
 +
 +1. **Intent.** In design mode, write the goal in one sentence, what done means, what must never happen, and what is out of scope. Take it from the pitch when the **shape** skill wrote one. Otherwise draft it and have the user confirm it before you design against it. In explain mode, state the symptom the change fixes, as a person saw it. In map mode, state what the part is for, as the code shows it.
-+2. **Read the code.** Run the **how** skill on systems you don't know. Take signatures and call sites from the code, never from memory. Read each line before you cite it, and drop any claim you could not check.
-+3. **Model only what the reader needs.** Give each concept the change touches its purpose in one line, then whichever of these apply: types with their constraints; its state machine, with what causes each transition and the transitions that must never happen; its invariants, each tagged with how it is enforced, strongest first (law, such as Bend 2's `LAWS.bend`; type; database; test; model check; repair job; nothing); and its constraints. Mark any invariant the code breaks today. In explain mode, a before-and-after and the changed step on the path usually say it all.
++2. **Read the code.** Run the **how** skill on systems you don't know. Take types, signatures and call sites from the code, never from memory. Read each line before you cite it, and drop any claim you could not check.
++3. **Model each concept the work touches.** Give it a purpose in one line, then each of these that exists: its types, with every field or variant explained; its functions, with full signatures; the rules it decides by, in the order the code checks them; its state machine, with what causes each transition and the transitions that must never happen; its invariants, each tagged with how it is enforced, strongest first (law, such as Bend 2's `LAWS.bend`; type; database; test; model check; repair job; nothing), with the test or file that enforces it; and its constraints. Mark what the work adds or changes, and give the old value of a changed part. Mark any invariant the code breaks today.
 +4. **Decide what the intent settles.** In design mode, drop each candidate that breaks a "never" or misses "done means", and give the reason in one line. For each question the intent leaves open, give a pick, its reason, and a comparison on measures that let the user decide correctly.
 +5. **Add findings in map mode** where the model is more complex than the domain: a concept with several purposes, state that copies other state, an invariant nothing enforces, one piece of state with several writers, or a state nothing reaches. Give each the simplest fix and its cost.
-+6. **Draw the path** a request takes, top to bottom: who acts, what they call, the outside systems, and the stores. Mark the steps the change adds or changes. Draw a path that branches in D2 and embed the SVG.
-+7. **Build the page** from [`references/page.html`](references/page.html). Copy it to a scratch folder and replace only the JSON in its `skeleton-data` block, plus any SVG templates. Show the page beside the conversation when the host can render HTML, and give the file's path. Put the answer in your reply as well.
++6. **Draw who calls what:** the people who act, the functions and routes they reach with their signatures, the outside systems, and the stores. Draw one graph per user action, so each stays narrow enough to read.
++7. **Build the page** from [`references/page.html`](references/page.html). Copy it to a scratch folder and replace only the JSON in its `skeleton-data` block. Check the rendered page at the width it will be read at, fix any part that is cut off or unreadable, then show it beside the conversation when the host can render HTML and give the file's path. Put the answer in your reply as well.
 +
 +## Blocks
 +
@@ -557,28 +558,29 @@ index 0000000..8c33b19
 +| `compare` | `columns: [{label, items}]`, optional `pick` (column index) | Before and after, or two options side by side |
 +| `intent` | `goal`, `done`, `never`, `out` | Design mode |
 +| `decision` | `question`, `why`, `options`, `pick`, `reason`, `measures: [{label, values}]` | One open question each |
-+| `flow` | `steps: [{label, detail, mark, src}]` | The path a request takes |
-+| `states` | `rows: [{from, to, when, never, mark}]` | A state machine on its own |
-+| `concept` | `name`, `purpose`, and any of `types`, `states`, `invariants: [{text, enforced, broken}]`, `constraints` | Design and map mode |
++| `graph` | `nodes: [{id, label, signature, does, kind, mark}]`, `edges: [{from, to, label}]` | Who calls what. `kind` is `actor`, `outside`, or `store`; omit it for our code |
++| `concept` | `name`, `purpose`, `mark`, and any of `types`, `functions`, `rules`, `machine`, `invariants`, `constraints` | Each concept the work touches |
++| `machine` | `states: [{id, label, means, end, refused}]`, `transitions: [{from, to, when, never, mark}]` | A state machine outside a concept |
++| `rules` | `title`, `order`, `rows: [{if, then, mark, before}]` | Rules outside a concept |
 +| `findings` | `items: [{text, fix}]` | Map mode |
 +| `terms` | `items: [{term, means}]` | Every term the reader may not know |
 +| `sources` | `items` of `file:line` strings | Where the claims come from |
-+| `svg` | `ref`, the id of a `<template>` holding the SVG | A diagram that branches |
++| `flow` | `steps: [{label, detail, mark}]` | A short linear sequence with no signatures |
++| `svg` | `ref`, the id of a `<template>` holding the SVG | A diagram no other block can draw |
 +| `note` | `text` | A warning the reader must not miss |
 +
-+Every block takes an optional `title`. `mark` is `new` or `changed`. Wrap code in backticks inside any text, and the page renders it as code.
++Inside a concept, `types` is a list of `{code, notes: [{name, means, mark, before}], mark, before}`, `functions` is a list of `{signature, does, mark, before}`, `rules` and `machine` take the shapes above, and `invariants` is a list of `{text, enforced, where, broken, mark}`. `mark` is `new` or `changed`, and `before` holds the old value of a changed part. Wrap code in backticks inside any text, and the page renders it as code. The page lays out graphs and state machines with ELK from jsDelivr, and lists their edges as text when it can't load.
 +
 +## Limits
 +
 +- Check invariants against data only in a copy that serves no traffic. Never query a live database to check one.
-+- A change inside one function needs no page, because a sentence says it. When the user asks for a page anyway, keep it to the answer, the before and after, the path with the changed step, and the terms.
 +- Revise the same page as the design moves, and say in a line what changed.
 diff --git a/plugins/pstack/skills/skeleton/references/page.html b/plugins/pstack/skills/skeleton/references/page.html
 new file mode 100644
-index 0000000..14e5377
+index 0000000..25f9de6
 --- /dev/null
 +++ b/plugins/pstack/skills/skeleton/references/page.html
-@@ -0,0 +1,132 @@
+@@ -0,0 +1,261 @@
 +<!doctype html>
 +<html lang="en">
 +<head>
@@ -586,16 +588,16 @@ index 0000000..14e5377
 +<meta name="viewport" content="width=device-width, initial-scale=1">
 +<title>Skeleton</title>
 +<style>
-+:root{color-scheme:light dark;--fg:var(--foreground,#1f2328);--mu:var(--muted-foreground,#5d646c);--cd:var(--card,#fff);--bd:var(--border,#dcd9d2);--cb:var(--code-background,#f3f1ec);--ch:var(--secondary,#efede7);--ok:var(--success,#2f7d32);--wa:var(--warning,#9a6a00);--ba:var(--destructive,#b3261e);--ac:var(--info,#2f6fb3);--r:var(--radius,10px);--sans:var(--font-sans,system-ui,sans-serif);--mono:var(--font-mono,ui-monospace,Menlo,monospace)}
-+@media (prefers-color-scheme:dark){:root{--fg:var(--foreground,#e6e6e3);--mu:var(--muted-foreground,#a0a6ac);--cd:var(--card,#1c1f23);--bd:var(--border,#353a40);--cb:var(--code-background,#15171a);--ch:var(--secondary,#262a2f);--ok:var(--success,#86c285);--wa:var(--warning,#e0b84f);--ba:var(--destructive,#f08a80);--ac:var(--info,#6aa8e8)}}
++:root{color-scheme:light dark;--fg:var(--foreground,#1f2328);--mu:var(--muted-foreground,#5d646c);--cd:var(--card,#fff);--bd:var(--border,#d8d5ce);--cb:var(--code-background,#f3f1ec);--ok:var(--success,#2f7d32);--wa:var(--warning,#9a6a00);--ba:var(--destructive,#b3261e);--ac:var(--info,#2f6fb3);--r:var(--radius,10px);--sans:var(--font-sans,system-ui,sans-serif);--mono:var(--font-mono,ui-monospace,Menlo,monospace)}
++@media (prefers-color-scheme:dark){:root{--fg:var(--foreground,#e6e6e3);--mu:var(--muted-foreground,#a0a6ac);--cd:var(--card,#1c1f23);--bd:var(--border,#3a3f45);--cb:var(--code-background,#15171a);--ok:var(--success,#86c285);--wa:var(--warning,#e0b84f);--ba:var(--destructive,#f08a80);--ac:var(--info,#6aa8e8)}}
 +*{box-sizing:border-box}
 +body{margin:0;padding:4px 16px 24px;color:var(--fg);font:15px/1.6 var(--sans)}
-+main{max-width:760px}
++main{max-width:860px}
 +h1{font-size:21px;line-height:1.3;margin:0}
 +.base{font-size:13px;color:var(--mu);margin-top:4px}
-+.block{margin-top:28px}
++.block{margin-top:30px}
 +.base+.block,h1+.block{margin-top:18px}
-+h2{font-size:16px;margin:0 0 10px}
++h2{font-size:17px;margin:0 0 10px}
 +p{margin:0 0 8px}
 +code{font:.88em var(--mono);background:var(--cb);border:1px solid var(--bd);border-radius:4px;padding:0 4px;overflow-wrap:anywhere}
 +ul{margin:0;padding-left:20px}
@@ -610,38 +612,68 @@ index 0000000..14e5377
 +.never li::marker{color:var(--ba)}
 +.ask{border:2px solid var(--wa)}
 +.ask .q{font-size:16px;font-weight:650;margin:0 0 4px}
-+table{width:100%;border-collapse:collapse;font-size:14px;margin-top:10px}
++table{width:100%;border-collapse:collapse;font-size:14px}
 +th,td{text-align:left;vertical-align:top;padding:7px 10px;border-bottom:1px solid var(--bd)}
 +th{font-size:13px;color:var(--mu);font-weight:650}
 +td.picked,th.picked{background:color-mix(in srgb,var(--ok) 12%,transparent)}
-+.flow{display:flex;flex-direction:column;align-items:stretch}
-+.step{background:var(--cd);border:1px solid var(--bd);border-radius:var(--r);padding:10px 14px}
-+.step .name{font-weight:650}
-+.step .detail{color:var(--mu);font-size:14px;margin-top:2px}
-+.step .src{font:12px var(--mono);color:var(--mu);margin-top:4px;overflow-wrap:anywhere}
-+.step.changed{border:2px solid var(--wa);background:color-mix(in srgb,var(--wa) 8%,var(--cd))}
-+.step.new{border:2px solid var(--ok);background:color-mix(in srgb,var(--ok) 8%,var(--cd))}
-+.arrow{align-self:center;color:var(--mu);font-size:18px;line-height:1;padding:3px 0}
-+.tag{display:inline-block;font-size:12px;font-weight:650;border-radius:4px;padding:1px 6px;margin-left:8px;vertical-align:1px}
++tr.changed td,tr.new td{background:color-mix(in srgb,var(--wa) 9%,transparent)}
++tr.new td{background:color-mix(in srgb,var(--ok) 9%,transparent)}
++td.num{color:var(--mu);width:28px}
++.before{display:block;color:var(--mu);font-size:13px;margin-top:2px}
++.tag{display:inline-block;font:650 11.5px/1.4 var(--sans);border-radius:4px;padding:0 6px;margin-left:6px;vertical-align:1px;white-space:nowrap}
 +.tag.changed{color:var(--wa);border:1px solid var(--wa)}
 +.tag.new{color:var(--ok);border:1px solid var(--ok)}
-+.tag.never{color:var(--ba);border:1px solid var(--ba)}
-+.tag.broken{color:var(--ba);border:1px solid var(--ba)}
++.tag.never,.tag.broken{color:var(--ba);border:1px solid var(--ba)}
 +.tag.how{color:var(--mu);border:1px solid var(--bd);font-weight:500}
-+tr.never td{color:var(--ba)}
-+.concept h3{font-size:16px;margin:0}
-+.concept .purpose{color:var(--mu);margin:2px 0 6px}
-+.concept .sub{font-size:13px;font-weight:650;color:var(--mu);margin:14px 0 4px}
-+pre{margin:0;background:var(--cb);border:1px solid var(--bd);border-radius:6px;padding:8px 10px;font:12.5px/1.55 var(--mono);white-space:pre-wrap;overflow-wrap:anywhere}
++.concept{padding:18px 18px 16px}
++.concept h3{font-size:18px;margin:0}
++.concept .purpose{color:var(--mu);margin:2px 0 4px}
++.part{margin-top:18px}
++.part>.label{font-size:12.5px;letter-spacing:.02em}
++pre{margin:0;background:var(--cb);border:1px solid var(--bd);border-radius:6px;padding:9px 12px;font:13px/1.55 var(--mono);white-space:pre-wrap;overflow-wrap:anywhere}
++pre.changed{border-color:var(--wa);box-shadow:inset 3px 0 0 var(--wa)}
++pre.new{border-color:var(--ok);box-shadow:inset 3px 0 0 var(--ok)}
++.gloss{margin-top:6px}
++.gloss td:first-child{font:13px var(--mono);white-space:nowrap;width:1%}
++.fn+.fn{margin-top:12px}
++.fn .does{margin-top:6px}
++.inv li{margin:6px 0}
 +dl{margin:0;display:grid;grid-template-columns:minmax(90px,max-content) 1fr;gap:6px 16px;font-size:14px}
 +dt{font-weight:650}
 +dd{margin:0;color:var(--mu)}
-+@media (max-width:520px){dl{grid-template-columns:1fr;gap:0}dd{margin-bottom:8px}}
-+.sources{font:12.5px var(--mono);color:var(--mu)}
++@media (max-width:520px){dl{grid-template-columns:1fr;gap:0}dd{margin-bottom:8px}.gloss td:first-child{white-space:normal}}
++.sources{font:12.5px/1.7 var(--mono);color:var(--mu);overflow-wrap:anywhere}
 +.note{border-left:4px solid var(--wa);background:color-mix(in srgb,var(--wa) 10%,transparent);padding:10px 14px;border-radius:0 var(--r) var(--r) 0}
++.flow{display:flex;flex-direction:column}
++.step{background:var(--cd);border:1px solid var(--bd);border-radius:var(--r);padding:10px 14px}
++.step .name{font-weight:650}
++.step .detail{color:var(--mu);font-size:14px;margin-top:2px}
++.step.changed,.gn.changed{border:2px solid var(--wa);background:color-mix(in srgb,var(--wa) 8%,var(--cd))}
++.step.new,.gn.new{border:2px solid var(--ok);background:color-mix(in srgb,var(--ok) 8%,var(--cd))}
++.arrow{align-self:center;color:var(--mu);font-size:18px;line-height:1;padding:3px 0}
++.gscroll{overflow-x:auto;padding:4px 0}
++.graph{position:relative;margin:0 auto;transform-origin:top left}
++.graph svg{position:absolute;left:0;top:0;overflow:visible}
++.gn{position:absolute;width:max-content;max-width:220px;background:var(--cd);border:1px solid var(--bd);border-radius:8px;padding:8px 11px;font-size:13.5px;line-height:1.45}
++.gn .t{font-weight:650}
++.gn .sig{font:11.5px/1.45 var(--mono);color:var(--mu);margin-top:3px;overflow-wrap:anywhere}
++.gn .d{color:var(--mu);font-size:12.5px;margin-top:3px}
++.gn.actor{border-radius:999px;padding:7px 16px}
++.gn.outside{border-style:dashed}
++.gn.store{border-width:1px 1px 4px;border-style:solid solid double}
++.gn.state{border-radius:999px;padding:6px 14px;text-align:center}
++.gn.state.end{border-width:2px}
++.gn.refused{border-color:var(--ba);color:var(--ba)}
++.gl{position:absolute;max-width:170px;width:max-content;font-size:12px;line-height:1.35;color:var(--mu);background:var(--cd);padding:1px 4px;border-radius:4px}
++.gl.never{color:var(--ba)}
++.edge{fill:none;stroke:var(--mu);stroke-width:1.4}
++.edge.never{stroke:var(--ba);stroke-dasharray:5 4}
++.legend{font-size:12.5px;color:var(--mu);margin-top:8px}
++.fallback .gn,.fallback .gl{position:static;display:inline-block;margin:4px}
 +figure{margin:0}
 +figure svg{max-width:100%;height:auto}
 +</style>
++<script src="https://cdn.jsdelivr.net/npm/elkjs@0.9.3/lib/elk.bundled.js"></script>
 +</head>
 +<body>
 +<main id="page"></main>
@@ -654,21 +686,34 @@ index 0000000..14e5377
 +    { "type": "answer", "text": "A fan sells a ticket they can't use to another fan, at face value or less. The buyer's card is held, the ticket moves, and only then is the card charged, so nobody pays for a ticket they don't get. One question is open: when the seller gets paid." },
 +    { "type": "intent", "goal": "A fan who can't go sells their ticket to another fan for no more than face value, and neither loses money or ends up with a ticket that doesn't work.", "done": ["The buyer holds a valid ticket in their name.", "The seller is paid."], "never": ["A ticket sold twice.", "A buyer charged without the ticket.", "A price above face value.", "A buyer out of pocket when an event is cancelled."], "out": ["First-hand sales, auctions, changing prices."] },
 +    { "type": "decision", "question": "When is the seller paid?", "why": "The ticket company can cancel a ticket after it is sold, and someone has to absorb that.", "options": ["After the event", "At transfer"], "pick": 0, "reason": "A ticket can be cancelled any time before the event, and only this keeps every buyer whole.", "measures": [{ "label": "Who absorbs a cancelled ticket", "values": ["The seller", "Us"] }, { "label": "How long a seller waits", "values": ["Until the event", "Minutes"] }] },
-+    { "type": "flow", "title": "Buying a ticket", "steps": [
-+      { "label": "Buyer presses Buy", "detail": "The buyer's card is held for the price." },
-+      { "label": "`completePurchase`", "detail": "Asks the ticket company to move the ticket to the buyer.", "mark": "new", "src": "resale/purchase.ts" },
-+      { "label": "Ticket company", "detail": "Moves the ticket, or refuses." },
-+      { "label": "Payment provider", "detail": "Charges the held amount if the ticket moved, releases it if not." }
++    { "type": "graph", "title": "Who calls what", "nodes": [
++      { "id": "buyer", "label": "Buyer", "kind": "actor" },
++      { "id": "complete", "label": "completePurchase", "signature": "completePurchase(holdId): Result<Sale, \"expired\" | \"transfer_rejected\">", "does": "Moves the ticket, then charges or releases the card.", "mark": "new" },
++      { "id": "issuer", "label": "Ticket company API", "kind": "outside", "does": "Owns who holds each ticket." },
++      { "id": "pay", "label": "Payment provider", "kind": "outside", "does": "Holds, charges and releases cards." },
++      { "id": "db", "label": "Database", "kind": "store", "does": "Listings, holds, payments." }
++    ], "edges": [
++      { "from": "buyer", "to": "complete", "label": "presses Buy" },
++      { "from": "complete", "to": "issuer", "label": "transfer ticket" },
++      { "from": "complete", "to": "pay", "label": "charge or release" },
++      { "from": "complete", "to": "db" }
 +    ] },
-+    { "type": "concept", "name": "Payment", "purpose": "The buyer's money, which moves only if the ticket does.",
-+      "types": ["Payment { id, holdId, amount: Price, status: \"held\" | \"charged\" | \"released\" }"],
-+      "states": [
-+        { "from": "held", "to": "charged", "when": "The ticket company confirms the transfer." },
-+        { "from": "held", "to": "released", "when": "The transfer fails, the hold expires, or the event is cancelled." },
-+        { "from": "held", "to": "charged", "when": "Without a confirmed transfer.", "never": true }
-+      ],
++    { "type": "concept", "name": "Payment", "mark": "new", "purpose": "The buyer's money, which moves only if the ticket does.",
++      "types": [{ "code": "type Payment = {\n  id: PaymentId\n  holdId: HoldId\n  amount: Price\n  status: \"held\" | \"charged\" | \"released\"\n}", "notes": [
++        { "name": "amount", "means": "A Price can only be built at or below face value, so an overpriced payment cannot exist." },
++        { "name": "status", "means": "Where the money is. See the state machine below." }
++      ] }],
++      "functions": [{ "signature": "completePurchase(holdId: HoldId): Result<Sale, \"expired\" | \"transfer_rejected\">", "does": "Asks the ticket company to move the ticket. Charges the hold if it moved, releases it if not." }],
++      "machine": {
++        "states": [{ "id": "held", "label": "held" }, { "id": "charged", "label": "charged", "end": true }, { "id": "released", "label": "released", "end": true }],
++        "transitions": [
++          { "from": "held", "to": "charged", "when": "the ticket moved" },
++          { "from": "held", "to": "released", "when": "transfer failed, hold expired, or event cancelled" },
++          { "from": "released", "to": "charged", "when": "never: charge after release", "never": true }
++        ]
++      },
 +      "invariants": [
-+        { "text": "Charged only for a ticket that moved.", "enforced": "test" },
++        { "text": "Charged only for a ticket that moved.", "enforced": "test", "where": "purchase.test.ts" },
 +        { "text": "A crash after the transfer still ends charged.", "enforced": "repair job" }
 +      ],
 +      "constraints": ["Card holds expire after about 7 days."] },
@@ -686,10 +731,22 @@ index 0000000..14e5377
 +const md = s => esc(s).replace(/`([^`]+)`/g, '<code>$1</code>');
 +const paras = s => String(s ?? '').split(/\n\s*\n/).map(p => `<p>${md(p)}</p>`).join('');
 +const list = (items, cls = '') => items && items.length ? `<ul class="${cls}">${items.map(i => `<li>${md(i)}</li>`).join('')}</ul>` : '';
-+const tag = (kind, text) => kind ? `<span class="tag ${kind}">${esc(text ?? kind)}</span>` : '';
 +const MARK = { new: 'New', changed: 'Changed' };
++const tag = (kind, text) => kind ? `<span class="tag ${kind}">${esc(text ?? MARK[kind] ?? kind)}</span>` : '';
 +const heading = (b, fallback) => (b.title ?? fallback) ? `<h2>${md(b.title ?? fallback)}</h2>` : '';
-+const stateTable = rows => `<table><thead><tr><th>From</th><th>To</th><th>When</th></tr></thead><tbody>${rows.map(r => `<tr class="${r.never ? 'never' : ''}"><td>${md(r.from)}</td><td>${md(r.to)}</td><td>${r.never ? tag('never', 'Never') + ' ' : ''}${md(r.when)}${tag(r.mark, MARK[r.mark])}</td></tr>`).join('')}</tbody></table>`;
++const before = x => x.before ? `<span class="before">Before: ${md(x.before)}</span>` : '';
++const part = (label, html) => html ? `<div class="part"><p class="label">${label}</p>${html}</div>` : '';
++const graphs = [];
++const graphSlot = (g, legend) => { graphs.push(g); return `<div class="gscroll"><div class="graph" data-g="${graphs.length - 1}"></div></div>${legend || ''}`; };
++const KIND_NOTE = { actor: 'Rounded: a person', outside: 'Dashed: a system outside ours', store: 'Double bottom line: stored data' };
++const legendFor = nodes => { const kinds = [...new Set(nodes.map(n => n.kind).filter(k => KIND_NOTE[k]))]; const marks = [...new Set(nodes.map(n => n.mark).filter(Boolean))]; const bits = kinds.map(k => KIND_NOTE[k]).concat(marks.map(m => m === 'changed' ? 'Amber: changed by this work' : 'Green: added by this work')); return bits.length ? `<p class="legend">${bits.join(' · ')}</p>` : ''; };
++
++const typeHtml = t => { const x = typeof t === 'string' ? { code: t } : t; return `<pre class="${x.mark || ''}">${esc(x.code)}</pre>${x.mark ? tag(x.mark) : ''}${before(x)}${x.notes && x.notes.length ? `<table class="gloss"><tbody>${x.notes.map(n => `<tr class="${n.mark || ''}"><td>${esc(n.name)}</td><td>${md(n.means)}${tag(n.mark)}${before(n)}</td></tr>`).join('')}</tbody></table>` : ''}`; };
++const fnHtml = f => `<div class="fn"><pre class="${f.mark || ''}">${esc(f.signature)}</pre><div class="does">${md(f.does)}${tag(f.mark)}${before(f)}</div></div>`;
++const rulesHtml = r => `${r.order ? `<p>${md(r.order)}</p>` : ''}<table><thead><tr><th></th><th>If</th><th>Then</th></tr></thead><tbody>${r.rows.map((x, i) => `<tr class="${x.mark || ''}"><td class="num">${i + 1}</td><td>${md(x.if)}</td><td>${md(x.then)}${tag(x.mark)}${before(x)}</td></tr>`).join('')}</tbody></table>`;
++const machineGraph = m => ({ nodes: m.states.map(s => ({ id: s.id, label: s.label, does: s.means, kind: 'state', end: s.end, refused: s.refused, mark: s.mark })), edges: m.transitions.map(t => ({ from: t.from, to: t.to, label: t.when, never: t.never, mark: t.mark })) });
++const neverLegend = m => m.transitions.some(t => t.never) ? '<p class="legend">Dashed red: a transition that must never happen · Thick border: a final state</p>' : '<p class="legend">Thick border: a final state</p>';
++const invHtml = v => `<ul class="inv">${v.map(i => `<li>${md(i.text)}${tag('how', 'enforced by ' + (i.enforced || 'nothing'))}${i.broken ? tag('broken', 'Broken today') : ''}${tag(i.mark)}${i.where ? `<span class="before">${md(i.where)}</span>` : ''}</li>`).join('')}</ul>`;
 +
 +const R = {
 +  answer: b => `<section class="answer">${paras(b.text)}</section>`,
@@ -697,17 +754,91 @@ index 0000000..14e5377
 +  intent: b => `${heading(b, 'Intent')}<section class="box"><p class="goal">${md(b.goal)}</p><div class="cols">${[['Done means', b.done], ['Never', b.never, 'never'], ['Out of scope', b.out]].filter(([, v]) => v && v.length).map(([l, v, c]) => `<div><p class="label">${l}</p>${list(v, c)}</div>`).join('')}</div></section>`,
 +  compare: b => `${heading(b)}<div class="cols">${b.columns.map((c, i) => `<section class="box ${b.pick === i ? 'pick' : ''}"><p class="label">${md(c.label)}</p>${list(c.items)}</section>`).join('')}</div>`,
 +  decision: b => `${heading(b, 'Open question')}<section class="box ask"><p class="q">${md(b.question)}</p>${b.why ? `<p>${md(b.why)}</p>` : ''}<p><b>Pick: ${md(b.options[b.pick])}.</b> ${md(b.reason)}</p>${b.measures && b.measures.length ? `<table><thead><tr><th></th>${b.options.map((o, i) => `<th class="${i === b.pick ? 'picked' : ''}">${md(o)}</th>`).join('')}</tr></thead><tbody>${b.measures.map(m => `<tr><td>${md(m.label)}</td>${m.values.map((v, i) => `<td class="${i === b.pick ? 'picked' : ''}">${md(v)}</td>`).join('')}</tr>`).join('')}</tbody></table>` : ''}</section>`,
-+  flow: b => `${heading(b)}<div class="flow">${b.steps.map(s => `<div class="step ${s.mark || ''}"><div class="name">${md(s.label)}${tag(s.mark, MARK[s.mark])}</div>${s.detail ? `<div class="detail">${md(s.detail)}</div>` : ''}${s.src ? `<div class="src">${esc(s.src)}</div>` : ''}</div>`).join('<div class="arrow" aria-hidden="true">↓</div>')}</div>`,
-+  states: b => `${heading(b)}<section class="box">${stateTable(b.rows)}</section>`,
-+  concept: b => `${heading(b)}<section class="box concept"><h3>${md(b.name)}${tag(b.mark, MARK[b.mark])}</h3><p class="purpose">${md(b.purpose)}</p>${b.types && b.types.length ? `<p class="sub">Types</p><pre>${b.types.map(esc).join('\n')}</pre>` : ''}${b.states && b.states.length ? `<p class="sub">State machine</p>${stateTable(b.states)}` : ''}${b.invariants && b.invariants.length ? `<p class="sub">Always true</p><ul>${b.invariants.map(v => `<li>${md(v.text)}${tag('how', 'enforced by ' + (v.enforced || 'nothing'))}${v.broken ? tag('broken', 'Broken today') : ''}${tag(v.mark, MARK[v.mark])}</li>`).join('')}</ul>` : ''}${b.constraints && b.constraints.length ? `<p class="sub">Constraints</p>${list(b.constraints)}` : ''}</section>`,
-+  findings: b => `${heading(b, 'Findings')}<section class="box"><ul>${b.items.map(f => `<li>${md(f.text)}${f.fix ? `<br><span class="purpose">Fix: ${md(f.fix)}</span>` : ''}</li>`).join('')}</ul></section>`,
++  flow: b => `${heading(b)}<div class="flow">${b.steps.map(s => `<div class="step ${s.mark || ''}"><div class="name">${md(s.label)}${tag(s.mark)}</div>${s.detail ? `<div class="detail">${md(s.detail)}</div>` : ''}</div>`).join('<div class="arrow" aria-hidden="true">↓</div>')}</div>`,
++  graph: b => `${heading(b)}<section class="box">${graphSlot(b, legendFor(b.nodes))}</section>`,
++  machine: b => `${heading(b)}<section class="box">${graphSlot(machineGraph(b), neverLegend(b))}</section>`,
++  rules: b => `${heading(b)}<section class="box">${rulesHtml(b)}</section>`,
++  concept: b => `${heading(b)}<section class="box concept"><h3>${md(b.name)}${tag(b.mark)}</h3><p class="purpose">${md(b.purpose)}</p>${
++    part('Types', b.types && b.types.length && b.types.map(typeHtml).join('<div style="height:10px"></div>'))}${
++    part('Functions', b.functions && b.functions.length && b.functions.map(fnHtml).join(''))}${
++    part(b.rules && b.rules.title || 'Rules', b.rules && rulesHtml(b.rules))}${
++    part('State machine', b.machine && graphSlot(machineGraph(b.machine), neverLegend(b.machine)))}${
++    part('Always true', b.invariants && b.invariants.length && invHtml(b.invariants))}${
++    part('Constraints', b.constraints && b.constraints.length && list(b.constraints))}</section>`,
++  findings: b => `${heading(b, 'Findings')}<section class="box"><ul>${b.items.map(f => `<li>${md(f.text)}${f.fix ? `<span class="before">Fix: ${md(f.fix)}</span>` : ''}</li>`).join('')}</ul></section>`,
 +  terms: b => `${heading(b, 'Terms')}<section class="box"><dl>${b.items.map(t => `<dt>${md(t.term)}</dt><dd>${md(t.means)}</dd>`).join('')}</dl></section>`,
-+  sources: b => `${heading(b, 'Sources')}<div class="sources">${b.items.map(esc).join('<br>')}</div>`,
++  sources: b => `${heading(b, 'Sources')}<div class="sources">${b.items.map(md).join('<br>')}</div>`,
 +  svg: b => { const t = document.getElementById(b.ref); return `${heading(b)}<figure class="box">${t ? t.innerHTML : ''}</figure>`; },
 +};
 +
++const nodeHtml = n => `<div class="t">${md(n.label)}${tag(n.mark)}</div>${n.signature ? `<div class="sig">${esc(n.signature)}</div>` : ''}${n.does ? `<div class="d">${md(n.does)}</div>` : ''}`;
++const ELK_OPTIONS = { 'elk.algorithm': 'layered', 'elk.direction': 'DOWN', 'elk.edgeRouting': 'ORTHOGONAL', 'elk.spacing.nodeNode': '26', 'elk.layered.spacing.nodeNodeBetweenLayers': '34', 'elk.spacing.edgeLabel': '4', 'elk.layered.spacing.edgeNodeBetweenLayers': '14', 'elk.layered.nodePlacement.strategy': 'NETWORK_SIMPLEX', 'elk.padding': '[top=6,left=6,bottom=6,right=6]' };
++
++const MIN_SCALE = 0.72;
++const fitGraph = (host, layout) => {
++  const room = host.parentElement.clientWidth;
++  if (layout.width <= room) return;
++  const scale = Math.max(room / layout.width, MIN_SCALE);
++  host.style.transform = `scale(${scale})`;
++  host.style.margin = '0';
++  host.parentElement.style.height = layout.height * scale + 8 + 'px';
++};
++
++async function drawGraph(host, g) {
++  const nodeEls = {};
++  for (const n of g.nodes) {
++    const el = document.createElement('div');
++    el.className = ['gn', n.kind, n.mark, n.end && 'end', n.refused && 'refused'].filter(Boolean).join(' ');
++    el.innerHTML = nodeHtml(n);
++    host.appendChild(el);
++    nodeEls[n.id] = el;
++  }
++  const labelEls = g.edges.map(e => {
++    if (!e.label) return null;
++    const el = document.createElement('div');
++    el.className = 'gl' + (e.never ? ' never' : '');
++    el.innerHTML = md(e.label);
++    host.appendChild(el);
++    return el;
++  });
++  if (!window.ELK) {
++    host.classList.add('fallback');
++    host.insertAdjacentHTML('beforeend', `<ul>${g.edges.map(e => `<li>${md(g.nodes.find(n => n.id === e.from).label)} → ${md(g.nodes.find(n => n.id === e.to).label)}${e.label ? ': ' + md(e.label) : ''}</li>`).join('')}</ul>`);
++    labelEls.forEach(l => l && l.remove());
++    return;
++  }
++  const layout = await new ELK().layout({
++    id: 'root', layoutOptions: ELK_OPTIONS,
++    children: g.nodes.map(n => ({ id: n.id, width: nodeEls[n.id].offsetWidth, height: nodeEls[n.id].offsetHeight })),
++    edges: g.edges.map((e, i) => ({ id: 'e' + i, sources: [e.from], targets: [e.to], labels: labelEls[i] ? [{ id: 'l' + i, text: e.label, width: labelEls[i].offsetWidth, height: labelEls[i].offsetHeight }] : [] })),
++  });
++  host.style.width = layout.width + 'px';
++  host.style.height = layout.height + 'px';
++  fitGraph(host, layout);
++  for (const c of layout.children) Object.assign(nodeEls[c.id].style, { left: c.x + 'px', top: c.y + 'px' });
++  const ns = 'http://www.w3.org/2000/svg';
++  const svg = document.createElementNS(ns, 'svg');
++  svg.setAttribute('width', layout.width);
++  svg.setAttribute('height', layout.height);
++  svg.innerHTML = '<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" fill="var(--mu)"/></marker><marker id="ahn" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" fill="var(--ba)"/></marker></defs>';
++  layout.edges.forEach((e, i) => {
++    const never = g.edges[i].never;
++    for (const s of e.sections || []) {
++      const pts = [s.startPoint, ...(s.bendPoints || []), s.endPoint];
++      const path = document.createElementNS(ns, 'path');
++      path.setAttribute('d', pts.map((p, k) => (k ? 'L' : 'M') + p.x + ',' + p.y).join(''));
++      path.setAttribute('class', 'edge' + (never ? ' never' : ''));
++      path.setAttribute('marker-end', never ? 'url(#ahn)' : 'url(#ah)');
++      svg.appendChild(path);
++    }
++    for (const l of e.labels || []) Object.assign(labelEls[i].style, { left: l.x + 'px', top: l.y + 'px' });
++  });
++  host.prepend(svg);
++}
++
 +document.title = D.title;
 +document.getElementById('page').innerHTML = `<h1>${md(D.title)}</h1>${D.base ? `<div class="base">${md(D.base)}</div>` : ''}` + D.blocks.map(b => R[b.type] ? `<div class="block">${R[b.type](b)}</div>` : '').join('');
++document.querySelectorAll('.graph').forEach(el => drawGraph(el, graphs[Number(el.dataset.g)]));
 +</script>
 +</body>
 +</html>
