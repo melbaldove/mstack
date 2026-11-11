@@ -5,224 +5,291 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Skeleton</title>
 <style>
-:root{color-scheme:light dark;--fg:var(--foreground,#1f2328);--mu:var(--muted-foreground,#646b73);--cd:var(--card,#fff);--bd:var(--border,#e2dfd8);--cb:var(--code-background,#f5f3ee);--ch:var(--secondary,#efede7);--ok:var(--success,#2f7d32);--wa:var(--warning,#a06f00);--ba:var(--destructive,#b3261e);--ac:var(--info,#2f6fb3);--r:var(--radius,10px);--sans:var(--font-sans,system-ui,sans-serif);--mono:var(--font-mono,ui-monospace,Menlo,monospace)}
-@media (prefers-color-scheme:dark){:root{--fg:var(--foreground,#e6e6e3);--mu:var(--muted-foreground,#9aa0a6);--cd:var(--card,#1c1f23);--bd:var(--border,#30353b);--cb:var(--code-background,#131518);--ch:var(--secondary,#262a2f);--ok:var(--success,#86c285);--wa:var(--warning,#e0b84f);--ba:var(--destructive,#f08a80);--ac:var(--info,#6aa8e8)}}
+:root{color-scheme:light dark;--fg:var(--foreground,#1f2328);--mu:var(--muted-foreground,#5d646c);--cd:var(--card,#fff);--bd:var(--border,#d8d5ce);--cb:var(--code-background,#f3f1ec);--ok:var(--success,#2f7d32);--wa:var(--warning,#9a6a00);--ba:var(--destructive,#b3261e);--ac:var(--info,#2f6fb3);--r:var(--radius,10px);--sans:var(--font-sans,system-ui,sans-serif);--mono:var(--font-mono,ui-monospace,Menlo,monospace)}
+@media (prefers-color-scheme:dark){:root{--fg:var(--foreground,#e6e6e3);--mu:var(--muted-foreground,#a0a6ac);--cd:var(--card,#1c1f23);--bd:var(--border,#3a3f45);--cb:var(--code-background,#15171a);--ok:var(--success,#86c285);--wa:var(--warning,#e0b84f);--ba:var(--destructive,#f08a80);--ac:var(--info,#6aa8e8)}}
 *{box-sizing:border-box}
-body{margin:0;color:var(--fg);font:15px/1.55 var(--sans);max-width:1000px}
-h1{font-size:20px;margin:0}
-.base{font:12px var(--mono);color:var(--mu);margin-top:2px}
-h2{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mu);margin:26px 0 10px}
-.box{background:var(--cd);border:1px solid var(--bd);border-radius:var(--r);padding:16px}
-.goal{font-size:17px;font-weight:600;line-height:1.4;margin:0 0 10px}
-.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:10px 20px;font-size:14px}
-.cols b{display:block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--mu)}
-.cols ul{margin:2px 0 0;padding-left:18px}
-.ask{border:2px solid var(--wa);margin-bottom:10px}
-.ask .lbl{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--wa)}
-.ask .q{font-size:16px;font-weight:650;margin:4px 0}
-.ask p{margin:4px 0}
-.pick{color:var(--ok);font-weight:700}
-.cmp{display:grid;font-size:14px;margin-top:8px}
-.cmp>div{padding:6px 8px;border-top:1px solid var(--bd)}
-.cmp .h{font-weight:650;border-top:0}
-.cmp .l{color:var(--mu)}
-.cmp .opt{display:none}
-@media (max-width:560px){.cmp{grid-template-columns:1fr!important}.cmp .h{display:none}.cmp .l{font-weight:650;color:var(--fg)}.cmp .v{border-top:0;padding-top:0}.cmp .opt{display:inline;font:600 12px var(--mono);color:var(--mu);margin-right:6px}}
-.decided{font-size:14px;color:var(--mu);margin:6px 0 0}
-.decided b{color:var(--fg)}
-.concepts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:12px;align-items:start}
-.concept h3{margin:0;font-size:16px}
-.purpose{margin:2px 0 0;color:var(--mu);font-size:14px}
-.finding{margin-top:8px;border-left:3px solid var(--wa);background:color-mix(in srgb,var(--wa) 10%,transparent);border-radius:0 6px 6px 0;padding:5px 10px;font-size:14px}
-.finding b{display:block;color:var(--wa);font-size:11px;letter-spacing:.05em;text-transform:uppercase}
-.sec{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mu);margin:12px 0 5px}
-.type{background:var(--cb);border:1px solid var(--bd);border-radius:6px;padding:6px 0;font:12px/1.55 var(--mono)}
-.type div{padding:0 10px;white-space:pre-wrap;overflow-wrap:anywhere}
-.added{background:color-mix(in srgb,var(--ok) 14%,transparent)}
-.changed{background:color-mix(in srgb,var(--wa) 14%,transparent)}
-.mk{font:600 10px/1 var(--sans);letter-spacing:.04em;text-transform:uppercase;border-radius:4px;padding:2px 5px;margin-left:4px}
-.mk.added{color:var(--ok);border:1px solid var(--ok);background:none}
-.mk.changed{color:var(--wa);border:1px solid var(--wa);background:none}
-.sm{display:flex;flex-direction:column;gap:4px;font-size:13.5px}
-.sm div{display:flex;flex-wrap:wrap;gap:4px 6px;align-items:baseline}
-.s{font:12px var(--mono);border:1px solid var(--bd);background:var(--ch);border-radius:999px;padding:2px 8px}
-.sm .by{color:var(--mu)}
-.sm .never .s{color:var(--ba);border-color:var(--ba);background:none;text-decoration:line-through}
-.sm .never .ar{color:var(--ba)}
-.inv{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:5px;font-size:14px}
-.inv .note{display:block;color:var(--mu);font-size:13px}
-.e{font:600 10.5px/1 var(--sans);letter-spacing:.04em;text-transform:uppercase;border:1px solid var(--ok);color:var(--ok);border-radius:4px;padding:2px 5px;margin-left:4px;white-space:nowrap}
-.e.weak{border-color:var(--wa);color:var(--wa)}
-.e.broken{border-color:var(--ba);color:var(--ba)}
-.con{margin:0;padding-left:18px;font-size:14px}
-.cand{position:relative}
-.hint{font-size:13px;color:var(--ac);margin:0 0 10px}
-.layer{display:grid;grid-template-columns:76px 1fr;gap:8px;margin-bottom:6px}
-.who{font-size:12px;color:var(--mu);padding-top:6px}
-.chips{display:flex;flex-wrap:wrap;gap:5px}
-.n{font:12.5px/1.3 var(--mono);color:var(--fg);border:1px solid var(--bd);background:var(--ch);border-radius:6px;padding:6px 9px;cursor:pointer}
-.n.outside{border-style:dashed}
-.n.store{border-radius:12px}
-.n.added{border:2px solid var(--ok)}
-.n.changed{border:2px solid var(--wa)}
-.n.broken{border:2px solid var(--ba)}
-.flow.focus .n{opacity:.32}
-.flow.focus .n.rel,.flow.focus .n.sel{opacity:1}
-.flow.focus .n.sel{box-shadow:0 0 0 3px var(--ac)}
-@media (max-width:560px){.layer{grid-template-columns:1fr;gap:2px}.who{padding-top:0}}
-.insp{position:absolute;left:10px;right:10px;z-index:5;border:2px solid var(--ac);border-radius:8px;padding:12px 14px;background:var(--cd);box-shadow:0 10px 30px rgba(0,0,0,.25)}
-.insp[hidden]{display:none}
-.insp .top{display:flex;align-items:center;gap:6px}
-.insp .nm{font:650 15px var(--mono)}
-.x{margin-left:auto;background:none;border:0;color:var(--mu);font-size:20px;cursor:pointer}
-.sig{font:11.5px/1.5 var(--mono);color:var(--mu);background:var(--cb);border:1px solid var(--bd);border-radius:6px;padding:5px 8px;margin:6px 0;overflow-wrap:anywhere}
-.insp p{margin:4px 0}
-.warn{margin-top:6px;border-left:3px solid var(--wa);padding:3px 10px;background:color-mix(in srgb,var(--wa) 10%,transparent)}
-.line{font-size:13px;color:var(--mu);margin-top:6px}
-.src{font:12px var(--mono);color:var(--mu);margin-top:6px;overflow-wrap:anywhere}
+body{margin:0;padding:4px 16px 24px;color:var(--fg);font:15px/1.6 var(--sans)}
+main{max-width:980px}
+h1{font-size:21px;line-height:1.3;margin:0}
+.base{font-size:13px;color:var(--mu);margin-top:4px}
+.block{margin-top:30px}
+.base+.block,h1+.block{margin-top:18px}
+h2{font-size:17px;margin:0 0 10px}
+p{margin:0 0 8px}
+code{font:.88em var(--mono);background:var(--cb);border:1px solid var(--bd);border-radius:4px;padding:0 4px;overflow-wrap:anywhere}
+ul{margin:0;padding-left:20px}
+li{margin:3px 0}
+.box{background:var(--cd);border:1px solid var(--bd);border-radius:var(--r);padding:14px 16px}
+.label{font-size:13px;font-weight:650;color:var(--mu);margin:0 0 4px}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:12px 18px}
+.cols .box.pick{border:2px solid var(--ok)}
+.intent{border-left:4px solid var(--ac);background:var(--cd);border-radius:0 var(--r) var(--r) 0;padding:16px 18px}
+.intent .goal{font-size:18px;line-height:1.45;font-weight:650;margin:0 0 10px}
+.intent .text{font-size:15.5px;margin-bottom:14px}
+.never li::marker{color:var(--ba)}
+.ask{border:2px solid var(--wa)}
+.ask .q{font-size:16px;font-weight:650;margin:0 0 4px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;vertical-align:top;padding:7px 10px;border-bottom:1px solid var(--bd)}
+th{font-size:13px;color:var(--mu);font-weight:650}
+td.picked,th.picked{background:color-mix(in srgb,var(--ok) 12%,transparent)}
+tr.changed td{background:color-mix(in srgb,var(--wa) 9%,transparent)}
+tr.new td{background:color-mix(in srgb,var(--ok) 9%,transparent)}
+td.num{color:var(--mu);width:28px}
+.before{display:block;color:var(--mu);font-size:13px;margin-top:2px}
+.tag{display:inline-block;font:650 11.5px/1.4 var(--sans);border-radius:4px;padding:0 6px;margin-left:6px;vertical-align:1px;white-space:nowrap}
+.tag.changed,.tag.weak{color:var(--wa);border:1px solid var(--wa)}
+.tag.new{color:var(--ok);border:1px solid var(--ok)}
+.tag.never,.tag.broken{color:var(--ba);border:1px solid var(--ba)}
+.tag.how{color:var(--mu);border:1px solid var(--bd);font-weight:500}
+.concept{padding:18px 18px 16px}
+.concept h3{font-size:18px;margin:0}
+.concept .purpose{color:var(--mu);margin:2px 0 6px}
+.principle{border-left:3px solid var(--bd);padding:2px 0 2px 10px;margin:8px 0 0}
+.part{margin-top:18px}
+.part>.label{font-size:12.5px;letter-spacing:.02em}
+.src{margin:0;background:var(--cb);border:1px solid var(--bd);border-radius:8px;overflow:hidden}
+.src+.src{margin-top:10px}
+.src figcaption{display:flex;flex-wrap:wrap;justify-content:space-between;gap:2px 12px;padding:6px 12px;border-bottom:1px solid var(--bd);font-size:12.5px;color:var(--mu)}
+.src figcaption b{color:var(--fg);font-weight:650}
+.at{font:12px var(--mono);color:var(--mu);overflow-wrap:anywhere}
+.lines{display:grid;grid-template-columns:minmax(0,max-content) minmax(300px,1fr);padding:6px 0}
+.ln{display:contents}
+.ln>.c{font:13px/1.6 var(--mono);white-space:pre-wrap;overflow-wrap:anywhere;padding:0 14px 0 4px;display:flex}
+.ln>.c>.g{flex:none;width:2.2ch;text-align:center;color:var(--mu);user-select:none}
+.ln>.n{font-size:13px;line-height:1.6;color:var(--mu);padding:0 12px 0 12px;border-left:1px solid var(--bd)}
+.ln.add>*{background:color-mix(in srgb,var(--ok) 13%,transparent)}
+.ln.del>*{background:color-mix(in srgb,var(--ba) 12%,transparent)}
+.ln.add>.c>.g{color:var(--ok)}
+.ln.del>.c>.g{color:var(--ba)}
+.ln.del>.c>span:last-child{text-decoration:line-through;text-decoration-color:color-mix(in srgb,var(--ba) 60%,transparent)}
+.ln.add>.n,.ln.del>.n{color:var(--fg)}
+@media (max-width:640px){.lines{grid-template-columns:minmax(0,1fr)}.ln>.n{border-left:0;padding:0 12px 4px calc(2.2ch + 16px);font-size:12.5px}.ln>.n:empty{display:none}}
+.inv li{margin:6px 0}
+.inv li.weak{background:color-mix(in srgb,var(--wa) 11%,transparent);border-radius:6px;padding:4px 8px;margin-left:-8px;list-style-position:inside}
+.inv li.broken{background:color-mix(in srgb,var(--ba) 11%,transparent);border-radius:6px;padding:4px 8px;margin-left:-8px;list-style-position:inside}
+dl{margin:0;display:grid;grid-template-columns:minmax(90px,max-content) 1fr;gap:6px 16px;font-size:14px}
+dt{font-weight:650}
+dd{margin:0;color:var(--mu)}
+@media (max-width:520px){dl{grid-template-columns:1fr;gap:0}dd{margin-bottom:8px}}
+.sources{font:12.5px/1.7 var(--mono);color:var(--mu);overflow-wrap:anywhere}
+.note{border-left:4px solid var(--wa);background:color-mix(in srgb,var(--wa) 10%,transparent);padding:10px 14px;border-radius:0 var(--r) var(--r) 0}
+.flow{display:flex;flex-direction:column}
+.step{background:var(--cd);border:1px solid var(--bd);border-radius:var(--r);padding:10px 14px}
+.step .name{font-weight:650}
+.step .detail{color:var(--mu);font-size:14px;margin-top:2px}
+.step.changed,.gn.changed{border:2px solid var(--wa);background:color-mix(in srgb,var(--wa) 8%,var(--cd))}
+.step.new,.gn.new{border:2px solid var(--ok);background:color-mix(in srgb,var(--ok) 8%,var(--cd))}
+.arrow{align-self:center;color:var(--mu);font-size:18px;line-height:1;padding:3px 0}
+.gscroll{overflow-x:auto;padding:4px 0}
+.graph{position:relative;margin:0 auto;transform-origin:top left}
+.graph svg{position:absolute;left:0;top:0;overflow:visible}
+.gn{position:absolute;width:max-content;max-width:250px;background:var(--cd);border:1px solid var(--bd);border-radius:8px;padding:8px 11px;font-size:13.5px;line-height:1.45}
+.gn .t{font-weight:650}
+.gn .sig{font:11.5px/1.45 var(--mono);color:var(--mu);margin-top:3px;overflow-wrap:anywhere}
+.gn .d{color:var(--mu);font-size:12.5px;margin-top:3px}
+.gn .chg{font-size:12.5px;margin-top:5px;padding-top:5px;border-top:1px dashed var(--bd)}
+.gn.changed .chg b{color:var(--wa)}
+.gn.new .chg b{color:var(--ok)}
+.gn .warn{font-size:12.5px;margin-top:4px;color:var(--ba)}
+.gn .at{display:block;font-size:11px;margin-top:4px}
+.gn.actor{border-radius:999px;padding:7px 16px}
+.gn.outside{border-style:dashed}
+.gn.store{border-width:1px 1px 4px;border-style:solid solid double}
+.gn.state{border-radius:999px;padding:6px 14px;text-align:center}
+.gn.state .t{font-family:var(--mono);font-size:13px}
+.gn.state.end{border-width:2px}
+.gn.refused{border-color:var(--ba)}
+.gn.refused .t{color:var(--ba)}
+.gl{position:absolute;max-width:180px;width:max-content;font-size:12px;line-height:1.35;color:var(--mu);background:var(--cd);padding:1px 4px;border-radius:4px}
+.gl.never{color:var(--ba)}
+.gl.missing{font-style:italic}
+.edge{fill:none;stroke:var(--mu);stroke-width:1.4}
+.edge.never{stroke:var(--ba);stroke-dasharray:5 4}
+.edge.missing{stroke-dasharray:3 4;opacity:.7}
+.act{border:1px solid var(--bd);border-radius:8px;padding:10px 12px}
+.act+.act{margin-top:8px}
+.act .t{font-weight:650;margin:0 0 6px}
+.act dd{color:var(--fg)}
+.act.changed{border-color:var(--wa)}
+.act.new{border-color:var(--ok)}
+.legend{font-size:12.5px;color:var(--mu);margin-top:8px}
+.fallback .gn,.fallback .gl{position:static;display:inline-block;margin:4px}
+figure{margin:0}
+figure.box svg{max-width:100%;height:auto}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/elkjs@0.9.3/lib/elk.bundled.js"></script>
 </head>
 <body>
-<div id="page"></div>
+<main id="page"></main>
 
 <script id="skeleton-data" type="application/json">
 {
   "title": "Ticket resale at face value",
-  "mode": "design",
-  "base": "",
-  "intent": {
-    "goal": "A fan who can't go sells their ticket to another fan for no more than face value, and neither can lose money or end up with a ticket that doesn't work.",
-    "done": ["The buyer holds a valid ticket in their name.", "The seller is paid."],
-    "never": ["A ticket sold twice.", "A buyer charged without the ticket.", "A price above face value.", "A buyer out of pocket when an event is cancelled."],
-    "out": ["First-hand sales, auctions, changing prices."]
-  },
-  "decisions": [
-    {
-      "question": "When is the seller paid?",
-      "why": "The issuer can void a ticket after it is sold, and someone has to absorb that.",
-      "pick": "After the event.",
-      "reason": "Voids can happen any time before the event, and only this keeps every buyer whole.",
-      "options": ["After the event", "At transfer"],
-      "measures": [
-        { "label": "Who absorbs a void after the sale", "values": ["The seller", "Us"] },
-        { "label": "How long a seller waits", "values": ["Until the event", "Minutes"] }
-      ]
-    }
-  ],
-  "decided": [
-    "The buyer's card is reserved when they start paying and charged only after the ticket is theirs, because the intent forbids charging a buyer who doesn't get the ticket."
-  ],
-  "concepts": [
-    {
-      "name": "Listing",
-      "purpose": "A ticket offered for sale at no more than face value.",
-      "types": [{ "text": "Listing { id, ticketId, sellerId, price: Price, status: \"listed\" | \"sold\" | \"withdrawn\" | \"voided\" }" }, { "text": "type Price = Brand<Cents, \"AtMostFace\">  // only from priceFor(amount, face)" }],
-      "states": [
-        { "from": "listed", "to": "sold", "by": "transfer confirmed" },
-        { "from": "listed", "to": "withdrawn", "by": "seller, while no one is paying" },
-        { "from": "any", "to": "voided", "by": "issuer voids the ticket" }
-      ],
+  "base": "Design · new service",
+  "blocks": [
+    { "type": "intent", "goal": "A fan who can't go sells their ticket to another fan for no more than face value, and neither loses money or ends up with a ticket that doesn't work.", "text": "The buyer's card is held, the ticket moves, and only then is the card charged. One question is open: when the seller gets paid.", "who": ["Seller: a fan with a ticket they can't use.", "Buyer: a fan who wants it.", "Ticket company: owns who holds each ticket."], "done": ["The buyer holds a valid ticket in their name.", "The seller is paid."], "never": ["A ticket sold twice.", "A buyer charged without the ticket.", "A price above face value."], "out": ["First-hand sales, auctions, changing prices."] },
+    { "type": "decision", "question": "When is the seller paid?", "why": "The ticket company can cancel a ticket after it is sold, and someone has to absorb that.", "options": ["After the event", "At transfer"], "pick": 0, "reason": "A ticket can be cancelled any time before the event, and only this keeps every buyer whole.", "measures": [{ "label": "Who absorbs a cancelled ticket", "values": ["The seller", "Us"] }, { "label": "How long a seller waits", "values": ["Until the event", "Minutes"] }] },
+    { "type": "graph", "title": "Who calls what: pressing Buy", "nodes": [
+      { "id": "buyer", "label": "Buyer", "kind": "actor" },
+      { "id": "complete", "label": "completePurchase", "signature": "completePurchase(holdId: HoldId): Result<Sale, \"expired\" | \"transfer_rejected\">", "does": "Moves the ticket, then charges or releases the card.", "mark": "new", "change": "New. The only path that charges a card.", "warn": "Not atomic: a crash after the transfer leaves the hold uncharged until the repair job runs.", "at": "purchase.ts" },
+      { "id": "issuer", "label": "Ticket company API", "kind": "outside", "does": "Owns who holds each ticket." },
+      { "id": "pay", "label": "Payment provider", "kind": "outside", "does": "Holds, charges and releases cards." }
+    ], "edges": [
+      { "from": "buyer", "to": "complete", "label": "presses Buy" },
+      { "from": "complete", "to": "issuer", "label": "transfer ticket" },
+      { "from": "complete", "to": "pay", "label": "charge or release" }
+    ] },
+    { "type": "concept", "name": "Payment", "mark": "new", "purpose": "The buyer's money, which moves only if the ticket does.", "principle": "A buyer presses Buy, the card is held, the ticket moves to them, and only then is the card charged.",
+      "code": [{ "title": "State", "at": "payment.ts", "lines": [
+        { "code": "type Payment = {", "diff": "add" },
+        { "code": "  id: PaymentId", "diff": "add" },
+        { "code": "  holdId: HoldId", "note": "The card hold this payment settles.", "diff": "add" },
+        { "code": "  amount: Price", "note": "A `Price` can only be built at or below face value.", "diff": "add" },
+        { "code": "  status: \"held\" | \"charged\" | \"released\"", "note": "Where the money is. See the state machine.", "diff": "add" },
+        { "code": "}", "diff": "add" }
+      ] }],
+      "actions": [{ "name": "`completePurchase(holdId)`", "trigger": "The buyer presses Buy.", "effects": "Transfers the ticket, then sets `status` to `charged`, or to `released` if the transfer failed.", "atomic": "No. A repair job finishes a purchase that crashed after the transfer." }],
+      "machine": {
+        "states": [{ "id": "held", "label": "held" }, { "id": "charged", "label": "charged", "end": true }, { "id": "released", "label": "released", "end": true }],
+        "transitions": [
+          { "from": "held", "to": "charged", "when": "the ticket moved" },
+          { "from": "held", "to": "released", "when": "transfer failed or hold expired" },
+          { "from": "released", "to": "charged", "when": "never: charge after release", "never": true }
+        ]
+      },
       "invariants": [
-        { "text": "Price never above face value.", "enforced": "type" },
-        { "text": "One live listing per ticket.", "enforced": "database" }
+        { "text": "Charged only for a ticket that moved.", "enforced": "test", "where": "purchase.test.ts" },
+        { "text": "A price is never above face value.", "enforced": "type", "where": "Price" },
+        { "text": "One open hold per listing.", "enforced": "convention" }
       ],
-      "constraints": ["The issuer, not us, knows who holds a ticket."]
-    },
-    {
-      "name": "Payment",
-      "purpose": "The buyer's money, which moves only if the ticket does.",
-      "types": [{ "text": "Payment { id, holdId, amount: Price, status: \"reserved\" | \"charged\" | \"released\" }" }],
-      "states": [
-        { "from": "reserved", "to": "charged", "by": "transfer confirmed" },
-        { "from": "reserved", "to": "released", "by": "transfer failed, hold expired, or event cancelled" },
-        { "from": "reserved", "to": "charged", "by": "without a confirmed transfer", "never": true }
-      ],
-      "invariants": [
-        { "text": "Charged only for a transferred ticket.", "enforced": "test" },
-        { "text": "A crash after the transfer still ends charged.", "enforced": "repair job" }
-      ],
-      "constraints": ["Card reservations expire after about 7 days."]
-    }
-  ],
-  "boundaries": {
-    "layers": [
-      { "label": "who acts", "nodes": ["buyer", "issuerHook"] },
-      { "label": "actions", "nodes": ["completePurchase", "onIssuerChange"] },
-      { "label": "outside", "nodes": ["issuer", "provider"] },
-      { "label": "stores", "nodes": ["db"] }
-    ],
-    "nodes": {
-      "buyer": { "label": "buyer", "kind": "outside", "does": "Starts paying, then receives the ticket." },
-      "issuerHook": { "label": "issuer webhook", "kind": "outside", "does": "The issuer telling us a ticket was voided or an event cancelled. Can arrive late or twice." },
-      "completePurchase": { "label": "completePurchase", "signature": "completePurchase(holdId): Result<Sale, \"expired\" | \"transfer_rejected\" | \"transfer_unknown\">", "does": "Requests the transfer; charges the card if the issuer confirms, releases it if not.", "src": "resale/purchase.ts (new)" },
-      "onIssuerChange": { "label": "onIssuerChange", "signature": "onIssuerChange(change: IssuerChange): void", "does": "Voids listings, cancels holds, releases or refunds money. Safe to run twice.", "src": "resale/cancellation.ts (new)" },
-      "issuer": { "label": "issuer API", "kind": "outside", "does": "Owns the ticket records: who holds each ticket, its face value, transfers." },
-      "provider": { "label": "payment provider", "kind": "outside", "does": "Reserves, charges, releases and refunds card payments." },
-      "db": { "label": "database", "kind": "store", "does": "Listings, holds, payments and transfers, with the unique indexes that keep one listing per ticket." }
-    },
-    "edges": [["buyer", "completePurchase"], ["issuerHook", "onIssuerChange"], ["completePurchase", "issuer"], ["completePurchase", "provider"], ["completePurchase", "db"], ["onIssuerChange", "provider"], ["onIssuerChange", "db"]]
-  }
+      "constraints": ["Card holds expire after about 7 days."] },
+    { "type": "terms", "items": [
+      { "term": "Hold", "means": "Money reserved on the buyer's card but not yet taken." },
+      { "term": "Face value", "means": "The price printed on the ticket." }
+    ] }
+  ]
 }
 </script>
 
 <script>
 const D = JSON.parse(document.getElementById('skeleton-data').textContent);
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-const STRONG = new Set(['law', 'type', 'database', 'test', 'model check']);
-const mark = m => m ? `<span class="mk ${m}">${m}</span>` : '';
-const list = (title, items) => items && items.length ? `<div><b>${title}</b><ul>${items.map(i => `<li>${esc(i)}</li>`).join('')}</ul></div>` : '';
-const page = [];
-document.title = D.title;
+const md = s => esc(s).replace(/`([^`]+)`/g, '<code>$1</code>');
+const paras = s => String(s ?? '').split(/\n\s*\n/).map(p => `<p>${md(p)}</p>`).join('');
+const list = (items, cls = '') => items && items.length ? `<ul class="${cls}">${items.map(i => `<li>${md(i)}</li>`).join('')}</ul>` : '';
+const MARK = { new: 'New', changed: 'Changed' };
+const tag = (kind, text) => kind ? `<span class="tag ${kind}">${esc(text ?? MARK[kind] ?? kind)}</span>` : '';
+const heading = (b, fallback) => (b.title ?? fallback) ? `<h2>${md(b.title ?? fallback)}</h2>` : '';
+const before = x => x.before ? `<span class="before">Before: ${md(x.before)}</span>` : '';
+const part = (label, html) => html ? `<div class="part"><p class="label">${md(label)}</p>${html}</div>` : '';
+const graphs = [];
+const graphSlot = (g, legend) => { graphs.push(g); return `<div class="gscroll"><div class="graph" data-g="${graphs.length - 1}"></div></div>${legend || ''}`; };
+const KIND_NOTE = { actor: 'Rounded: a person', outside: 'Dashed: a system outside ours', store: 'Double bottom line: stored data' };
+const legendFor = nodes => { const kinds = [...new Set(nodes.map(n => n.kind).filter(k => KIND_NOTE[k]))]; const marks = [...new Set(nodes.map(n => n.mark).filter(Boolean))]; const bits = kinds.map(k => KIND_NOTE[k]).concat(marks.map(m => m === 'changed' ? 'Amber: changed by this work' : 'Green: added by this work')); return bits.length ? `<p class="legend">${bits.join(' · ')}</p>` : ''; };
 
-page.push(`<h1>${esc(D.title)}</h1>${D.base ? `<div class="base">${esc(D.base)}</div>` : ''}`);
+const GUTTER = { add: '+', del: '−' };
+const lineHtml = x => { const l = typeof x === 'string' ? { code: x } : x; return `<div class="ln ${l.diff || ''}"><div class="c"><span class="g">${GUTTER[l.diff] || ''}</span><span>${esc(l.code) || ' '}</span></div><div class="n">${md(l.note)}</div></div>`; };
+const listingHtml = l => `<figure class="src">${l.title || l.at ? `<figcaption><b>${md(l.title)}</b><span class="at">${esc(l.at)}</span></figcaption>` : ''}<div class="lines">${l.lines.map(lineHtml).join('')}</div></figure>`;
+const actionsHtml = a => a.map(x => `<div class="act ${x.mark || ''}"><p class="t">${md(x.name)}${tag(x.mark)}</p><dl><dt>Triggered by</dt><dd>${md(x.trigger)}</dd><dt>Effects</dt><dd>${md(x.effects)}${before(x)}</dd><dt>All or nothing?</dt><dd>${md(x.atomic)}</dd></dl></div>`).join('');
+const rulesHtml = r => `${r.order ? `<p>${md(r.order)}</p>` : ''}<table><thead><tr><th></th><th>If</th><th>Then</th></tr></thead><tbody>${r.rows.map((x, i) => `<tr class="${x.mark || ''}"><td class="num">${i + 1}</td><td>${md(x.if)}</td><td>${md(x.then)}${tag(x.mark)}${before(x)}</td></tr>`).join('')}</tbody></table>`;
+const machineGraph = m => ({ nodes: m.states.map(s => ({ id: s.id, label: s.label ?? s.id, does: s.means, kind: 'state', end: s.end, refused: s.refused, mark: s.mark })), edges: m.transitions.map(t => ({ from: t.from, to: t.to, label: t.when, never: t.never, missing: t.missing, mark: t.mark })) });
+const machineLegend = m => `<p class="legend">${m.transitions.some(t => t.never) ? 'Dashed red: a transition that must never happen · ' : ''}${m.transitions.some(t => t.missing) ? 'Dotted: planned, not in the code yet · ' : ''}Thick border: a final state${m.states.some(s => s.refused) ? ' · Red: refused' : ''}</p>`;
+const LADDER = ['law', 'type', 'database', 'test', 'model check', 'repair job', 'convention'];
+const rank = i => { const k = LADDER.indexOf(i.enforced || 'convention'); return k < 0 ? LADDER.length : k; };
+const invHtml = v => `<ul class="inv">${[...v].sort((a, b) => rank(a) - rank(b)).map(i => { const weak = (i.enforced || 'convention') === 'convention'; return `<li class="${i.broken ? 'broken' : weak ? 'weak' : ''}">${md(i.text)}${weak ? tag('weak', 'convention only') : tag('how', 'enforced by ' + i.enforced)}${i.broken ? tag('broken', 'Broken today') : ''}${tag(i.mark)}${i.where ? `<span class="before">${md(i.where)}</span>` : ''}</li>`; }).join('')}</ul><p class="legend">Strongest first: ${LADDER.slice(0, -1).join(' · ')} · convention only (highlighted)</p>`;
 
-const I = D.intent;
-page.push(`<h2>Intent</h2><section class="box"><p class="goal">${esc(I.goal)}</p><div class="cols">${list('Done means', I.done)}${list('Never', I.never)}${list('Out of scope', I.out)}</div></section>`);
+const R = {
+  intent: b => `${heading(b)}<section class="intent"><p class="goal">${md(b.goal)}</p>${b.text ? `<div class="text">${paras(b.text)}</div>` : ''}<div class="cols">${[['Who is involved', b.who], ['Done means', b.done], ['Never', b.never, 'never'], ['Out of scope', b.out]].filter(([, v]) => v && v.length).map(([l, v, c]) => `<div><p class="label">${l}</p>${list(v, c)}</div>`).join('')}</div></section>`,
+  note: b => `${heading(b)}<section class="note">${paras(b.text)}</section>`,
+  compare: b => `${heading(b)}<div class="cols">${b.columns.map((c, i) => `<section class="box ${b.pick === i ? 'pick' : ''}"><p class="label">${md(c.label)}</p>${list(c.items)}</section>`).join('')}</div>`,
+  decision: b => `${heading(b, 'Open question')}<section class="box ask"><p class="q">${md(b.question)}</p>${b.why ? `<p>${md(b.why)}</p>` : ''}<p><b>Pick: ${md(b.options[b.pick])}.</b> ${md(b.reason)}</p>${b.measures && b.measures.length ? `<table><thead><tr><th></th>${b.options.map((o, i) => `<th class="${i === b.pick ? 'picked' : ''}">${md(o)}</th>`).join('')}</tr></thead><tbody>${b.measures.map(m => `<tr><td>${md(m.label)}</td>${m.values.map((v, i) => `<td class="${i === b.pick ? 'picked' : ''}">${md(v)}</td>`).join('')}</tr>`).join('')}</tbody></table>` : ''}</section>`,
+  code: b => `${heading(b)}${listingHtml(b)}`,
+  flow: b => `${heading(b)}<div class="flow">${b.steps.map(s => `<div class="step ${s.mark || ''}"><div class="name">${md(s.label)}${tag(s.mark)}</div>${s.detail ? `<div class="detail">${md(s.detail)}</div>` : ''}</div>`).join('<div class="arrow" aria-hidden="true">↓</div>')}</div>`,
+  graph: b => `${heading(b)}<section class="box">${graphSlot(b, legendFor(b.nodes))}</section>`,
+  machine: b => `${heading(b)}<section class="box">${graphSlot(machineGraph(b), machineLegend(b))}</section>`,
+  rules: b => `${heading(b)}<section class="box">${rulesHtml(b)}</section>`,
+  concept: b => `${heading(b)}<section class="box concept"><h3>${md(b.name)}${tag(b.mark)}</h3><p class="purpose">${md(b.purpose)}</p>${b.principle ? `<p class="principle"><b>Operational principle.</b> ${md(b.principle)}</p>` : ''}${
+    part('Code', b.code && b.code.length && b.code.map(listingHtml).join(''))}${
+    part('Actions', b.actions && b.actions.length && actionsHtml(b.actions))}${
+    part(b.rules && b.rules.title || 'Rules', b.rules && rulesHtml(b.rules))}${
+    part(b.machine && b.machine.title || 'State machine', b.machine && graphSlot(machineGraph(b.machine), machineLegend(b.machine)))}${
+    part('Invariants', b.invariants && b.invariants.length && invHtml(b.invariants))}${
+    part('Constraints', b.constraints && b.constraints.length && list(b.constraints))}</section>`,
+  findings: b => `${heading(b, 'Findings')}<section class="box"><ul>${b.items.map(f => `<li>${md(f.text)}${f.fix ? `<span class="before">Fix: ${md(f.fix)}</span>` : ''}</li>`).join('')}</ul></section>`,
+  terms: b => `${heading(b, 'Terms')}<section class="box"><dl>${b.items.map(t => `<dt>${md(t.term)}</dt><dd>${md(t.means)}</dd>`).join('')}</dl></section>`,
+  sources: b => `${heading(b, 'Sources')}<div class="sources">${b.items.map(md).join('<br>')}</div>`,
+  svg: b => { const t = document.getElementById(b.ref); return `${heading(b)}<figure class="box">${t ? t.innerHTML : ''}</figure>`; },
+};
 
-if ((D.decisions && D.decisions.length) || (D.decided && D.decided.length)) {
-  page.push(`<h2>${D.decisions && D.decisions.length ? 'Open decisions' : 'Decided'}</h2>`);
-  for (const d of D.decisions || []) {
-    const cols = (d.options || []).length;
-    const table = cols && d.measures ? `<div class="cmp" style="grid-template-columns:minmax(120px,1fr) repeat(${cols},1.2fr)"><div class="h"></div>${d.options.map(o => `<div class="h">${esc(o)}</div>`).join('')}${d.measures.map(m => `<div class="l">${esc(m.label)}</div>${m.values.map((v, i) => `<div class="v"><span class="opt">${esc(d.options[i])}</span>${esc(v)}</div>`).join('')}`).join('')}</div>` : '';
-    page.push(`<section class="box ask"><div class="lbl">Waiting on you</div><p class="q">${esc(d.question)}</p><p>${esc(d.why)}</p><p><span class="pick">Pick: ${esc(d.pick)}</span> ${esc(d.reason)}</p>${table}</section>`);
+const nodeHtml = n => `<div class="t">${md(n.label)}${tag(n.mark)}</div>${n.signature ? `<div class="sig">${esc(n.signature)}</div>` : ''}${n.does ? `<div class="d">${md(n.does)}</div>` : ''}${n.change ? `<div class="chg"><b>${n.mark === 'new' ? 'Added' : 'Change'}:</b> ${md(n.change)}</div>` : ''}${n.warn ? `<div class="warn">⚠ ${md(n.warn)}</div>` : ''}${n.at ? `<span class="at">${esc(n.at)}</span>` : ''}`;
+const ELK_OPTIONS = { 'elk.algorithm': 'layered', 'elk.direction': 'DOWN', 'elk.edgeRouting': 'ORTHOGONAL', 'elk.spacing.nodeNode': '26', 'elk.layered.spacing.nodeNodeBetweenLayers': '34', 'elk.spacing.edgeLabel': '4', 'elk.layered.spacing.edgeNodeBetweenLayers': '14', 'elk.layered.nodePlacement.strategy': 'NETWORK_SIMPLEX', 'elk.padding': '[top=6,left=6,bottom=6,right=6]' };
+
+const MIN_SCALE = 0.72;
+const fitGraph = (host, layout) => {
+  const room = host.parentElement.clientWidth;
+  if (layout.width <= room) return;
+  const scale = Math.max(room / layout.width, MIN_SCALE);
+  host.style.transform = `scale(${scale})`;
+  host.style.margin = '0';
+  host.parentElement.style.height = layout.height * scale + 8 + 'px';
+};
+
+async function drawGraph(host, g) {
+  const nodeEls = {};
+  for (const n of g.nodes) {
+    const el = document.createElement('div');
+    el.className = ['gn', n.kind, n.mark, n.end && 'end', n.refused && 'refused'].filter(Boolean).join(' ');
+    el.innerHTML = nodeHtml(n);
+    host.appendChild(el);
+    nodeEls[n.id] = el;
   }
-  for (const t of D.decided || []) page.push(`<p class="decided"><b>Decided by the intent:</b> ${esc(t)}</p>`);
-}
-
-page.push(`<h2>Concepts</h2><div class="concepts">${D.concepts.map(c => `<article class="box concept"><h3>${esc(c.name)}${mark(c.mark)}</h3><p class="purpose">${esc(c.purpose)}</p>
-  ${(c.findings || []).map(f => `<div class="finding"><b>${esc(f.title)}</b>${esc(f.text)}</div>`).join('')}
-  ${c.types && c.types.length ? `<div class="sec">Types</div><div class="type">${c.types.map(t => `<div class="${t.mark || ''}">${esc(t.text)}</div>`).join('')}</div>` : ''}
-  ${c.states && c.states.length ? `<div class="sec">State machine</div><div class="sm">${c.states.map(s => `<div class="${s.never ? 'never' : ''}"><span class="s">${esc(s.from)}</span><span class="ar">${s.never ? '✕' : '→'}</span><span class="s">${esc(s.to)}</span><span class="by">${s.never ? 'never: ' : ''}${esc(s.by)}</span>${mark(s.mark)}</div>`).join('')}</div>` : ''}
-  ${c.invariants && c.invariants.length ? `<div class="sec">Invariants</div><ul class="inv">${c.invariants.map(v => `<li>${esc(v.text)}<span class="e ${v.enforced === 'broken' ? 'broken' : STRONG.has(v.enforced) ? '' : 'weak'}">${esc(v.enforced === 'broken' ? 'broken today' : v.enforced)}</span>${mark(v.mark)}${v.note ? `<span class="note">${esc(v.note)}</span>` : ''}</li>`).join('')}</ul>` : ''}
-  ${c.constraints && c.constraints.length ? `<div class="sec">Constraints</div><ul class="con">${c.constraints.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : ''}</article>`).join('')}</div>`);
-
-const B = D.boundaries;
-if (B) page.push(`<h2>Boundaries</h2><section class="box cand" id="cand"><p class="hint">Tap a box for its brief.</p><div class="flow">${B.layers.map(l => `<div class="layer"><div class="who">${esc(l.label)}</div><div class="chips">${l.nodes.map(id => `<button type="button" class="n ${B.nodes[id].kind || ''} ${B.nodes[id].mark || ''}" data-id="${id}">${esc(B.nodes[id].label)}</button>`).join('')}</div></div>`).join('')}</div><div class="insp" hidden></div></section>`);
-
-document.getElementById('page').innerHTML = page.join('');
-
-if (B) {
-  const card = document.getElementById('cand'), flow = card.querySelector('.flow'), insp = card.querySelector('.insp');
-  const select = (id, btn) => {
-    const cur = flow.querySelector('.n.sel');
-    flow.querySelectorAll('.n').forEach(b => b.classList.remove('sel', 'rel'));
-    if (!id || (cur && cur.dataset.id === id)) { flow.classList.remove('focus'); insp.hidden = true; return; }
-    const ins = B.edges.filter(([, b]) => b === id).map(([a]) => a), outs = B.edges.filter(([a]) => a === id).map(([, b]) => b);
-    flow.classList.add('focus');
-    flow.querySelectorAll('.n').forEach(b => { if (b.dataset.id === id) b.classList.add('sel'); else if (ins.includes(b.dataset.id) || outs.includes(b.dataset.id)) b.classList.add('rel'); });
-    const n = B.nodes[id], names = ids => ids.map(x => esc(B.nodes[x].label)).join(', ');
-    insp.innerHTML = `<div class="top"><span class="nm">${esc(n.label)}</span>${mark(n.mark)}<button type="button" class="x" aria-label="Close">×</button></div>${n.signature ? `<div class="sig">${esc(n.signature)}</div>` : ''}<p>${esc(n.does)}</p>${n.change ? `<p><b>In this design:</b> ${esc(n.change)}</p>` : ''}${n.warning ? `<div class="warn">${esc(n.warning)}</div>` : ''}${ins.length ? `<div class="line">From: ${names(ins)}</div>` : ''}${outs.length ? `<div class="line">To: ${names(outs)}</div>` : ''}${n.src ? `<div class="src">${esc(n.src)}</div>` : ''}`;
-    insp.hidden = false;
-    insp.style.top = (btn.getBoundingClientRect().bottom - card.getBoundingClientRect().top + 6) + 'px';
-  };
-  card.addEventListener('click', e => {
-    if (e.target.closest('.x')) return select(null);
-    if (e.target.closest('.insp')) return;
-    const b = e.target.closest('.flow .n');
-    select(b ? b.dataset.id : null, b);
+  const labelEls = g.edges.map(e => {
+    if (!e.label) return null;
+    const el = document.createElement('div');
+    el.className = 'gl' + (e.never ? ' never' : e.missing ? ' missing' : '');
+    el.innerHTML = md(e.label);
+    host.appendChild(el);
+    return el;
   });
-  document.addEventListener('click', e => { if (!e.target.closest('#cand')) select(null); });
+  if (!window.ELK) {
+    host.classList.add('fallback');
+    host.insertAdjacentHTML('beforeend', `<ul>${g.edges.map(e => `<li>${md(g.nodes.find(n => n.id === e.from).label)} → ${md(g.nodes.find(n => n.id === e.to).label)}${e.label ? ': ' + md(e.label) : ''}</li>`).join('')}</ul>`);
+    labelEls.forEach(l => l && l.remove());
+    return;
+  }
+  const layout = await new ELK().layout({
+    id: 'root', layoutOptions: ELK_OPTIONS,
+    children: g.nodes.map(n => ({ id: n.id, width: nodeEls[n.id].offsetWidth, height: nodeEls[n.id].offsetHeight })),
+    edges: g.edges.map((e, i) => ({ id: 'e' + i, sources: [e.from], targets: [e.to], labels: labelEls[i] ? [{ id: 'l' + i, text: e.label, width: labelEls[i].offsetWidth, height: labelEls[i].offsetHeight }] : [] })),
+  });
+  host.style.width = layout.width + 'px';
+  host.style.height = layout.height + 'px';
+  fitGraph(host, layout);
+  for (const c of layout.children) Object.assign(nodeEls[c.id].style, { left: c.x + 'px', top: c.y + 'px' });
+  const ns = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(ns, 'svg');
+  svg.setAttribute('width', layout.width);
+  svg.setAttribute('height', layout.height);
+  svg.innerHTML = '<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" fill="var(--mu)"/></marker><marker id="ahn" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" fill="var(--ba)"/></marker></defs>';
+  layout.edges.forEach((e, i) => {
+    const never = g.edges[i].never;
+    for (const s of e.sections || []) {
+      const pts = [s.startPoint, ...(s.bendPoints || []), s.endPoint];
+      const path = document.createElementNS(ns, 'path');
+      path.setAttribute('d', pts.map((p, k) => (k ? 'L' : 'M') + p.x + ',' + p.y).join(''));
+      path.setAttribute('class', 'edge' + (never ? ' never' : g.edges[i].missing ? ' missing' : ''));
+      path.setAttribute('marker-end', never ? 'url(#ahn)' : 'url(#ah)');
+      svg.appendChild(path);
+    }
+    for (const l of e.labels || []) Object.assign(labelEls[i].style, { left: l.x + 'px', top: l.y + 'px' });
+  });
+  host.prepend(svg);
 }
+
+document.title = D.title;
+document.getElementById('page').innerHTML = `<h1>${md(D.title)}</h1>${D.base ? `<div class="base">${md(D.base)}</div>` : ''}` + D.blocks.map(b => R[b.type] ? `<div class="block">${R[b.type](b)}</div>` : '').join('');
+document.querySelectorAll('.graph').forEach(el => drawGraph(el, graphs[Number(el.dataset.g)]));
 </script>
 </body>
 </html>
