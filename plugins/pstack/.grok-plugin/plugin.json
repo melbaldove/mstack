@@ -1,6 +1,6 @@
 {
   "name": "mstack",
-  "version": "0.9.1310011",
+  "version": "0.9.1310012",
   "description": "pstack workflows and skills for Grok Build",
   "skills": [
     "./skills",
