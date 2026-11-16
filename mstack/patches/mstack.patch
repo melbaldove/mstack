@@ -308,7 +308,7 @@ index 6b72b2e..2d03a05 100644
 -- A principle name works because the agent already read the rule. Its reply names the decision the rule changed.
 +- A principle name works because the agent already read the rule.
 diff --git a/plugins/pstack/skills/melbs-mode/SKILL.md b/plugins/pstack/skills/melbs-mode/SKILL.md
-index 752856c..069b594 100644
+index 752856c..80c0a16 100644
 --- a/plugins/pstack/skills/melbs-mode/SKILL.md
 +++ b/plugins/pstack/skills/melbs-mode/SKILL.md
 @@ -1,6 +1,6 @@
@@ -319,7 +319,7 @@ index 752856c..069b594 100644
  ---
  
  # Melbs mode
-@@ -15,7 +15,7 @@ Use the session's task-tracking tools for the todolist. On Claude Code these are
+@@ -15,13 +15,15 @@ Use the session's task-tracking tools for the todolist. On Claude Code these are
  
  ## Non-negotiables
  
@@ -328,7 +328,24 @@ index 752856c..069b594 100644
  
  Remaining triggers:
  
-@@ -73,6 +73,8 @@ Read the leaf skill in full for any principle you apply. Each entry names when i
+ - Your first message on a task → tell the user, in your own words, their goal, the problem they are solving, and, if the task ships a change, the smallest change you expect to meet it. Don't wait for confirmation. If the evidence rules out the change the user asked for, show it and stop. Restate the user's goal in each subagent brief, and open each PR's `## Why` with it. Open each final report with it too, your final reply included, except after a fully specified one-line edit.
+ - Nontrivial change, architecture decision, or "are we sure?" → the **how** skill.
+ - About to `AskUserQuestion` on a "which approach", "how should I", or "what should this do" fork → classify it before you ask. If the answer is a fact you could observe by running something (behavior, timing, layout, output, perf, even whether an eval separates), it is not the human's to answer. Sketch it via the Prototype playbook (`playbooks/prototype.md`) and let the result decide. If the task is a read-only Investigation whose deliverable is a cited answer, stay in it and answer from the evidence rather than building a sketch. Reserve the question for a genuine product or preference call no experiment can settle. Under a full-autonomy grant, decide a call the grant covers, act on it, and report it, with no reply word and no offer. Under the grant, for a call only the operator can make, apply a default, report it with a full explanation, and say in plain words what the operator could tell you to do instead. The operator answers in their own words. Never give a shorthand token to type back. Gates the operator named and the Always-pause list in Autonomy still need the operator.
++- About to end a reply with an offer ("want me to run it?") or a clarifying question → apply the same test as for `AskUserQuestion`. Run a reversible step now and report the result, because an offer the user does not answer never runs. Ask only when nothing in the session settles the answer. Otherwise act on the most plausible reading and say which reading you took.
++- Watching a conversation for the user (a monitor, a scheduled check, a wake-up) → each run reports what still waits on the user, such as a message to them that has no answer, and not only what is new. "Nothing new" is a wrong report while such a message is open. When the user asks what a monitor did, read its run history before you answer.
+ - Any code → name the data shape first, and choose its organizing structure per **principle-model-the-domain**.
+ - Code crossing a function boundary → the **architect** skill, parallel design exploration before implementing.
+ - Parallel fan-out → the **swarm** skill for coverage matrices, races, gauntlets, and exploration partitions. Use **arena** for design or code bakeoffs with base selection and grafting.
+@@ -50,7 +52,7 @@ Read the leaf skill in full for any principle you apply. Each entry names when i
+ - **Laziness Protocol.** Refactoring, sizing a diff, or tempted to add abstractions, layers, or signal threading. Bias to deletion and the smallest change that solves the problem.
+ - **Foundational Thinking.** Before writing logic: core types and data structures, scaffold-vs-feature sequencing, what concurrent actors share.
+ - **Redesign from First Principles.** Integrating a new requirement into an existing design. Redesign as if it had been foundational from day one.
+-- **Attack the Premise.** Two or more fixes that share one premise have failed the same gate. Write the premise down and test it directly before you write another fix that assumes it.
++- **Attack the Premise.** Two or more fixes that share one premise have failed the same gate, and a person who rejects a document or a design is a gate. Write the premise down and test it directly before you write another fix that assumes it.
+ - **Subtract Before You Add.** Sequencing an addition, refactor, or rewrite. Remove dead weight first, then build on the simpler base.
+ - **Minimize Reader Load.** Reviewing or shaping code that's hard to trace. Count layers and hidden state, collapse one-caller wrappers, shrink mutable scope.
+ - **Outcome-Oriented Execution.** Planned rewrites and migrations with explicit phase boundaries. Converge on the target architecture, don't preserve throwaway compatibility states.
+@@ -73,6 +75,8 @@ Read the leaf skill in full for any principle you apply. Each entry names when i
  - **Fix Root Causes.** Debugging. Trace each symptom back to the first place the system went wrong and fix it there. A guard is a fix only when the state it handles is legitimate.
  - **Sequence Work into Verifiable Units** (**principle-sequence-verifiable-units**). Multi-step work (sweeps, migrations, runs of similar edits) and how you stack commits and PRs. Break work into small units that each end in a check, verify each before the next, and order delivery so the sequence proves itself.
  - **Test Behavior, Not Implementation.** Writing, changing, or keeping a test. Assert what the code's users can observe, so the test fails when that behavior breaks and keeps passing when only the internals change.
@@ -337,7 +354,7 @@ index 752856c..069b594 100644
  - **Explain the Number.** Apply before you measure, and before you trust, report, or act on a number you measured (a speedup, a regression, a throughput, a latency, or an eval result). Find what limits it, and rule out that it measured something other than the work you think.
  
  **Delegation**
-@@ -110,21 +112,16 @@ You own every subagent's work. Review the diff and write your own summary, don't
+@@ -110,21 +114,16 @@ You own every subagent's work. Review the diff and write your own summary, don't
  
  ## Writing the reply
  
@@ -382,6 +399,25 @@ index 0da7b52..b269263 100644
 +6. Stop when the predicate is met, or when the time budget runs out. Within the budget a plateau is not a stop, so keep going and pivot your approach to push past it. Surface a genuine dead end rather than spinning, and never relax the predicate to declare victory. Cutting scope is different: drop the pitch's nice-to-haves in the open and report the cut. When the budget runs out, stop and report what passed and what is still unsolved. The unsolved part goes back to shaping.
  
  **Reply:** the exit condition, iterations run, what landed, what was discarded, final predicate state.
+diff --git a/plugins/pstack/skills/principle-attack-the-premise/SKILL.md b/plugins/pstack/skills/principle-attack-the-premise/SKILL.md
+index 5d0625f..dfc63ae 100644
+--- a/plugins/pstack/skills/principle-attack-the-premise/SKILL.md
++++ b/plugins/pstack/skills/principle-attack-the-premise/SKILL.md
+@@ -1,12 +1,12 @@
+ ---
+ name: principle-attack-the-premise
+-description: "Apply when two or more fixes that share one premise have failed the same gate. Write the premise down and test it directly before you write another fix that assumes it."
++description: "Apply when two or more fixes that share one premise have failed the same gate, including when a person has rejected a document or a design twice. Write the premise down and test it directly before you write another fix that assumes it."
+ user-invocable: false
+ ---
+ 
+ # Attack the Premise
+ 
+-When two or more fixes that share one premise have failed the same gate, suspect the premise, not the fixes.
++When two or more fixes that share one premise have failed the same gate, suspect the premise, not the fixes. A gate is whatever rejects the fix: a test, a CI check, or a person who rejects a document or a design.
+ 
+ **Why:** Each failed fix is evidence against the belief it assumed. A third fix on the same premise spends effort where the evidence already says the cause is not.
+ 
 diff --git a/plugins/pstack/skills/principle-earn-each-test/SKILL.md b/plugins/pstack/skills/principle-earn-each-test/SKILL.md
 new file mode 100644
 index 0000000..4ca4dfc
@@ -439,10 +475,10 @@ index a6829c7..71961f5 100644
  
 diff --git a/plugins/pstack/skills/principle-review-for-real-risk/SKILL.md b/plugins/pstack/skills/principle-review-for-real-risk/SKILL.md
 new file mode 100644
-index 0000000..72159d7
+index 0000000..dbdfc72
 --- /dev/null
 +++ b/plugins/pstack/skills/principle-review-for-real-risk/SKILL.md
-@@ -0,0 +1,33 @@
+@@ -0,0 +1,34 @@
 +---
 +name: principle-review-for-real-risk
 +description: "Apply when you review a diff, and when you act on review findings from a person, a bot, or a subagent. Report and fix only what the change breaks, with proof, and stop the review-and-fix loop when it stops finding real risk."
@@ -475,6 +511,7 @@ index 0000000..72159d7
 +- Fix a finding that clears the bar. For one that does not, reply with the reason, in one line, and leave the code alone.
 +- A fix gets at most one regression test, per **principle-earn-each-test**.
 +- Review each later round against the fix's diff only. A finding that the first round could have raised and did not is not a reason for another round.
++- The diff-only rule is for code. A design or a document rests on a premise that no fix's diff contains, so test the premise before the first fix round: run a spike, or give one round to arguing for a simpler design.
 +- Stop when a round finds no new real risk. After two rounds of fixes, when a blocking finding remains, stop and report it with its evidence, and let the human choose another round, a narrower change, or to drop it.
 diff --git a/plugins/pstack/skills/shape/SKILL.md b/plugins/pstack/skills/shape/SKILL.md
 new file mode 100644
@@ -779,6 +816,43 @@ index 0000000..9cfc25d
 +</script>
 +</body>
 +</html>
+diff --git a/plugins/pstack/skills/technical-writing/SKILL.md b/plugins/pstack/skills/technical-writing/SKILL.md
+index 289eee9..e062fe3 100644
+--- a/plugins/pstack/skills/technical-writing/SKILL.md
++++ b/plugins/pstack/skills/technical-writing/SKILL.md
+@@ -1,6 +1,6 @@
+ ---
+ name: technical-writing
+-description: "Layered technical-writing standard: Diátaxis structure, Google developer style sentences, STE instruction rules, Global English syntax. Use for /technical-writing or when writing or reviewing docs, RFCs, readmes, PR descriptions, or commit messages."
++description: "Layered technical-writing standard: Diátaxis structure, Google developer style sentences, STE instruction rules, Global English syntax. Use for /technical-writing or when writing or reviewing docs, briefs, RFCs, readmes, PR descriptions, or commit messages."
+ ---
+ 
+ # Technical writing
+@@ -47,6 +47,16 @@ Use the compass on a whole document or on one sentence.
+ 
+ Don't mix modes: no reference tables inside a tutorial, no tutorial hand-holding inside reference, no arguing inside a how-to. Split and link instead.
+ 
++## Write a brief for one decision
++
++A brief asks its readers to decide one thing. Write that decision down in one sentence before you draft, and test every later addition against it.
++
++- Keep what the decision turns on: the design, and each point a reviewer questioned. To simplify a brief, explain those in plainer words. Do not delete them.
++- Leave out a detail that only the build needs, even when it is true. Keep it in the build notes, and do not announce what you left out.
++- When a reviewer or another agent frames a question about the brief, work out what the readers must decide before you answer. A question such as "which of these does the brief take?" assumes that the brief should take any of them.
++- A result write-up opens with the recommendation and the one reason that decides it. Say what each number means for the decision.
++- A note on what changed lists only the differences from the version the readers already have.
++
+ ## Write sentences to the reader (Google developer style)
+ 
+ - Talk to the reader as "you", in the present tense. "Will" only for things that genuinely happen later.
+@@ -93,6 +103,7 @@ Don't mix modes: no reference tables inside a tutorial, no tutorial hand-holding
+ - PR descriptions and commit messages are writing too. Every layer except Diátaxis applies to them. A PR body is a briefing that a reviewer can read in under a minute. Do not paste swarm logs, SHA lists, or metric tables. Link them.
+ - Product UI strings are not documentation. Use your product's copy guidelines for those.
+ - Indent code snippets with tabs. Write real paths. Make every count or tree claim true at the commit that lands it, and include the command that regenerates it.
++- Check each claim about the present state against its live source before the document goes out: what is merged, what has shipped, and which change closes which gap. Write "partly" or "open" when that is the state. After a reader catches two wrong claims, have an independent reader check every remaining one before you send it again.
+ 
+ ## Worked example
+ 
 diff --git a/plugins/pstack/skills/test-audit/SKILL.md b/plugins/pstack/skills/test-audit/SKILL.md
 new file mode 100644
 index 0000000..7254bb8

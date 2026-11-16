@@ -1,12 +1,12 @@
 ---
 name: principle-attack-the-premise
-description: "Apply when two or more fixes that share one premise have failed the same gate. Write the premise down and test it directly before you write another fix that assumes it."
+description: "Apply when two or more fixes that share one premise have failed the same gate, including when a person has rejected a document or a design twice. Write the premise down and test it directly before you write another fix that assumes it."
 user-invocable: false
 ---
 
 # Attack the Premise
 
-When two or more fixes that share one premise have failed the same gate, suspect the premise, not the fixes.
+When two or more fixes that share one premise have failed the same gate, suspect the premise, not the fixes. A gate is whatever rejects the fix: a test, a CI check, or a person who rejects a document or a design.
 
 **Why:** Each failed fix is evidence against the belief it assumed. A third fix on the same premise spends effort where the evidence already says the cause is not.
 

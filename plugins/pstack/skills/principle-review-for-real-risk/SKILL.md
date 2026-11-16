@@ -30,4 +30,5 @@ Rank the findings by what they would cost in production and lead with the worst.
 - Fix a finding that clears the bar. For one that does not, reply with the reason, in one line, and leave the code alone.
 - A fix gets at most one regression test, per **principle-earn-each-test**.
 - Review each later round against the fix's diff only. A finding that the first round could have raised and did not is not a reason for another round.
+- The diff-only rule is for code. A design or a document rests on a premise that no fix's diff contains, so test the premise before the first fix round: run a spike, or give one round to arguing for a simpler design.
 - Stop when a round finds no new real risk. After two rounds of fixes, when a blocking finding remains, stop and report it with its evidence, and let the human choose another round, a narrower change, or to drop it.

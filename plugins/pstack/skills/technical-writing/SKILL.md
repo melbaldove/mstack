@@ -1,6 +1,6 @@
 ---
 name: technical-writing
-description: "Layered technical-writing standard: Diátaxis structure, Google developer style sentences, STE instruction rules, Global English syntax. Use for /technical-writing or when writing or reviewing docs, RFCs, readmes, PR descriptions, or commit messages."
+description: "Layered technical-writing standard: Diátaxis structure, Google developer style sentences, STE instruction rules, Global English syntax. Use for /technical-writing or when writing or reviewing docs, briefs, RFCs, readmes, PR descriptions, or commit messages."
 ---
 
 # Technical writing
@@ -46,6 +46,16 @@ Use the compass on a whole document or on one sentence.
 **Explanation: understanding and why.** One bounded topic, readable away from the product. Each title should tolerate an implicit "About..." in front. Anchor on a real why question. Give context: design decisions, history, constraints, alternatives. Opinion is allowed here and nowhere else.
 
 Don't mix modes: no reference tables inside a tutorial, no tutorial hand-holding inside reference, no arguing inside a how-to. Split and link instead.
+
+## Write a brief for one decision
+
+A brief asks its readers to decide one thing. Write that decision down in one sentence before you draft, and test every later addition against it.
+
+- Keep what the decision turns on: the design, and each point a reviewer questioned. To simplify a brief, explain those in plainer words. Do not delete them.
+- Leave out a detail that only the build needs, even when it is true. Keep it in the build notes, and do not announce what you left out.
+- When a reviewer or another agent frames a question about the brief, work out what the readers must decide before you answer. A question such as "which of these does the brief take?" assumes that the brief should take any of them.
+- A result write-up opens with the recommendation and the one reason that decides it. Say what each number means for the decision.
+- A note on what changed lists only the differences from the version the readers already have.
 
 ## Write sentences to the reader (Google developer style)
 
@@ -93,6 +103,7 @@ Don't mix modes: no reference tables inside a tutorial, no tutorial hand-holding
 - PR descriptions and commit messages are writing too. Every layer except Diátaxis applies to them. A PR body is a briefing that a reviewer can read in under a minute. Do not paste swarm logs, SHA lists, or metric tables. Link them.
 - Product UI strings are not documentation. Use your product's copy guidelines for those.
 - Indent code snippets with tabs. Write real paths. Make every count or tree claim true at the commit that lands it, and include the command that regenerates it.
+- Check each claim about the present state against its live source before the document goes out: what is merged, what has shipped, and which change closes which gap. Write "partly" or "open" when that is the state. After a reader catches two wrong claims, have an independent reader check every remaining one before you send it again.
 
 ## Worked example
 
