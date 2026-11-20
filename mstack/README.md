@@ -17,7 +17,7 @@ mstack is Melbourne Baldove's build of [pstack-claude](https://github.com/michae
 
 ## Sync
 
-The `mstack sync` workflow rebuilds from upstream every Monday, runs the generator check and the tests, and pushes the result to the `mstack-sync` branch. It opens a pull request for review, because the plugin's startup hooks run shell commands in every session. If Actions can't open pull requests in this repository, it opens an issue with a compare link instead. When a step fails, it opens an issue.
+The `mstack sync` workflow rebuilds from upstream every day, runs the generator check and the tests, and pushes the result to the `mstack-sync` branch. It opens a pull request for review, because the plugin's startup hooks run shell commands in every session. If Actions can't open pull requests in this repository, it opens an issue with a compare link instead. When a step fails, it opens an issue.
 
 To sync by hand:
 
@@ -28,11 +28,12 @@ bun tools/generate.mjs --check && bun test tests/
 git commit -m "Sync to pstack-claude $(cut -c1-7 mstack/UPSTREAM)"
 ```
 
-When `mstack.patch` no longer applies, `sync.sh` stops with conflict markers. Resolve them, save the patch, and rerun the sync:
+`sync.sh` first rebuilds the tree at the recorded `UPSTREAM` commit, so `git apply --3way` has the patch's base files and merges any change that does not overlap the patch. It drops upstream's workflows and every upstream test that reads them.
+
+When upstream edits the same lines as `mstack.patch`, `sync.sh` stops with conflict markers. Resolve them, then save the patch, which rebuilds the tree from it:
 
 ```shell
 mstack/save-patch.sh
-mstack/sync.sh
 ```
 
 To change the patch, edit the files after a sync, then run `mstack/save-patch.sh`.
