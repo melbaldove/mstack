@@ -1,5 +1,5 @@
 diff --git a/.claude-plugin/marketplace.json b/.claude-plugin/marketplace.json
-index fd950c9..e7fc5b9 100644
+index 01cf23a..d9eb40f 100644
 --- a/.claude-plugin/marketplace.json
 +++ b/.claude-plugin/marketplace.json
 @@ -4,7 +4,7 @@
@@ -12,7 +12,7 @@ index fd950c9..e7fc5b9 100644
      {
        "name": "mstack",
 diff --git a/README.md b/README.md
-index bbf445d..64396be 100644
+index c585d70..b9c8c78 100644
 --- a/README.md
 +++ b/README.md
 @@ -1,5 +1,7 @@
@@ -24,7 +24,7 @@ index bbf445d..64396be 100644
  [![Mentioned in Awesome Claude Code](https://awesome.re/mentioned-badge.svg)](https://github.com/hesreallyhim/awesome-claude-code)
  
 diff --git a/docs/reference.md b/docs/reference.md
-index 5dfebec..f8c37c7 100644
+index 2c0d6b7..1d65742 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
 @@ -4,13 +4,17 @@ Start with the [README](../README.md) for installation and your first task.
@@ -107,7 +107,7 @@ index 0000000..83af64f
 +
 +Invoke the `test-audit` skill and follow it. Resolve Claude tool names, Claude model names, and Claude built-in skills through `melbs-mode/references/codex-tools.md`, including its Per-skill notes.
 diff --git a/plugins/pstack/.muse-plugin/plugin.json b/plugins/pstack/.muse-plugin/plugin.json
-index a917cfa..e7690b0 100644
+index 48043a9..b13400e 100644
 --- a/plugins/pstack/.muse-plugin/plugin.json
 +++ b/plugins/pstack/.muse-plugin/plugin.json
 @@ -40,11 +40,21 @@
@@ -193,26 +193,16 @@ index a917cfa..e7690b0 100644
          "id": "thermo-nuclear-code-quality-review",
          "path": "skills/thermo-nuclear-code-quality-review/SKILL.md",
 diff --git a/plugins/pstack/skills/architect/SKILL.md b/plugins/pstack/skills/architect/SKILL.md
-index c776cc1..ddf3a7a 100644
+index 53658ef..c85510b 100644
 --- a/plugins/pstack/skills/architect/SKILL.md
 +++ b/plugins/pstack/skills/architect/SKILL.md
-@@ -43,13 +43,11 @@ Screen every candidate against [`references/design-red-flags.md`](references/des
+@@ -17,4 +17,6 @@ Before writing code, trace every system the change touches, then sketch two diff
  
- Compare viable candidates on interface depth. Prefer the design that hides more complexity behind a smaller, simpler public surface. A rich interface can keep call chains short by concentrating capability instead of scattering it across layers.
+ For a large or contested design, run the **arena** skill instead of sketching alone.
  
--Arena returns one synthesized design package. Its synthesis decision fills the rationale's "Synthesis decision" section.
-+Arena returns one synthesized design package. Its synthesis decision fills the rationale's "Synthesis decision" section. Show the synthesized design to the user as a **skeleton** page in design mode.
- 
--## Phase C: Agree (opt-in)
-+## Phase C: Agree
- 
--Default: proceed directly to implementation with the synthesized design. No human checkpoint.
--
--Opt in to a checkpoint when the invoker explicitly asks: "/architect with checkpoint," "stop and show me before implementing," or similar. Then surface the synthesized design and pause for sign-off.
-+Stop at each decision the skeleton page leaves open and wait for the user's answer. When the intent settles every decision, show the page and proceed. Under an autonomous run the user stepped away from, record your picks on the page and proceed.
- 
- The synthesis can ship as its own commit either way, as the "scaffold first" mode of the **foundational-thinking** principle skill. Planned and scoped breakage during fill-in is fine, per the **outcome-oriented-execution** principle skill. For adversarial pressure on the design before implementing, run the **interrogate** skill on the synthesized sketch.
- 
++Show the chosen design to the user as a **skeleton** page in design mode. Stop at each decision the page leaves open and wait for the user's answer. When the intent settles every decision, show the page and proceed. Under an autonomous run the user stepped away from, record your picks on the page and proceed.
++
+ Before closing each implementation unit or handing its contract to the next worker, compare accepted deviations with the saved sketch and rationale. Once the owner or review process accepts a change, update the affected parts of the sketch and record who accepted it. Keep unaccepted changes and unresolved disagreements visible, and never edit the sketch merely to justify what was implemented.
 diff --git a/plugins/pstack/skills/breadboard/SKILL.md b/plugins/pstack/skills/breadboard/SKILL.md
 new file mode 100644
 index 0000000..7d4cd06
@@ -308,7 +298,7 @@ index 6b72b2e..2d03a05 100644
 -- A principle name works because the agent already read the rule. Its reply names the decision the rule changed.
 +- A principle name works because the agent already read the rule.
 diff --git a/plugins/pstack/skills/melbs-mode/SKILL.md b/plugins/pstack/skills/melbs-mode/SKILL.md
-index 752856c..80c0a16 100644
+index 180885c..f433a25 100644
 --- a/plugins/pstack/skills/melbs-mode/SKILL.md
 +++ b/plugins/pstack/skills/melbs-mode/SKILL.md
 @@ -1,6 +1,6 @@
@@ -326,17 +316,17 @@ index 752856c..80c0a16 100644
 -The Principles section below grounds every trigger. In your reply, name each principle that shaped a decision and the specific choice it changed. Cite only principles whose leaf SKILL.md you read this session.
 +The Principles section below grounds every trigger. Cite only principles whose leaf SKILL.md you read this session.
  
- Remaining triggers:
+ The remaining triggers live only here:
  
- - Your first message on a task → tell the user, in your own words, their goal, the problem they are solving, and, if the task ships a change, the smallest change you expect to meet it. Don't wait for confirmation. If the evidence rules out the change the user asked for, show it and stop. Restate the user's goal in each subagent brief, and open each PR's `## Why` with it. Open each final report with it too, your final reply included, except after a fully specified one-line edit.
- - Nontrivial change, architecture decision, or "are we sure?" → the **how** skill.
- - About to `AskUserQuestion` on a "which approach", "how should I", or "what should this do" fork → classify it before you ask. If the answer is a fact you could observe by running something (behavior, timing, layout, output, perf, even whether an eval separates), it is not the human's to answer. Sketch it via the Prototype playbook (`playbooks/prototype.md`) and let the result decide. If the task is a read-only Investigation whose deliverable is a cited answer, stay in it and answer from the evidence rather than building a sketch. Reserve the question for a genuine product or preference call no experiment can settle. Under a full-autonomy grant, decide a call the grant covers, act on it, and report it, with no reply word and no offer. Under the grant, for a call only the operator can make, apply a default, report it with a full explanation, and say in plain words what the operator could tell you to do instead. The operator answers in their own words. Never give a shorthand token to type back. Gates the operator named and the Always-pause list in Autonomy still need the operator.
-+- About to end a reply with an offer ("want me to run it?") or a clarifying question → apply the same test as for `AskUserQuestion`. Run a reversible step now and report the result, because an offer the user does not answer never runs. Ask only when nothing in the session settles the answer. Otherwise act on the most plausible reading and say which reading you took.
+ - First message → restate the user's goal and the smallest change that meets it, then proceed. Open each subagent brief, PR `## Why`, and final report with the goal.
+ - Starting any agent, whether an `Agent` subagent or a background worker → the first line of its kickoff is `Read <path>/worker.md before anything else.`, with `<path>` the absolute path of this skill's folder. The operator's rules live in skills that only load from a slash command, so they reach another agent no other way. Keep the rest of the kickoff to the goal and the task, plus this file's absolute path for a `melbs-agent`.
+ - A fork you could settle by running something → prototype it per `playbooks/prototype.md` instead of asking.
++- About to end a reply with an offer ("want me to run it?") or a clarifying question → apply the same test. Run a reversible step now and report the result, because an offer the user does not answer never runs. Ask only when nothing in the session settles the answer. Otherwise act on the most plausible reading and say which reading you took.
 +- Watching a conversation for the user (a monitor, a scheduled check, a wake-up) → each run reports what still waits on the user, such as a message to them that has no answer, and not only what is new. "Nothing new" is a wrong report while such a message is open. When the user asks what a monitor did, read its run history before you answer.
- - Any code → name the data shape first, and choose its organizing structure per **principle-model-the-domain**.
- - Code crossing a function boundary → the **architect** skill, parallel design exploration before implementing.
- - Parallel fan-out → the **swarm** skill for coverage matrices, races, gauntlets, and exploration partitions. Use **arena** for design or code bakeoffs with base selection and grafting.
-@@ -50,7 +52,7 @@ Read the leaf skill in full for any principle you apply. Each entry names when i
+ - Code → name the data shape first. Across a function boundary → **architect**. Fan-out → **swarm**. Bakeoff → **arena**. Contested design → **interrogate**. For Bug fix only, check the [focused-fix exception](playbooks/bug-fix.md#focused-fix-exception) before **architect**.
+ - Prose, your reply included → **unslop**. Docs, PR descriptions, commit messages → **technical-writing**, on top of **unslop**.
+ - Before commit → `/deslop`. Before review → **no-comments**.
+@@ -42,7 +44,7 @@ Read the leaf skill in full for any principle you apply. Each entry names when i
  - **Laziness Protocol.** Refactoring, sizing a diff, or tempted to add abstractions, layers, or signal threading. Bias to deletion and the smallest change that solves the problem.
  - **Foundational Thinking.** Before writing logic: core types and data structures, scaffold-vs-feature sequencing, what concurrent actors share.
  - **Redesign from First Principles.** Integrating a new requirement into an existing design. Redesign as if it had been foundational from day one.
@@ -345,7 +335,7 @@ index 752856c..80c0a16 100644
  - **Subtract Before You Add.** Sequencing an addition, refactor, or rewrite. Remove dead weight first, then build on the simpler base.
  - **Minimize Reader Load.** Reviewing or shaping code that's hard to trace. Count layers and hidden state, collapse one-caller wrappers, shrink mutable scope.
  - **Outcome-Oriented Execution.** Planned rewrites and migrations with explicit phase boundaries. Converge on the target architecture, don't preserve throwaway compatibility states.
-@@ -73,6 +75,8 @@ Read the leaf skill in full for any principle you apply. Each entry names when i
+@@ -65,6 +67,8 @@ Read the leaf skill in full for any principle you apply. Each entry names when i
  - **Fix Root Causes.** Debugging. Trace each symptom back to the first place the system went wrong and fix it there. A guard is a fix only when the state it handles is legitimate.
  - **Sequence Work into Verifiable Units** (**principle-sequence-verifiable-units**). Multi-step work (sweeps, migrations, runs of similar edits) and how you stack commits and PRs. Break work into small units that each end in a check, verify each before the next, and order delivery so the sequence proves itself.
  - **Test Behavior, Not Implementation.** Writing, changing, or keeping a test. Assert what the code's users can observe, so the test fails when that behavior breaks and keeps passing when only the internals change.
@@ -354,28 +344,20 @@ index 752856c..80c0a16 100644
  - **Explain the Number.** Apply before you measure, and before you trust, report, or act on a number you measured (a speedup, a regression, a throughput, a latency, or an eval result). Find what limits it, and rule out that it measured something other than the work you think.
  
  **Delegation**
-@@ -110,21 +114,16 @@ You own every subagent's work. Review the diff and write your own summary, don't
+@@ -106,7 +110,16 @@ You own every subagent's work. Review the diff and write your own summary. A sec
  
  ## Writing the reply
  
--Write the reply clean as you draft it. A cleanup pass after drafting does not remove these patterns.
+-Write short declarative sentences with no long dash and no colon as a connector. Lead with what changes for the user. Give each claim its evidence or a label (measured, inferred, or guess). Never hand the human a check you could run. Keep every item the playbook's reply names, each rendered as prose, with no section headers.
 +Write replies to the user per the **Communication** rules in the user's global agent instructions. They override any reply format a playbook or skill names. A playbook's **Reply** line lists what its reply can cover. Include each item the user needs, in the form the Communication rules choose.
- 
--- **Short declarative sentences.** One thought per sentence, ended with a period.
--- **No long-dash character anywhere.** Write a file-list bullet as a sentence ("`main.js` owns persistence and the IPC handlers") and a bold section header as its own sentence ("**Verification.** End to end via CDP").
--- **A colon as a mid-sentence connector is also out** (unslop rule 14). A colon before a list is fine.
--- **Terse is not an excuse to drop content.** Every item the playbook's reply names stays. Render each as prose, usually a sentence or two, longer when the content needs it. No section headers, and no item expanded into its own block.
--- **Frame impact for the consumer and the maintainer.** Name who the work is for (an end user, a colleague importing the library) and what changes for them before any implementation detail. Then what the next engineer who owns this code inherits. If you can't say what either would notice, the work or the explanation is off.
- - **Never fabricate a link, citation, or transcript reference.** Link only artifacts you produced or read this session.
--- **Every claim carries its evidence or its label in the same sentence.** Measured, inferred, or guess. A prediction or an unseen cause is a guess. Never hand the human a check you could run.
++
++- **Never fabricate a link, citation, or transcript reference.** Link only artifacts you produced or read this session.
 +- **Never hand the user a check you could run.**
- 
--Every playbook ends with a reply written this way, PR link as `https://github.com/<owner>/<repo>/pull/<number>`. Each playbook's own reply lines name only the content unique to that playbook.
++
 +Give a PR link as `https://github.com/<owner>/<repo>/pull/<number>`.
- 
- ## Comments
- 
--Comments follow the same rule as the reply. Write them clean as you go. Keep a comment only for a non-obvious *why* the code can't show. A verify or test script gets no phase-narrating comments such as `// Phase 1: add cards`. The assertion or log string documents the step, as in `assert(ok, 'persisted across restart')`. This applies to every file you produce, including the delegate's diff.
++
++## Comments
++
 +Follow the **Code** rules in the user's global agent instructions. Add no code comments, and make code clear through names, small functions, types, and tests. Tool directives, shebangs, and license identifiers are allowed. Keep existing comments unless the code contradicts them. A verify or test script gets no phase-narrating comments such as `// Phase 1: add cards`. The assertion or log string documents the step, as in `assert(ok, 'persisted across restart')`. This applies to every file you produce, including the delegate's diff.
  
  ## Playbooks
@@ -400,7 +382,7 @@ index 0da7b52..b269263 100644
  
  **Reply:** the exit condition, iterations run, what landed, what was discarded, final predicate state.
 diff --git a/plugins/pstack/skills/principle-attack-the-premise/SKILL.md b/plugins/pstack/skills/principle-attack-the-premise/SKILL.md
-index 5d0625f..dfc63ae 100644
+index 30cd433..4415aeb 100644
 --- a/plugins/pstack/skills/principle-attack-the-premise/SKILL.md
 +++ b/plugins/pstack/skills/principle-attack-the-premise/SKILL.md
 @@ -1,12 +1,12 @@
@@ -416,8 +398,8 @@ index 5d0625f..dfc63ae 100644
 -When two or more fixes that share one premise have failed the same gate, suspect the premise, not the fixes.
 +When two or more fixes that share one premise have failed the same gate, suspect the premise, not the fixes. A gate is whatever rejects the fix: a test, a CI check, or a person who rejects a document or a design.
  
- **Why:** Each failed fix is evidence against the belief it assumed. A third fix on the same premise spends effort where the evidence already says the cause is not.
- 
+ - Write the premise down: the one sentence every failed fix assumed.
+ - Test it before the next fix. Find an observation that would come out differently if the premise were false, and make it. Look at how the failures are distributed, not only at how large they are.
 diff --git a/plugins/pstack/skills/principle-earn-each-test/SKILL.md b/plugins/pstack/skills/principle-earn-each-test/SKILL.md
 new file mode 100644
 index 0000000..4ca4dfc
@@ -461,18 +443,15 @@ index 0000000..4ca4dfc
 +
 +For each test you add, give one line on the behavior it protects and say that you saw it fail. If you considered a test and did not write one, say so in one line. To prune tests that already exist, use the **test-audit** skill.
 diff --git a/plugins/pstack/skills/principle-foundational-thinking/SKILL.md b/plugins/pstack/skills/principle-foundational-thinking/SKILL.md
-index a6829c7..71961f5 100644
+index bfb59b1..c95f5c1 100644
 --- a/plugins/pstack/skills/principle-foundational-thinking/SKILL.md
 +++ b/plugins/pstack/skills/principle-foundational-thinking/SKILL.md
-@@ -14,7 +14,7 @@ At code level, DRY the structure, not every line. Types and data models should c
+@@ -10,4 +10,4 @@ Get the data shape right before writing logic. Define core types early, trace ev
  
- **Concurrency corollary.** Before sharing state between actors, ask "what happens if another actor modifies this concurrently?" If not "nothing", isolate.
+ Before sharing state between actors, ask what happens if another actor modifies it concurrently. If the answer is not "nothing", isolate.
  
--**Scaffold first.** If something helps every later phase, do it first. Ask "does every subsequent phase benefit from this existing?" CI, linting, test infrastructure, and shared types are scaffold. Sequence for option value: setup before features, tests before fixes. Keep commits small and single-purpose.
-+**Scaffold first.** If something helps every later phase, do it first. Ask "does every subsequent phase benefit from this existing?" CI, linting, test infrastructure, and shared types are scaffold. Sequence for option value: setup before features, tests before fixes. Until a first working slice runs end to end, set up only what that slice needs, and add the rest when a later slice needs it. Keep commits small and single-purpose.
- 
- Each increment should land a coherent abstraction or deepen one that exists. Do not spread a new capability across callers as special-case coordination.
- 
+-Scaffold first. Whatever helps every later phase (CI, tests, shared types) goes first, after removing dead code. Keep commits small and single-purpose.
++Scaffold first. Whatever helps every later phase (CI, tests, shared types) goes first, after removing dead code. Until a first working slice runs end to end, set up only what that slice needs, and add the rest when a later slice needs it. Keep commits small and single-purpose.
 diff --git a/plugins/pstack/skills/principle-review-for-real-risk/SKILL.md b/plugins/pstack/skills/principle-review-for-real-risk/SKILL.md
 new file mode 100644
 index 0000000..dbdfc72
@@ -817,7 +796,7 @@ index 0000000..9cfc25d
 +</body>
 +</html>
 diff --git a/plugins/pstack/skills/technical-writing/SKILL.md b/plugins/pstack/skills/technical-writing/SKILL.md
-index 289eee9..e062fe3 100644
+index 2e34251..7357cbf 100644
 --- a/plugins/pstack/skills/technical-writing/SKILL.md
 +++ b/plugins/pstack/skills/technical-writing/SKILL.md
 @@ -1,6 +1,6 @@
@@ -828,9 +807,9 @@ index 289eee9..e062fe3 100644
  ---
  
  # Technical writing
-@@ -47,6 +47,16 @@ Use the compass on a whole document or on one sentence.
- 
- Don't mix modes: no reference tables inside a tutorial, no tutorial hand-holding inside reference, no arguing inside a how-to. Split and link instead.
+@@ -28,6 +28,16 @@ One document, one mode. Don't mix modes. Split and link instead.
+ - **Reference: facts for lookup.** Only describe. Be dry, complete, and sure. Mirror the structure of the thing described.
+ - **Explanation: understanding and why.** One bounded topic. Give context: design decisions, history, constraints, alternatives. Opinion is allowed here and nowhere else.
  
 +## Write a brief for one decision
 +
@@ -844,15 +823,12 @@ index 289eee9..e062fe3 100644
 +
  ## Write sentences to the reader (Google developer style)
  
- - Talk to the reader as "you", in the present tense. "Will" only for things that genuinely happen later.
-@@ -93,6 +103,7 @@ Don't mix modes: no reference tables inside a tutorial, no tutorial hand-holding
+ - Talk to the reader as "you", in the present tense.
+@@ -67,3 +77,4 @@ One document, one mode. Don't mix modes. Split and link instead.
  - PR descriptions and commit messages are writing too. Every layer except Diátaxis applies to them. A PR body is a briefing that a reviewer can read in under a minute. Do not paste swarm logs, SHA lists, or metric tables. Link them.
  - Product UI strings are not documentation. Use your product's copy guidelines for those.
  - Indent code snippets with tabs. Write real paths. Make every count or tree claim true at the commit that lands it, and include the command that regenerates it.
 +- Check each claim about the present state against its live source before the document goes out: what is merged, what has shipped, and which change closes which gap. Write "partly" or "open" when that is the state. After a reader catches two wrong claims, have an independent reader check every remaining one before you send it again.
- 
- ## Worked example
- 
 diff --git a/plugins/pstack/skills/test-audit/SKILL.md b/plugins/pstack/skills/test-audit/SKILL.md
 new file mode 100644
 index 0000000..7254bb8
@@ -910,15 +886,15 @@ index 0000000..7254bb8
 +- Lines of test code removed, and the new ratio of test code to production code.
 +- The command that proved each area still works, and its result.
 diff --git a/plugins/pstack/skills/unslop/SKILL.md b/plugins/pstack/skills/unslop/SKILL.md
-index be42292..c5a7c71 100644
+index 8758ce0..0d6bf45 100644
 --- a/plugins/pstack/skills/unslop/SKILL.md
 +++ b/plugins/pstack/skills/unslop/SKILL.md
 @@ -7,6 +7,8 @@ description: Cut AI tells from any writing.
  
  Edit text to remove AI patterns. Scan for the patterns below, then rewrite. Preserve meaning and match the intended tone.
  
-+In replies to the user, the user's **Communication** rules win where they conflict with a pattern here, such as rules 28 and 33 on dense sentences.
++In replies to the user, the user's **Communication** rules win where they conflict with a rule here, such as rules 28 and 33 on dense sentences.
 +
- ## Patterns to detect and fix
- 
  Rule numbers are stable ids that other skills cite. A removed rule leaves a gap.
+ 
+ 3. No trailing "-ing" phrases that add no fact ("highlighting...", "ensuring...").

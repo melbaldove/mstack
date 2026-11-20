@@ -28,10 +28,11 @@ The Antigravity CLI (`agy`) loads the native pstack plugin manifest, the skills,
 
 melbs-mode's Subagents section sets Claude-specific defaults (`subagent_type: "mstack:melbs-agent"`, `run_in_background: true`). On Antigravity:
 
-- The plugin's four agents register in the `<subagents>` list (`mstack:melbs-agent` / `melbs-agent`, `mstack:comment-sicko` / `comment-sicko`, `mstack:thermo-nuclear-review-subagent` / `thermo-nuclear-review-subagent`, and `mstack:thermo-nuclear-code-quality-review-subagent` / `thermo-nuclear-code-quality-review-subagent`). Pass the agent name as `TypeName` in `invoke_subagent`. `general-purpose` maps to `self` (full tool access) or `research` (read-only sandbox).
-- Give each `melbs-agent` the installed path to `melbs-mode/SKILL.md` from the skills catalog. Expand `~` to the user's home directory and tell the agent to read the entire file with `read_file`, including the model and reasoning effort sections at the end.
+- The plugin's four agent files (`mstack:melbs-agent` or `melbs-agent`, `mstack:comment-sicko` or `comment-sicko`, `mstack:thermo-nuclear-review-subagent` or `thermo-nuclear-review-subagent`, and `mstack:thermo-nuclear-code-quality-review-subagent` or `thermo-nuclear-code-quality-review-subagent`) register in `<subagents>` without a `tools:` frontmatter list, so Antigravity loads them as read-only without `write_file`, `edit_file`, `run_command`, or MCP tools.
+- `mstack:melbs-agent` and `general-purpose` map to `TypeName: "self"` when the subagent writes files, runs commands, or uses MCP tools. Use `TypeName: "melbs-agent"` or `TypeName: "research"` only for read-only work that needs no shell or MCP access.
+- Give each `melbs-mode` delegate the installed path to `melbs-mode/SKILL.md` from the `<skills>` catalog. Expand `~` to the user's home directory and tell the subagent in `Prompt` to read the entire file with `read_file`, including the model and reasoning effort sections at the end.
 - `invoke_subagent` always runs asynchronously in the background, so `run_in_background: true` needs no extra flag.
-- `readonly: true` (reviewers, explorers, critics) maps to `TypeName: "research"` when no MCP or write tools are needed, or an explicit no-write instruction in `Prompt` when full MCP access is required.
+- `readonly: true` (reviewers, explorers, critics) maps to `TypeName: "research"` or one of the read-only plugin agent types when no shell, MCP, or write tools are needed. When a read-only subagent needs `run_command` or MCP tools, use `TypeName: "self"` and tell it in `Prompt` not to write files.
 - `isolation: "worktree"` maps to `Workspace: "share"` (creates a shared git worktree-style workspace) or `Workspace: "branch"` on `invoke_subagent`, or a manual `git worktree add` path named in `Prompt`.
 - Keep the rest of the policy unchanged. Pass file pointers not inlined context, and review every subagent's diff yourself.
 
@@ -39,11 +40,11 @@ melbs-mode's Subagents section sets Claude-specific defaults (`subagent_type: "m
 
 Skills name Claude Code model aliases in their Models sections. On Antigravity (`agy`), `invoke_subagent`'s `Model` parameter accepts `inherit` (default, uses the parent's model), `flash_lite`, `flash`, and `pro`.
 
-- The model sheet is `~/.gemini/config/pstack-models.md`. Before a skill that needs a role model (`architect`, `arena`, `how`, `interrogate`, `melbs-mode`, `no-comments`, `reflect`, `swarm`, `thermos`, `why`), read it. With no sheet, read `setup-mstack`'s `SKILL.md` and finish it first.
+- The model sheet is `~/.gemini/config/pstack-models.md`. Before a skill that needs a role model (`arena`, `interrogate`, `melbs-mode`, `no-comments`, `swarm`, `thermos`), read it. With no sheet, read `setup-mstack`'s `SKILL.md` and finish it first.
 - Pass the role's model as `Model` on `invoke_subagent`. For `inherit-parent` or `auto`, omit `Model`.
 - Roles that default to the worker model (`feature, refactoring`): the worker model the user chose.
 - Roles that default to the strongest model (`strongest judgment`): the strongest model the user chose.
-- Diverse-model panels (`arena`, `architect`, `interrogate`): the adversarial signal comes from model diversity. Use distinct available models and report when the panel shares a model family.
+- Diverse-model panels (`arena`, `interrogate`): the adversarial signal comes from model diversity. Use distinct available models and report when the panel shares a model family.
 
 `/setup-mstack` writes the sheet. Antigravity accepts `flash_lite`; the Copilot sheet checker rejects underscores in model IDs and does not apply to Antigravity.
 
@@ -71,17 +72,17 @@ Most skills need only the tables above. These need one more mapping:
 | Skill | On Antigravity |
 |-------|----------------|
 | `interrogate` | Each adversary is an `invoke_subagent` call with `Model` from the sheet. |
-| `setup-mstack` | The Other runtimes table gives the sheet path. Use the `Model` values listed in [Model names](#model-names). |
-| `architect` | The runner panel goes through the **arena** skill: one `invoke_subagent` call per runner, each with a `Model` from the sheet's `architect runners` line. |
-| `how` | The parallel explorers and the explainer map to `invoke_subagent` fan-out with the sheet's `how` role models. |
+| `setup-mstack` | The [Other runtimes](../../setup-mstack/references/runtimes.md) table gives the sheet path. Use the `Model` values listed in [Model names](#model-names). |
+| `architect` | A large or contested design goes through the **arena** skill: one `invoke_subagent` call per runner, each with a `Model` from the sheet's `arena runners` line. |
+| `how` | The one read-only subagent maps to `invoke_subagent`. |
 | `arena` | The parallel candidates and the cross-judge map to `invoke_subagent` calls with the sheet's panel lines. |
 | `no-comments` | Dispatch `comment-sicko` via `invoke_subagent` with `TypeName: "comment-sicko"`. |
-| `thermos` | Dispatch both review subagents via `invoke_subagent` with `TypeName: "thermo-nuclear-review-subagent"` and `"thermo-nuclear-code-quality-review-subagent"`. |
+| `thermos` | Dispatch both review subagents via `invoke_subagent` with `TypeName: "thermo-nuclear-review-subagent"` and `"thermo-nuclear-code-quality-review-subagent"`, with the full diff and file excerpts in `Prompt`, since both types are read-only. |
 | `swarm` | Each worker is an `invoke_subagent` call; use `Workspace: "share"` or `git worktree add` for writing workers. |
 | `teach` | Running `how` and `why` in parallel maps to two `invoke_subagent` calls in one response; image generation uses `image-generator` via `invoke_subagent`. |
-| `why` | The parallel investigators and synthesizer map to `invoke_subagent` fan-out. |
+| `why` | List MCP servers from the tools Antigravity exposes to the session, not from Claude Code's MCP files. |
 | `recall` | Read Antigravity transcripts under `~/.gemini/antigravity-cli/brain/<conversation-id>/.system_generated/logs/transcript.jsonl` instead of `${CLAUDE_CONFIG_DIR:-$HOME/.claude}/projects/`. |
-| `reflect` | Pass the current session's transcript path (`<appDataDir>/brain/<conversation-id>/.system_generated/logs/transcript.jsonl`) to the three review subagents. |
+| `reflect` | Pass the current session's transcript path (`<appDataDir>/brain/<conversation-id>/.system_generated/logs/transcript.jsonl`) to the transcript reading the skill does. |
 | `show-me-your-work` | Check the log against this session's transcript or context, not a Claude Code transcript. |
 | `automate-me` | Follow the `agy-customizations` skill alongside `unslop`, and write the mode skill under `.agents/skills/` or `~/.gemini/config/skills/`. |
 | `create-verification-skill` | Write the generated skill where Antigravity discovers project skills, `.agents/skills/verify/`, instead of `.claude/skills/verify/`. |
