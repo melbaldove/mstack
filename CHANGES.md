@@ -2,9 +2,41 @@
 
 This file is the release changelog, with one `## <version> - <title>` entry per release, newest first. The Cursor-to-Claude rewrite rules live in [`tools/substitutions.json`](tools/substitutions.json), and the [sync boundary](CONTRIBUTING.md#the-sync-boundary) in `CONTRIBUTING.md` defines how a change to upstream's skill content is declared.
 
-## 0.9.1430011 - mstack build of pstack-claude 412990b
+## 0.9.1450011 - mstack build of pstack-claude ce7df68
 
 This build renames pstack to mstack and applies the fork's patch. mstack/README.md lists what the patch changes.
+
+## 0.9.145 - sync to upstream 0b46ec3 (v0.15.46): statechart on Windows reads TLC's line ends, skills-only DeepSeek Harness support
+
+The upstream pin moves from `2f87c85` to `0b46ec3`, upstream v0.15.46, 3 pstack commits (cursor/plugins#1283, #1284 and #1292). `cursor-team-kit` and `thermos` did not change upstream, so their pins stay. The sync is from @CuriousDev21 ([#480](https://github.com/michael-denyer/pstack-claude/pull/480)).
+
+What changes for users:
+
+- `/statechart` reads TLC's output with `\r\n` line ends as it reads `\n` output, in the run and DOT readers as well as the message reader the port already fixed in 0.9.116 (cursor/plugins#1292).
+- The janitor that kills the worker and removes its folders is now `janitor.ts` on every platform, with the group kill in the new `kill.ts`. The `/bin/sh` janitor is gone. On Windows the janitor no longer kills a process tree once the worker has exited, so a reused pid is spared.
+- On native Windows, `statechart/SKILL.md` gives the `node` command that runs `statechart.ts`, `java` and `mise` start without a console window, and TLC writes its output as UTF-8 (cursor/plugins#1292).
+
+What stays different:
+
+- #1283 and #1284 move upstream's Gemini panel seat to `gemini-4-neon-high`, then `gemini-4-neon-xhigh`. The port's panels come from `models.json` and hold no Gemini seat, so `arena`, `melbs-mode` and `setup-mstack` keep the port's text. The substitution rule that removes the Gemini seat sentence from `melbs-mode` now matches upstream's new wording.
+
+Fork changes: `test/messages.test.ts` now matches upstream and is no longer a fork, and the port-only `janitor.ts` is now upstream's file. The port's own Windows line-end test gives way to upstream's test of the same case. Upstream now carries the Windows kill and the worker's `TEMP` and `TMP`, so `run.ts` keeps only `childEnv` and `statechart.ts` keeps only the hidden worker and janitor windows. `kill.ts` is a new fork. Its `taskkill` starts with `windowsHide`, as the port's kill did before, because the detached janitor that calls it on Windows has no console of its own.
+
+DeepSeek Harness (DSH) can run pstack as a skills-only install. The shared `~/.agents/skills/` install now covers DSH, and the generator writes [`dsh-tools.md`](plugins/pstack/skills/melbs-mode/references/dsh-tools.md), which maps Claude Code tool names, subagent policy and model roles to DSH. DSH gets no native bundle, SessionStart hook or role sheet, so `setup-mstack` uses its native delegation defaults. The bug report form lists DeepSeek Harness. From @kyn0v ([#429](https://github.com/michael-denyer/pstack-claude/pull/429)).
+
+## 0.9.144 - watch-pr suite evidence, Codex hook without CLAUDE_PLUGIN_ROOT, setext playbook headings
+
+When a PR already has reported checks, `watch-pr` verifies the head and run count before deciding that a suite is covered. An invalid count now produces a query error. A suite with a positive count can be skipped even when GitHub returns a null status. The watcher reads suites as soon as the reported checks finish, alongside any outstanding review-thread pages ([#486](https://github.com/michael-denyer/pstack-claude/pull/486)).
+
+Each failed or pending row supplied by the check-suites API now carries `source: "check-suites"` in the verdict JSON. The top-level CI source still names the primary read. A zero-run GitHub Actions suite waiting for approval tells the reader to approve its workflows. Other providers requiring action point the reader to their check details.
+
+The suite lookup requires GitHub CLI 2.48 or later. A CLI that rejects `--slurp` now produces an immediate exit 7 with an upgrade instruction, saving 12 minutes of retries at the default settings.
+
+On Codex, the SessionStart hook finds the plugin from its own path when `CLAUDE_PLUGIN_ROOT` is not in its environment, as `session-start.ps1` already does on Windows. @thomas92tw reported in [#483](https://github.com/michael-denyer/pstack-claude/issues/483) that every Codex 0.170.0 session printed `SessionStart Failed`: Codex put the plugin path into the hook's command but left the variable unset, so `session-start.sh` stopped on it. The fix is from @flipcyde101 ([#485](https://github.com/michael-denyer/pstack-claude/pull/485)).
+
+`check-playbooks.mjs` reads a setext heading (text over a `---` or `===` line) and an ATX heading with a tab after its `#` run as headings, on the numbered-step path and on the paragraph path that 0.9.142 added. It read both as text before, so a change anchored on such a heading passed. A line of dashes under a list item still leaves the item an anchor, as CommonMark reads it. No bundled playbook has either heading form, so no project playbook passed wrongly. From @seonwooj0810 ([#478](https://github.com/michael-denyer/pstack-claude/pull/478)), for [#476](https://github.com/michael-denyer/pstack-claude/issues/476).
+
+The bug report form lists every supported runtime, and `tests/issue-template.test.mjs` fails when a `RUNTIMES` row is missing from it. From @abc123931 ([#482](https://github.com/michael-denyer/pstack-claude/pull/482)).
 
 ## 0.9.143 - watch-pr blocks on approval-gated Actions beside other checks
 
