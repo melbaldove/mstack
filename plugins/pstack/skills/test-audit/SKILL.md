@@ -5,6 +5,12 @@ description: "Use for /test-audit, or when asked to prune, slim, or audit an exi
 
 # Test Audit
 
+On Codex, read the [platform mapping](../melbs-mode/references/codex-tools.md), including its per-skill notes, before following this skill.
+
+On GitHub Copilot, read the [platform mapping](../melbs-mode/references/copilot-tools.md), including its per-skill notes, before following this skill.
+
+On Antigravity, read the [platform mapping](../melbs-mode/references/agy-tools.md), including its per-skill notes, before following this skill.
+
 Prune tests that cost more than they protect. Each test that stays must guard a behavior that nothing else guards. New tests follow **principle-earn-each-test**; this skill applies the same bar to tests that already exist.
 
 A repository's own testing rules take precedence over this skill.

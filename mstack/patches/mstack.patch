@@ -1,5 +1,5 @@
 diff --git a/.claude-plugin/marketplace.json b/.claude-plugin/marketplace.json
-index 01cf23a..d9eb40f 100644
+index 41c9ee5..d1d4aeb 100644
 --- a/.claude-plugin/marketplace.json
 +++ b/.claude-plugin/marketplace.json
 @@ -4,7 +4,7 @@
@@ -12,7 +12,7 @@ index 01cf23a..d9eb40f 100644
      {
        "name": "mstack",
 diff --git a/README.md b/README.md
-index c585d70..b9c8c78 100644
+index ef0c48d..2603288 100644
 --- a/README.md
 +++ b/README.md
 @@ -1,5 +1,7 @@
@@ -24,15 +24,15 @@ index c585d70..b9c8c78 100644
  [![Mentioned in Awesome Claude Code](https://awesome.re/mentioned-badge.svg)](https://github.com/hesreallyhim/awesome-claude-code)
  
 diff --git a/docs/reference.md b/docs/reference.md
-index 2c0d6b7..1d65742 100644
+index 4a342aa..b8f2846 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
 @@ -4,13 +4,17 @@ Start with the [README](../README.md) for installation and your first task.
  
  ## Slash commands
  
--The package includes 67 skill directories: 43 public skills and 24 `principle-*` references. Claude Code uses `/mstack:<name>`, Pi uses `/skill:<name>`, and Muse lists each user-invocable skill as `/<name>`. In Codex, mention a skill with `$<name>`, such as `$melbs-mode`, or pick one from `/skills`.
-+The package includes 74 skill directories: 48 public skills and 26 `principle-*` references. Claude Code uses `/mstack:<name>`, Pi uses `/skill:<name>`, and Muse lists each user-invocable skill as `/<name>`. In Codex, mention a skill with `$<name>`, such as `$melbs-mode`, or pick one from `/skills`.
+-The package includes 68 skill directories: 44 public skills and 24 `principle-*` references. Claude Code uses `/mstack:<name>`, Pi uses `/skill:<name>`, and Muse lists each user-invocable skill as `/<name>`. In Codex, mention a skill with `$<name>`, such as `$melbs-mode`, or pick one from `/skills`.
++The package includes 75 skill directories: 49 public skills and 26 `principle-*` references. Claude Code uses `/mstack:<name>`, Pi uses `/skill:<name>`, and Muse lists each user-invocable skill as `/<name>`. In Codex, mention a skill with `$<name>`, such as `$melbs-mode`, or pick one from `/skills`.
  
  Find each skill's instructions in the [skills tree](../plugins/pstack/skills/).
  
@@ -107,7 +107,7 @@ index 0000000..83af64f
 +
 +Invoke the `test-audit` skill and follow it. Resolve Claude tool names, Claude model names, and Claude built-in skills through `melbs-mode/references/codex-tools.md`, including its Per-skill notes.
 diff --git a/plugins/pstack/.muse-plugin/plugin.json b/plugins/pstack/.muse-plugin/plugin.json
-index 48043a9..b13400e 100644
+index c57409d..0030b90 100644
 --- a/plugins/pstack/.muse-plugin/plugin.json
 +++ b/plugins/pstack/.muse-plugin/plugin.json
 @@ -40,11 +40,21 @@
@@ -156,7 +156,7 @@ index 48043a9..b13400e 100644
        {
          "id": "principle-separate-before-serializing-shared-state",
          "path": "skills/principle-separate-before-serializing-shared-state/SKILL.md",
-@@ -275,6 +295,11 @@
+@@ -280,6 +300,11 @@
          "path": "skills/setup-mstack/SKILL.md",
          "enabledDefault": true
        },
@@ -168,7 +168,7 @@ index 48043a9..b13400e 100644
        {
          "id": "sharpen",
          "path": "skills/sharpen/SKILL.md",
-@@ -285,6 +310,11 @@
+@@ -290,6 +315,11 @@
          "path": "skills/show-me-your-work/SKILL.md",
          "enabledDefault": true
        },
@@ -180,7 +180,7 @@ index 48043a9..b13400e 100644
        {
          "id": "statechart",
          "path": "skills/statechart/SKILL.md",
-@@ -310,6 +340,11 @@
+@@ -315,6 +345,11 @@
          "path": "skills/technical-writing/SKILL.md",
          "enabledDefault": true
        },
@@ -258,10 +258,10 @@ index 0000000..07d55a8
 +
 +Done means merged, running where its users get it, and the demo passing through the real entry point. A deploy still needs the user's go-ahead. For a spike pitch, done means the open question is answered, and nothing is expected to ship.
 diff --git a/plugins/pstack/skills/figure-it-out/SKILL.md b/plugins/pstack/skills/figure-it-out/SKILL.md
-index f94749c..07c3934 100644
+index 10b3127..5351c9f 100644
 --- a/plugins/pstack/skills/figure-it-out/SKILL.md
 +++ b/plugins/pstack/skills/figure-it-out/SKILL.md
-@@ -16,7 +16,7 @@ Open a todolist whose first item is to read the Principles section of the **melb
+@@ -22,7 +22,7 @@ Open a todolist whose first item is to read the Principles section of the **melb
  Ground first, then commit. Don't start the run until you can state:
  
  - The definition of done as a falsifiable predicate (the **prove-it-works** principle skill).
@@ -298,7 +298,7 @@ index 6b72b2e..2d03a05 100644
 -- A principle name works because the agent already read the rule. Its reply names the decision the rule changed.
 +- A principle name works because the agent already read the rule.
 diff --git a/plugins/pstack/skills/melbs-mode/SKILL.md b/plugins/pstack/skills/melbs-mode/SKILL.md
-index 180885c..f433a25 100644
+index a29a1b5..6af7baa 100644
 --- a/plugins/pstack/skills/melbs-mode/SKILL.md
 +++ b/plugins/pstack/skills/melbs-mode/SKILL.md
 @@ -1,6 +1,6 @@
@@ -381,6 +381,42 @@ index 0da7b52..b269263 100644
 +6. Stop when the predicate is met, or when the time budget runs out. Within the budget a plateau is not a stop, so keep going and pivot your approach to push past it. Surface a genuine dead end rather than spinning, and never relax the predicate to declare victory. Cutting scope is different: drop the pitch's nice-to-haves in the open and report the cut. When the budget runs out, stop and report what passed and what is still unsolved. The unsolved part goes back to shaping.
  
  **Reply:** the exit condition, iterations run, what landed, what was discarded, final predicate state.
+diff --git a/plugins/pstack/skills/melbs-mode/references/agy-tools.md b/plugins/pstack/skills/melbs-mode/references/agy-tools.md
+index 0e9fc88..0ad1b5a 100644
+--- a/plugins/pstack/skills/melbs-mode/references/agy-tools.md
++++ b/plugins/pstack/skills/melbs-mode/references/agy-tools.md
+@@ -83,6 +83,7 @@ Most skills need only the tables above. These need one more mapping:
+ | `why` | List MCP servers from the tools Antigravity exposes to the session, not from Claude Code's MCP files. |
+ | `figure-it-out` | Each principle skill it names resolves like any other skill (Tool actions above). |
+ | `typescript-best-practices` | Each principle skill it names resolves like any other skill (Tool actions above). |
++| `test-audit` | Each principle skill it names resolves like any other skill (Tool actions above). |
+ | `recall` | Read Antigravity transcripts under `~/.gemini/antigravity-cli/brain/<conversation-id>/.system_generated/logs/transcript.jsonl` instead of `${CLAUDE_CONFIG_DIR:-$HOME/.claude}/projects/`. |
+ | `reflect` | Pass the current session's transcript path (`<appDataDir>/brain/<conversation-id>/.system_generated/logs/transcript.jsonl`) to the transcript reading the skill does. |
+ | `show-me-your-work` | Check the log against this session's transcript or context, not a Claude Code transcript. |
+diff --git a/plugins/pstack/skills/melbs-mode/references/codex-tools.md b/plugins/pstack/skills/melbs-mode/references/codex-tools.md
+index 64591cd..994efa9 100644
+--- a/plugins/pstack/skills/melbs-mode/references/codex-tools.md
++++ b/plugins/pstack/skills/melbs-mode/references/codex-tools.md
+@@ -98,6 +98,7 @@ Affected skill entry points point here. Most skills need only the tables above.
+ | `why` | List MCP servers from the tools Codex exposes to the session, not from `.mcp.json` or `claude mcp list`. |
+ | `figure-it-out` | Read each principle skill it names through the principle-leaf row in Tool actions, since Codex does not list principle leaves. |
+ | `typescript-best-practices` | Read each principle skill it names through the principle-leaf row in Tool actions, since Codex does not list principle leaves. |
++| `test-audit` | Read each principle skill it names through the principle-leaf row in Tool actions, since Codex does not list principle leaves. |
+ 
+ ## Vendored scripts
+ 
+diff --git a/plugins/pstack/skills/melbs-mode/references/copilot-tools.md b/plugins/pstack/skills/melbs-mode/references/copilot-tools.md
+index 3a35f7d..098f0c0 100644
+--- a/plugins/pstack/skills/melbs-mode/references/copilot-tools.md
++++ b/plugins/pstack/skills/melbs-mode/references/copilot-tools.md
+@@ -123,6 +123,7 @@ Affected skill entry points point here. Most skills need only the tables above.
+ | `why` | Available MCP servers appear in your tool list; there is no `mcp__` prefix convention to scan for. |
+ | `figure-it-out` | Each principle skill it names resolves like any other skill (Tool actions above). |
+ | `typescript-best-practices` | Each principle skill it names resolves like any other skill (Tool actions above). |
++| `test-audit` | Each principle skill it names resolves like any other skill (Tool actions above). |
+ | `reflect` | Run `find-transcript.mjs <session-state directory> '<opening prompt fragment>' <workspace directory>` with the absolute session-state path under `${COPILOT_HOME:-~/.copilot}`. That directory is outside the workspace, so the call takes the normal permission flow. The workspace defaults to the current directory when omitted. The finder checks the session header's `cwd` against that workspace before reading Copilot's `user.message` records, so matching prompts in other projects are skipped. For a conversation in a related worktree, pass that worktree's directory explicitly. Skill paths under `.claude/skills/` and `${CLAUDE_CONFIG_DIR:-$HOME/.claude}/` mean the Copilot skill locations below. |
+ | `recall` | Search Copilot session state scoped to the current workspace (Transcripts above), not `${CLAUDE_CONFIG_DIR:-$HOME/.claude}/projects/`. |
+ | `show-me-your-work` | The end-of-run check reads this session's `events.jsonl` (Transcripts above). |
 diff --git a/plugins/pstack/skills/principle-attack-the-premise/SKILL.md b/plugins/pstack/skills/principle-attack-the-premise/SKILL.md
 index 30cd433..4415aeb 100644
 --- a/plugins/pstack/skills/principle-attack-the-premise/SKILL.md
@@ -442,6 +478,14 @@ index 0000000..4ca4dfc
 +## In the pull request
 +
 +For each test you add, give one line on the behavior it protects and say that you saw it fail. If you considered a test and did not write one, say so in one line. To prune tests that already exist, use the **test-audit** skill.
+diff --git a/plugins/pstack/skills/principle-earn-each-test/agents/openai.yaml b/plugins/pstack/skills/principle-earn-each-test/agents/openai.yaml
+new file mode 100644
+index 0000000..5b1f887
+--- /dev/null
++++ b/plugins/pstack/skills/principle-earn-each-test/agents/openai.yaml
+@@ -0,0 +1,2 @@
++policy:
++  allow_implicit_invocation: false
 diff --git a/plugins/pstack/skills/principle-foundational-thinking/SKILL.md b/plugins/pstack/skills/principle-foundational-thinking/SKILL.md
 index bfb59b1..c95f5c1 100644
 --- a/plugins/pstack/skills/principle-foundational-thinking/SKILL.md
@@ -492,6 +536,14 @@ index 0000000..dbdfc72
 +- Review each later round against the fix's diff only. A finding that the first round could have raised and did not is not a reason for another round.
 +- The diff-only rule is for code. A design or a document rests on a premise that no fix's diff contains, so test the premise before the first fix round: run a spike, or give one round to arguing for a simpler design.
 +- Stop when a round finds no new real risk. After two rounds of fixes, when a blocking finding remains, stop and report it with its evidence, and let the human choose another round, a narrower change, or to drop it.
+diff --git a/plugins/pstack/skills/principle-review-for-real-risk/agents/openai.yaml b/plugins/pstack/skills/principle-review-for-real-risk/agents/openai.yaml
+new file mode 100644
+index 0000000..5b1f887
+--- /dev/null
++++ b/plugins/pstack/skills/principle-review-for-real-risk/agents/openai.yaml
+@@ -0,0 +1,2 @@
++policy:
++  allow_implicit_invocation: false
 diff --git a/plugins/pstack/skills/shape/SKILL.md b/plugins/pstack/skills/shape/SKILL.md
 new file mode 100644
 index 0000000..1d41c16
@@ -831,16 +883,22 @@ index 2e34251..7357cbf 100644
 +- Check each claim about the present state against its live source before the document goes out: what is merged, what has shipped, and which change closes which gap. Write "partly" or "open" when that is the state. After a reader catches two wrong claims, have an independent reader check every remaining one before you send it again.
 diff --git a/plugins/pstack/skills/test-audit/SKILL.md b/plugins/pstack/skills/test-audit/SKILL.md
 new file mode 100644
-index 0000000..7254bb8
+index 0000000..a33b7bf
 --- /dev/null
 +++ b/plugins/pstack/skills/test-audit/SKILL.md
-@@ -0,0 +1,50 @@
+@@ -0,0 +1,56 @@
 +---
 +name: test-audit
 +description: "Use for /test-audit, or when asked to prune, slim, or audit an existing test suite, or to find tests that cost more than they protect. Reads before it deletes, and reports each cut with the evidence that the behavior is still covered."
 +---
 +
 +# Test Audit
++
++On Codex, read the [platform mapping](../melbs-mode/references/codex-tools.md), including its per-skill notes, before following this skill.
++
++On GitHub Copilot, read the [platform mapping](../melbs-mode/references/copilot-tools.md), including its per-skill notes, before following this skill.
++
++On Antigravity, read the [platform mapping](../melbs-mode/references/agy-tools.md), including its per-skill notes, before following this skill.
 +
 +Prune tests that cost more than they protect. Each test that stays must guard a behavior that nothing else guards. New tests follow **principle-earn-each-test**; this skill applies the same bar to tests that already exist.
 +

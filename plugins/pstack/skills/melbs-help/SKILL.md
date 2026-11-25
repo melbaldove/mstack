@@ -9,7 +9,7 @@ Answer the user's question about pstack, hand them a prompt they can send, and l
 
 A message that asks for work, such as "use pstack to fix this bug", is not a help question. Read [`melbs-mode`](../melbs-mode/SKILL.md) and do the work under it.
 
-This file maps questions to the installed skills, playbooks, and platform mappings that own the answers. Read the matching source before answering. Its instructions take precedence over this map and any upstream guide, which describes Cursor and may differ from this port. The local links point into the installed plugin, so give the user the file's public copy: `https://github.com/michael-denyer/pstack-claude/blob/main/plugins/pstack/` followed by its path relative to the plugin root.
+This file maps questions to the installed skills, playbooks, and platform mappings that own the answers. Read the matching source before answering. Its instructions take precedence over this map and any upstream guide, which describes Cursor and may differ from this port. The local links point into the installed plugin, so give the user the file's public copy: `https://github.com/melbaldove/mstack/blob/main/plugins/pstack/` followed by its path relative to the plugin root.
 
 ## Find out what they need
 
@@ -34,11 +34,11 @@ When the model sheet is missing and it matters, ask whether the user wants to pi
 
 ## Get set up
 
-1. Identify the user's runtime and whether they want a native plugin/package or skills-only installation. Read its section in the [README](https://github.com/michael-denyer/pstack-claude/blob/main/README.md#install) or [shared installation reference](https://github.com/michael-denyer/pstack-claude/blob/main/docs/reference.md#shared-skills-installation), then give the matching install command.
-2. Read [`/setup-mstack`](../setup-mstack/SKILL.md), including its [Other runtimes](../setup-mstack/references/runtimes.md) table, before explaining model choices, effort, sheet loading, or automatic routing. For a bundled routing hook or extension, use its persistent `session hook: off` setting in the current runtime's sheet to turn routing off. After the model sheet, it offers once each to generate a verification skill and a formal verification skill for the project, unless the project already has one.
-3. Offer a first task prompt with a goal and a check that can pass or fail, per [`references/prompting.md`](references/prompting.md). Use the current runtime's invocation syntax from the [slash-command reference](https://github.com/michael-denyer/pstack-claude/blob/main/docs/reference.md#slash-commands).
+1. Identify the user's runtime and whether they want a native plugin/package or skills-only installation. Read its section in the [README](https://github.com/melbaldove/mstack/blob/main/README.md#install) or [shared installation reference](https://github.com/melbaldove/mstack/blob/main/docs/reference.md#shared-skills-installation), then give the matching install command.
+2. Read [`/setup-mstack`](../setup-mstack/SKILL.md), including its [Other runtimes](../setup-mstack/references/runtimes.md) table, before explaining model choices, effort, sheet loading, or automatic routing. For a bundled routing hook or extension, use its persistent `session hook: off` setting in the current runtime's sheet to turn routing off. In a Claude Code cloud session, where the sheet does not persist, set `PSTACK_SESSION_HOOK=off` in the cloud environment instead. After the model sheet, it offers once each to generate a verification skill and a formal verification skill for the project, unless the project already has one.
+3. Offer a first task prompt with a goal and a check that can pass or fail, per [`references/prompting.md`](references/prompting.md). Use the current runtime's invocation syntax from the [slash-command reference](https://github.com/melbaldove/mstack/blob/main/docs/reference.md#slash-commands).
 
-Before giving runtime-specific instructions or adapting a recipe, read the [Codex mapping](../melbs-mode/references/codex-tools.md) or [Pi mapping](../melbs-mode/references/pi-tools.md) when applicable. Their routing sections cover hook trust, extension loading, and skills-only installs. For other runtimes, use the [runtime support reference](https://github.com/michael-denyer/pstack-claude/blob/main/docs/reference.md#runtime-support).
+Before giving runtime-specific instructions or adapting a recipe, read the [Codex mapping](../melbs-mode/references/codex-tools.md) or [Pi mapping](../melbs-mode/references/pi-tools.md) when applicable. Their routing sections cover hook trust, extension loading, and skills-only installs. For other runtimes, use the [runtime support reference](https://github.com/melbaldove/mstack/blob/main/docs/reference.md#runtime-support).
 
 If cost is the worry, say where the tokens go and how to spend fewer. pstack spends extra tokens on subagents and review panels. Rerun `/setup-mstack` and pick a lower effort or cheaper models. A role set to `auto` or `inherit-parent` runs on the chat's model, which costs less when the chat runs on a cheaper model. A shorter panel list runs fewer subagents, one for each entry. Save `/melbs-mode` for work that needs rigor.
 
@@ -57,6 +57,7 @@ The default answer is `/melbs-mode`, which runs most of the others when its step
 | Do any non-trivial task with rigor | [`/melbs-mode`](../melbs-mode/SKILL.md) |
 | Check that the agent understood their goal and the problem before it starts | [`/in-your-own-words`](../in-your-own-words/SKILL.md) |
 | Get a prompt rewritten deeper, not bigger, before sending it: what a top professional would add, their raw material and methods, and an outside check. It returns the prompt and doesn't do the task | [`/sharpen`](../sharpen/SKILL.md) |
+| Learn the expert words for what they're building, including words borrowed from neighboring fields, with every cited source checked, and get their description rewritten with them | [`/reframe`](../reframe/SKILL.md) |
 | Know how code works now, or where new code should live | [`/how`](../how/SKILL.md) |
 | Know why code is shaped this way, or where a number came from | [`/why`](../why/SKILL.md) |
 | Understand a change or subsystem, explained plainly | [`/teach`](../teach/SKILL.md) |
@@ -119,7 +120,7 @@ Without `/melbs-mode`, a phrase such as "babysit this pr" can start pstack's sta
 
 pstack has no planning skill. Claude Code's plan mode works alongside it. For work that spans phases or stacked PRs, asking `/melbs-mode` for a plan runs the [Multi-phase plan playbook](../melbs-mode/playbooks/multi-phase-plan.md), which writes the plan and doesn't implement it. For a design question, the Prototype playbook or `/architect` settles it in code first.
 
-Principles are one-rule skills that `/melbs-mode` reads and cites in its replies. The user rarely invokes one. They steer with the names instead, as in "apply prove it works. show me the real output." On Claude Code the `principle-*` leaves are hidden from the slash menu and `/melbs-mode` reads them by path; other runtimes may list them in their skill picker. The [Principles index](../melbs-mode/SKILL.md#principles) lists them.
+Principles are one-rule skills that `/melbs-mode` reads and cites in its replies. The user rarely invokes one. They steer with the names instead, as in "apply prove it works. show me the real output." On Claude Code the `principle-*` leaves are hidden from the slash menu and `/melbs-mode` reads them by path. On Codex they are left out of the model's skill list and read by path through the [Codex mapping](../melbs-mode/references/codex-tools.md). Other runtimes may list them in their skill picker. The [Principles index](../melbs-mode/SKILL.md#principles) lists them.
 
 ## Fix a run that went wrong
 
