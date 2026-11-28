@@ -18,7 +18,7 @@ Run the two thermo review passes as async background subagents in parallel, then
 ## Workflow
 
 1. Determine the review scope from the user request, PR, current branch, or relevant changed files.
-2. Gather the diff and any file/context excerpts needed for reviewers to evaluate the change without guessing.
+2. Verify the base ref resolves (`git rev-parse`) and the scoped diff is non-empty before spawning reviewers; if empty, report that and stop. Gather the diff and any file/context excerpts needed for reviewers to evaluate the change without guessing.
 3. Launch both subagents in the same message with `run_in_background: true`:
    - `subagent_type: "mstack:thermo-nuclear-review-subagent"` for bugs, breakages, security, devex regressions, feature-flag leaks, and other branch-audit risks.
    - `subagent_type: "mstack:thermo-nuclear-code-quality-review-subagent"` for maintainability, structure, file-size growth, spaghetti, abstractions, and codebase-health risks.

@@ -18,6 +18,10 @@ Do not force a test when it would be impractical. If the available test would re
 5. **Fix the bug.** Make the smallest production change that satisfies the intended behavior while preserving nearby contracts.
 6. **Rerun the regression test.** Confirm the test now passes.
 
+## Feature TDD (Vertical Slicing)
+
+When the user explicitly asks for test-first feature work, slice vertically: one observable behavior, one failing test at the highest practical public boundary, the minimal implementation to turn it green, then the next slice. Never write a bulk suite up front against imagined interfaces (horizontal slicing). Note what the chosen boundary catches and what it misses, and keep only tests that protect behavior nothing else protects and were seen failing before the fix.
+
 ## If a Failing Test Is Impractical
 
 Use the closest executable regression check instead: a targeted script, manual reproduction command, browser automation, snapshot comparison, log assertion, or focused integration check.

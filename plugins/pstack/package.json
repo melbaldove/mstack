@@ -1,6 +1,6 @@
 {
   "name": "mstack",
-  "version": "0.9.1550012",
+  "version": "0.9.1550013",
   "private": true,
   "omp": {
     "extensions": ["./omp/index.mjs"]

@@ -19,7 +19,7 @@ Open a todolist with one entry per phase (Frame, Fan out, Cross-judge, Pick, Gra
 
 Every candidate gets the same prompt, so the prompt is the contract.
 
-1. State the artifact each candidate is producing.
+1. State the artifact each candidate is producing. For interface or API design, you may optionally seed each runner with an orthogonal constraint axis (such as minimal entry points vs. maximum flexibility vs. default-caller ergonomics) and state that divergence up front.
 2. Derive the rubric, 3-6 concrete gradeable criteria for what success looks like on *this* task. It is the picker's tool in Phase D. Candidates only see the task.
 3. Pick the runners from the `arena runners` line in `pstack-models.md`, or from [Models](#models) when the sheet has no such line. An `auto` or `inherit-parent` entry is the parent model, so omit `model` and spawn `general-purpose`. If the `Agent` tool rejects a slug, use the nearest valid slug of the same family or drop the seat, keep at least two runners, and say so. Families go by model name, such as Opus, Fable, or Sonnet. Spawn more for multiple design directions, and repeat one model when the work is generation-bound, not judgment-sensitive. Pick each subagent's reasoning level per the Subagents section of the **melbs-mode** skill.
 4. Give each candidate its own output location (a git worktree where possible, otherwise `/tmp/arena-<slug>/candidate-<n>/`), per the **separate-before-serializing-shared-state** principle skill.

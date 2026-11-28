@@ -2,7 +2,7 @@
 
 This file is the release changelog, with one `## <version> - <title>` entry per release, newest first. The Cursor-to-Claude rewrite rules live in [`tools/substitutions.json`](tools/substitutions.json), and the [sync boundary](CONTRIBUTING.md#the-sync-boundary) in `CONTRIBUTING.md` defines how a change to upstream's skill content is declared.
 
-## 0.9.1550012 - mstack build of pstack-claude 103a68d
+## 0.9.1550013 - mstack build of pstack-claude 103a68d
 
 This build renames pstack to mstack and applies the fork's patch. mstack/README.md lists what the patch changes.
 

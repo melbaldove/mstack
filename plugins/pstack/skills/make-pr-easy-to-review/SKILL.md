@@ -47,10 +47,12 @@ Do not push if the tree changed unintentionally.
 
 When code behavior should stay untouched, prefer PR description and review notes:
 
-- Add a TL;DR that matches the actual diff.
-- Separate core files from generated or mechanical files.
-- Call out risky behavior changes, migration order, rollout plan, and test coverage.
-- Link issue trackers, dashboards, or design docs when they explain intent.
+- **Summary with the smallest clear visual:** lead with a TL;DR that matches the diff and pick the smallest structure that makes the change obvious—short pseudocode, a call/component/file tree, a Mermaid sequence diagram (GitHub renders Mermaid), or a structural `diff` block (`-`/`+` on file layout, component tree, or control flow).
+- **Separate core from mechanical files:** point reviewers at the real entry points before generated or boilerplate diffs.
+- **Before/After evidence:** attach screenshots or recordings for visual changes, and real trimmed failing-before / passing-after command output for behavioral changes (never pseudocode tests). Add a one-line note per committed test naming the behavior it protects (or why none was added).
+- **Merge danger:** classify the PR as a **two-way door** (cheap to revert) or **one-way door** (schema migrations, persisted formats, external contracts) and state the blast radius, migration order, and rollout plan.
+- **Link context:** reference issue trackers, dashboards, or design docs when they explain intent.
+- **Scale to size:** for small, low-risk fixes, collapse this to a two-sentence summary and verification line instead of full ceremony.
 
 ## Guardrails
 

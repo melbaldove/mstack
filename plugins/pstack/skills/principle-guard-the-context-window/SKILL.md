@@ -10,3 +10,6 @@ user-invocable: false
 
 **Pattern:**
 - **Size phases and cap scope.** Limit files per phase, set turn budgets, account for mechanism costs.
+- **Pick the lightest phase-boundary transition.** At a phase boundary, move in order: continue (context is lean and the next step builds on it) → clear (outputs already live in files or commits, so a fresh session reads primary sources directly) → pause/handoff (cross-harness, cross-directory, or mid-phase transfer) → subagent (isolate noisy exploration or independent slices) → compact (last resort; lossy).
+- **Never compact mid-phase.** Finish the atomic step or hand off cleanly rather than summarizing a half-built mental model.
+- **Prefer primary sources over compressed chat.** Pointing a fresh session at code, commits, or a pitch carries higher fidelity and less noise than a summary.
